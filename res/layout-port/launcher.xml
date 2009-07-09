@@ -80,7 +80,7 @@
             android:nextFocusRight="@id/content"
 
             android:verticalSpacing="10dip"
-            android:numColumns="4" />
+            android:numColumns="5" />
 
     </SlidingDrawer>
 
