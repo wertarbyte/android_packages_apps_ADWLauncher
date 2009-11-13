@@ -18,6 +18,7 @@ package com.android.launcher;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
@@ -123,8 +124,7 @@ public class CellLayout extends ViewGroup {
         // Generate an id for each view, this assumes we have at most 256x256 cells
         // per workspace screen
         final LayoutParams cellParams = (LayoutParams) params;
-        child.setId(((getId() & 0xFF) << 16) |
-                (cellParams.cellX & 0xFF) << 8 | (cellParams.cellY & 0xFF));
+        cellParams.regenerateId = true;
 
         super.addView(child, index, params);
     }
@@ -344,6 +344,15 @@ public class CellLayout extends ViewGroup {
             findOccupiedCells(xCount, yCount, occupied, ignoreView);
         }
 
+        return findAllVacantCellsFromOccupied(occupied, xCount, yCount);
+    }
+
+    /**
+     * Variant of findAllVacantCells that uses LauncerModel as its source rather than the 
+     * views.
+     */
+    CellInfo findAllVacantCellsFromOccupied(boolean[][] occupied,
+            final int xCount, final int yCount) {
         CellInfo cellInfo = new CellInfo();
 
         cellInfo.cellX = -1;
@@ -400,16 +409,6 @@ public class CellLayout extends ViewGroup {
         if (result[1] >= yAxis) result[1] = yAxis - 1;
     }
     
-    /**
-     * Given a point, return the cell that most closely encloses that point
-     * @param x X coordinate of the point
-     * @param y Y coordinate of the point
-     * @param result Array of 2 ints to hold the x and y coordinate of the cell
-     */
-    void pointToCellRounded(int x, int y, int[] result) {
-        pointToCellExact(x + (mCellWidth / 2), y + (mCellHeight / 2), result);
-    }
-
     /**
      * Given a cell coordinate, return the point that represents the upper left corner of that cell
      * 
@@ -495,6 +494,11 @@ public class CellLayout extends ViewGroup {
             } else {
                 lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap, longAxisStartPadding,
                         shortAxisStartPadding);
+            }
+            
+            if (lp.regenerateId) {
+                child.setId(((getId() & 0xFF) << 16) | (lp.cellX & 0xFF) << 8 | (lp.cellY & 0xFF));
+                lp.regenerateId = false;
             }
 
             int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
@@ -602,13 +606,15 @@ public class CellLayout extends ViewGroup {
      * @param targetXY Destination area to move to
      */
     void onDropChild(View child, int[] targetXY) {
-        LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        lp.cellX = targetXY[0];
-        lp.cellY = targetXY[1];
-        lp.isDragging = false;
-        mDragRect.setEmpty();
-        child.requestLayout();
-        invalidate();
+        if (child != null) {
+            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            lp.cellX = targetXY[0];
+            lp.cellY = targetXY[1];
+            lp.isDragging = false;
+            mDragRect.setEmpty();
+            child.requestLayout();
+            invalidate();
+        }
     }
 
     void onDropAborted(View child) {
@@ -631,49 +637,6 @@ public class CellLayout extends ViewGroup {
     }
     
     /**
-     * Drag a child over the specified position
-     * 
-     * @param child The child that is being dropped
-     * @param cellX The child's new x cell location
-     * @param cellY The child's new y cell location 
-     */
-    void onDragOverChild(View child, int cellX, int cellY) {
-        int[] cellXY = mCellXY;
-        pointToCellRounded(cellX, cellY, cellXY);
-        LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        cellToRect(cellXY[0], cellXY[1], lp.cellHSpan, lp.cellVSpan, mDragRect);
-        invalidate();
-    }
-    
-    /**
-     * Computes a bounding rectangle for a range of cells
-     *  
-     * @param cellX X coordinate of upper left corner expressed as a cell position
-     * @param cellY Y coordinate of upper left corner expressed as a cell position
-     * @param cellHSpan Width in cells 
-     * @param cellVSpan Height in cells
-     * @param dragRect Rectnagle into which to put the results
-     */
-    public void cellToRect(int cellX, int cellY, int cellHSpan, int cellVSpan, RectF dragRect) {
-        final boolean portrait = mPortrait;
-        final int cellWidth = mCellWidth;
-        final int cellHeight = mCellHeight;
-        final int widthGap = mWidthGap;
-        final int heightGap = mHeightGap;
-        
-        final int hStartPadding = portrait ? mShortAxisStartPadding : mLongAxisStartPadding;
-        final int vStartPadding = portrait ? mLongAxisStartPadding : mShortAxisStartPadding;
-        
-        int width = cellHSpan * cellWidth + ((cellHSpan - 1) * widthGap);
-        int height = cellVSpan * cellHeight + ((cellVSpan - 1) * heightGap);
-
-        int x = hStartPadding + cellX * (cellWidth + widthGap);
-        int y = vStartPadding + cellY * (cellHeight + heightGap);
-        
-        dragRect.set(x, y, x + width, y + height);
-    }
-    
-    /**
      * Computes the required horizontal and vertical cell spans to always 
      * fit the given rectangle.
      *  
@@ -683,13 +646,15 @@ public class CellLayout extends ViewGroup {
     public int[] rectToCell(int width, int height) {
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.
-        int actualWidth = mCellWidth + mWidthGap;
-        int actualHeight = mCellHeight + mHeightGap;
+        final Resources resources = getResources();
+        int actualWidth = resources.getDimensionPixelSize(R.dimen.cell_width);
+        int actualHeight = resources.getDimensionPixelSize(R.dimen.cell_height);
         int smallerSize = Math.min(actualWidth, actualHeight);
-        
+
         // Always round up to next largest cell
         int spanX = (width + smallerSize) / smallerSize;
         int spanY = (height + smallerSize) / smallerSize;
+
         return new int[] { spanX, spanY };
     }
 
@@ -829,6 +794,8 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         // Y coordinate of the view in the layout.
         @ViewDebug.ExportedProperty
         int y;
+
+        boolean regenerateId;
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);

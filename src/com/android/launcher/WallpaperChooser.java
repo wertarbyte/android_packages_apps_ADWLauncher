@@ -17,7 +17,13 @@
 package com.android.launcher;
 
 import android.app.Activity;
+import android.app.WallpaperManager;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,65 +32,24 @@ import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import android.graphics.BitmapFactory;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.content.res.Resources;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class WallpaperChooser extends Activity implements AdapterView.OnItemSelectedListener,
         OnClickListener {
-
-    private static final Integer[] THUMB_IDS = {
-            R.drawable.wallpaper_lake_small,
-            R.drawable.wallpaper_sunset_small,
-            R.drawable.wallpaper_beach_small,
-            R.drawable.wallpaper_snow_leopard_small,
-            R.drawable.wallpaper_path_small,
-            R.drawable.wallpaper_sunrise_small,
-            R.drawable.wallpaper_mountain_small,
-            R.drawable.wallpaper_road_small,
-            R.drawable.wallpaper_jellyfish_small,
-            R.drawable.wallpaper_zanzibar_small,
-            R.drawable.wallpaper_blue_small,
-            R.drawable.wallpaper_grey_small,
-            R.drawable.wallpaper_green_small,
-            R.drawable.wallpaper_pink_small,
-    };
-
-    private static final Integer[] IMAGE_IDS = {
-            R.drawable.wallpaper_lake,
-            R.drawable.wallpaper_sunset,
-            R.drawable.wallpaper_beach,
-            R.drawable.wallpaper_snow_leopard,
-            R.drawable.wallpaper_path,
-            R.drawable.wallpaper_sunrise,
-            R.drawable.wallpaper_mountain,
-            R.drawable.wallpaper_road,
-            R.drawable.wallpaper_jellyfish,
-            R.drawable.wallpaper_zanzibar,
-            R.drawable.wallpaper_blue,
-            R.drawable.wallpaper_grey,
-            R.drawable.wallpaper_green,
-            R.drawable.wallpaper_pink,
-    };
 
     private Gallery mGallery;
     private ImageView mImageView;
     private boolean mIsWallpaperSet;
 
-    private BitmapFactory.Options mOptions;
     private Bitmap mBitmap;
 
     private ArrayList<Integer> mThumbs;
     private ArrayList<Integer> mImages;
+    private WallpaperLoader mLoader;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -95,32 +60,29 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
 
         setContentView(R.layout.wallpaper_chooser);
 
-        mOptions = new BitmapFactory.Options();
-        mOptions.inDither = false;
-        mOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
-
         mGallery = (Gallery) findViewById(R.id.gallery);
         mGallery.setAdapter(new ImageAdapter(this));
         mGallery.setOnItemSelectedListener(this);
         mGallery.setCallbackDuringFling(false);
 
-        Button b = (Button) findViewById(R.id.set);
-        b.setOnClickListener(this);
+        findViewById(R.id.set).setOnClickListener(this);
 
         mImageView = (ImageView) findViewById(R.id.wallpaper);
     }
 
     private void findWallpapers() {
-        mThumbs = new ArrayList<Integer>(THUMB_IDS.length + 4);
-        Collections.addAll(mThumbs, THUMB_IDS);
-
-        mImages = new ArrayList<Integer>(IMAGE_IDS.length + 4);
-        Collections.addAll(mImages, IMAGE_IDS);
+        mThumbs = new ArrayList<Integer>(24);
+        mImages = new ArrayList<Integer>(24);
 
         final Resources resources = getResources();
-        final String[] extras = resources.getStringArray(R.array.extra_wallpapers);
         final String packageName = getApplication().getPackageName();
 
+        addWallpapers(resources, packageName, R.array.wallpapers);
+        addWallpapers(resources, packageName, R.array.extra_wallpapers);
+    }
+
+    private void addWallpapers(Resources resources, String packageName, int list) {
+        final String[] extras = resources.getStringArray(list);
         for (String extra : extras) {
             int res = resources.getIdentifier(extra, "drawable", packageName);
             if (res != 0) {
@@ -141,20 +103,21 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         mIsWallpaperSet = false;
     }
 
-    public void onItemSelected(AdapterView parent, View v, int position, long id) {
-        final ImageView view = mImageView;
-        Bitmap b = BitmapFactory.decodeResource(getResources(), mImages.get(position), mOptions);
-        view.setImageBitmap(b);
-
-        // Help the GC
-        if (mBitmap != null) {
-            mBitmap.recycle();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        
+        if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
+            mLoader.cancel(true);
+            mLoader = null;
         }
-        mBitmap = b;
+    }
 
-        final Drawable drawable = view.getDrawable();
-        drawable.setFilterBitmap(true);
-        drawable.setDither(true);
+    public void onItemSelected(AdapterView parent, View v, int position, long id) {
+        if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
+            mLoader.cancel();
+        }
+        mLoader = (WallpaperLoader) new WallpaperLoader().execute(position);
     }
 
     /*
@@ -169,8 +132,8 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
 
         mIsWallpaperSet = true;
         try {
-            InputStream stream = getResources().openRawResource(mImages.get(position));
-            setWallpaper(stream);
+            WallpaperManager wpm = (WallpaperManager)getSystemService(WALLPAPER_SERVICE);
+            wpm.setResource(mImages.get(position));
             setResult(RESULT_OK);
             finish();
         } catch (IOException e) {
@@ -208,14 +171,74 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
             } else {
                 image = (ImageView) convertView;
             }
-
-            image.setImageResource(mThumbs.get(position));
-            image.getDrawable().setDither(true);
+            
+            int thumbRes = mThumbs.get(position);
+            image.setImageResource(thumbRes);
+            Drawable thumbDrawable = image.getDrawable();
+            if (thumbDrawable != null) {
+                thumbDrawable.setDither(true);
+            } else {
+                Log.e(Launcher.LOG_TAG, String.format(
+                    "Error decoding thumbnail resId=%d for wallpaper #%d",
+                    thumbRes, position));
+            }
             return image;
         }
     }
 
     public void onClick(View v) {
         selectWallpaper(mGallery.getSelectedItemPosition());
+    }
+
+    class WallpaperLoader extends AsyncTask<Integer, Void, Bitmap> {
+        BitmapFactory.Options mOptions;
+
+        WallpaperLoader() {
+            mOptions = new BitmapFactory.Options();
+            mOptions.inDither = false;
+            mOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;            
+        }
+        
+        protected Bitmap doInBackground(Integer... params) {
+            if (isCancelled()) return null;
+            try {
+                return BitmapFactory.decodeResource(getResources(),
+                        mImages.get(params[0]), mOptions);
+            } catch (OutOfMemoryError e) {
+                return null;
+            }            
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap b) {
+            if (b == null) return;
+
+            if (!isCancelled() && !mOptions.mCancel) {
+                // Help the GC
+                if (mBitmap != null) {
+                    mBitmap.recycle();
+                }
+    
+                final ImageView view = mImageView;
+                view.setImageBitmap(b);
+    
+                mBitmap = b;
+    
+                final Drawable drawable = view.getDrawable();
+                drawable.setFilterBitmap(true);
+                drawable.setDither(true);
+
+                view.postInvalidate();
+
+                mLoader = null;
+            } else {
+               b.recycle(); 
+            }
+        }
+
+        void cancel() {
+            mOptions.requestCancelDecode();
+            super.cancel(true);
+        }
     }
 }

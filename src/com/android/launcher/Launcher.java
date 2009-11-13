@@ -18,12 +18,12 @@ package com.android.launcher;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.app.Dialog;
 import android.app.ISearchManager;
-import android.app.IWallpaperService;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
+import android.app.WallpaperInfo;
+import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.ActivityInfo;
+import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
@@ -41,12 +42,10 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
@@ -59,6 +58,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import static android.util.Log.*;
+import android.util.SparseArray;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -96,8 +96,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final boolean PROFILE_ROTATE = false;
     private static final boolean DEBUG_USER_INTERFACE = false;
 
-    private static final int WALLPAPER_SCREENS_SPAN = 2;
-
     private static final int MENU_GROUP_ADD = 1;
     private static final int MENU_ADD = Menu.FIRST + 1;
     private static final int MENU_WALLPAPER_SETTINGS = MENU_ADD + 1;
@@ -118,6 +116,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     static final String EXTRA_CUSTOM_WIDGET = "custom_widget";
     static final String SEARCH_WIDGET = "search_widget";
 
+    static final int WALLPAPER_SCREENS_SPAN = 2;
     static final int SCREEN_COUNT = 3;
     static final int DEFAULT_SCREN = 1;
     static final int NUMBER_CELLS_X = 4;
@@ -157,15 +156,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private static final LauncherModel sModel = new LauncherModel();
 
-    private static Bitmap sWallpaper;
-
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREN;
 
-    private static WallpaperIntentReceiver sWallpaperReceiver;
-
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
+    private final BroadcastReceiver mCloseSystemDialogsReceiver = new CloseSystemDialogsIntentReceiver();
     private final ContentObserver mObserver = new FavoritesChangeObserver();
+    private final ContentObserver mWidgetObserver = new AppWidgetResetObserver();
 
     private LayoutInflater mInflater;
 
@@ -341,19 +338,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     private void setWallpaperDimension() {
-        IBinder binder = ServiceManager.getService(WALLPAPER_SERVICE);
-        IWallpaperService wallpaperService = IWallpaperService.Stub.asInterface(binder);
+        WallpaperManager wpm = (WallpaperManager)getSystemService(WALLPAPER_SERVICE);
 
         Display display = getWindowManager().getDefaultDisplay();
         boolean isPortrait = display.getWidth() < display.getHeight();
 
         final int width = isPortrait ? display.getWidth() : display.getHeight();
         final int height = isPortrait ? display.getHeight() : display.getWidth();
-        try {
-            wallpaperService.setDimensionHints(width * WALLPAPER_SCREENS_SPAN, height);
-        } catch (RemoteException e) {
-            // System is dead!
-        }
+        wpm.suggestDesiredDimensions(width * WALLPAPER_SCREENS_SPAN, height);
     }
 
     @Override
@@ -390,8 +382,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     completeAddAppWidget(data, mAddItemCellInfo, !mDesktopLocked);
                     break;
             }
-        } else if (requestCode == REQUEST_PICK_APPWIDGET &&
-                resultCode == RESULT_CANCELED && data != null) {
+        } else if ((requestCode == REQUEST_PICK_APPWIDGET ||
+                requestCode == REQUEST_CREATE_APPWIDGET) && resultCode == RESULT_CANCELED &&
+                data != null) {
             // Clean up the appWidgetId if we canceled
             int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
             if (appWidgetId != -1) {
@@ -561,7 +554,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         workspace.setOnLongClickListener(this);
         workspace.setDragger(dragLayer);
         workspace.setLauncher(this);
-        loadWallpaper();
 
         deleteZone.setLauncher(this);
         deleteZone.setDragController(dragLayer);
@@ -692,7 +684,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         Bundle extras = data.getExtras();
         int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
 
-        d(LOG_TAG, "dumping extras content="+extras.toString());
+        if (LOGD) d(LOG_TAG, "dumping extras content="+extras.toString());
 
         AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
 
@@ -702,7 +694,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         // Try finding open space on Launcher screen
         final int[] xy = mCellCoordinates;
-        if (!findSlot(cellInfo, xy, spans[0], spans[1])) return;
+        if (!findSlot(cellInfo, xy, spans[0], spans[1])) {
+            if (appWidgetId != -1) mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+            return;
+        }
 
         // Build Launcher-specific widget info and save to database
         LauncherAppWidgetInfo launcherInfo = new LauncherAppWidgetInfo(appWidgetId);
@@ -788,34 +783,38 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         return info;
     }
 
+    void closeSystemDialogs() {
+        getWindow().closeAllPanels();
+        
+        try {
+            dismissDialog(DIALOG_CREATE_SHORTCUT);
+            // Unlock the workspace if the dialog was showing
+            mWorkspace.unlock();
+        } catch (Exception e) {
+            // An exception is thrown if the dialog is not visible, which is fine
+        }
+
+        try {
+            dismissDialog(DIALOG_RENAME_FOLDER);
+            // Unlock the workspace if the dialog was showing
+            mWorkspace.unlock();
+        } catch (Exception e) {
+            // An exception is thrown if the dialog is not visible, which is fine
+        }
+    }
+    
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
-            getWindow().closeAllPanels();
+            closeSystemDialogs();
             
             // Set this flag so that onResume knows to close the search dialog if it's open,
             // because this was a new intent (thus a press of 'home' or some such) rather than
             // for example onResume being called when the user pressed the 'back' button.
             mIsNewIntent = true;
-
-            try {
-                dismissDialog(DIALOG_CREATE_SHORTCUT);
-                // Unlock the workspace if the dialog was showing
-                mWorkspace.unlock();
-            } catch (Exception e) {
-                // An exception is thrown if the dialog is not visible, which is fine
-            }
-
-            try {
-                dismissDialog(DIALOG_RENAME_FOLDER);
-                // Unlock the workspace if the dialog was showing
-                mWorkspace.unlock();
-            } catch (Exception e) {
-                // An exception is thrown if the dialog is not visible, which is fine
-            }
 
             if ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) !=
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) {
@@ -840,12 +839,63 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        // Do not call super here
+        // NOTE: Do NOT do this. Ever. This is a terrible and horrifying hack.
+        //
+        // Home loads the content of the workspace on a background thread. This means that
+        // a previously focused view will be, after orientation change, added to the view
+        // hierarchy at an undeterminate time in the future. If we were to invoke
+        // super.onRestoreInstanceState() here, the focus restoration would fail because the
+        // view to focus does not exist yet.
+        //
+        // However, not invoking super.onRestoreInstanceState() is equally bad. In such a case,
+        // panels would not be restored properly. For instance, if the menu is open then the
+        // user changes the orientation, the menu would not be opened in the new orientation.
+        //
+        // To solve both issues Home messes up with the internal state of the bundle to remove
+        // the properties it does not want to see restored at this moment. After invoking
+        // super.onRestoreInstanceState(), it removes the panels state.
+        //
+        // Later, when the workspace is done loading, Home calls super.onRestoreInstanceState()
+        // again to restore focus and other view properties. It will not, however, restore
+        // the panels since at this point the panels' state has been removed from the bundle.
+        //
+        // This is a bad example, do not do this.
+        //
+        // If you are curious on how this code was put together, take a look at the following
+        // in Android's source code:
+        // - Activity.onRestoreInstanceState()
+        // - PhoneWindow.restoreHierarchyState()
+        // - PhoneWindow.DecorView.onAttachedToWindow()
+        //
+        // The source code of these various methods shows what states should be kept to
+        // achieve what we want here.
+
+        Bundle windowState = savedInstanceState.getBundle("android:viewHierarchyState");
+        SparseArray<Parcelable> savedStates = null;
+        int focusedViewId = View.NO_ID;
+
+        if (windowState != null) {
+            savedStates = windowState.getSparseParcelableArray("android:views");
+            windowState.remove("android:views");
+            focusedViewId = windowState.getInt("android:focusedViewId", View.NO_ID);
+            windowState.remove("android:focusedViewId");
+        }
+
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (windowState != null) {
+            windowState.putSparseParcelableArray("android:views", savedStates);
+            windowState.putInt("android:focusedViewId", focusedViewId);
+            windowState.remove("android:Panels");
+        }
+
         mSavedInstanceState = savedInstanceState;
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
         outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getCurrentScreen());
 
         final ArrayList<Folder> folders = mWorkspace.getOpenFolders();
@@ -857,8 +907,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 ids[i] = info.id;
             }
             outState.putLongArray(RUNTIME_STATE_USER_FOLDERS, ids);
-        } else {
-            super.onSaveInstanceState(outState);
         }
 
         final boolean isConfigurationChange = getChangingConfigurations() != 0;
@@ -910,7 +958,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         sModel.abortLoaders();
 
         getContentResolver().unregisterContentObserver(mObserver);
+        getContentResolver().unregisterContentObserver(mWidgetObserver);
         unregisterReceiver(mApplicationsReceiver);
+        unregisterReceiver(mCloseSystemDialogsReceiver);
     }
 
     @Override
@@ -990,7 +1040,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mDesktopLocked) return false;
+        if (mDesktopLocked && mSavedInstanceState == null) return false;
 
         super.onCreateOptionsMenu(menu);
         menu.add(MENU_GROUP_ADD, MENU_ADD, 0, R.string.menu_add)
@@ -1021,7 +1071,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        mMenuAddInfo = mWorkspace.findAllVacantCells(null);
+        // We can't trust the view state here since views we may not be done binding.
+        // Get the vacancy state from the model instead.
+        mMenuAddInfo = mWorkspace.findAllVacantCellsFromModel();
         menu.setGroupEnabled(MENU_GROUP_ADD, mMenuAddInfo != null && mMenuAddInfo.valid);
 
         return true;
@@ -1268,7 +1320,18 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private void startWallpaper() {
         final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
-        startActivity(Intent.createChooser(pickWallpaper, getString(R.string.chooser_wallpaper)));
+        Intent chooser = Intent.createChooser(pickWallpaper,
+                getText(R.string.chooser_wallpaper));
+        WallpaperManager wm = (WallpaperManager)
+                getSystemService(Context.WALLPAPER_SERVICE);
+        WallpaperInfo wi = wm.getWallpaperInfo();
+        if (wi != null && wi.getSettingsActivity() != null) {
+            LabeledIntent li = new LabeledIntent(getPackageName(),
+                    R.string.configure_wallpaper, 0);
+            li.setClassName(wi.getPackageName(), wi.getSettingsActivity());
+            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] { li });
+        }
+        startActivity(chooser);
     }
 
     /**
@@ -1277,22 +1340,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      * wallpaper.
      */
     private void registerIntentReceivers() {
-        if (sWallpaperReceiver == null) {
-            final Application application = getApplication();
-
-            sWallpaperReceiver = new WallpaperIntentReceiver(application, this);
-
-            IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
-            application.registerReceiver(sWallpaperReceiver, filter);
-        } else {
-            sWallpaperReceiver.setLauncher(this);
-        }
-
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
         filter.addDataScheme("package");
         registerReceiver(mApplicationsReceiver, filter);
+        filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        registerReceiver(mCloseSystemDialogsReceiver, filter);
     }
 
     /**
@@ -1302,6 +1356,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private void registerContentObservers() {
         ContentResolver resolver = getContentResolver();
         resolver.registerContentObserver(LauncherSettings.Favorites.CONTENT_URI, true, mObserver);
+        resolver.registerContentObserver(LauncherProvider.CONTENT_APPWIDGET_RESET_URI,
+                true, mWidgetObserver);
     }
 
     @Override
@@ -1309,11 +1365,20 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_BACK:
-                    mWorkspace.dispatchKeyEvent(event);
-                    if (mDrawer.isOpened()) {
-                        closeDrawer();
-                    } else {
-                        closeFolder();
+                    return true;
+                case KeyEvent.KEYCODE_HOME:
+                    return true;
+            }
+        } else if (event.getAction() == KeyEvent.ACTION_UP) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_BACK:
+                    if (!event.isCanceled()) {
+                        mWorkspace.dispatchKeyEvent(event);
+                        if (mDrawer.isOpened()) {
+                            closeDrawer();
+                        } else {
+                            closeFolder();
+                        }
                     }
                     return true;
                 case KeyEvent.KEYCODE_HOME:
@@ -1365,6 +1430,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mDesktopLocked = true;
         mDrawer.lock();
         sModel.loadUserItems(false, this, false, false);
+    }
+
+    /**
+     * Re-listen when widgets are reset.
+     */
+    private void onAppWidgetReset() {
+        mAppWidgetHost.startListening();
     }
 
     void onDesktopItemsLoaded(ArrayList<ItemInfo> shortcuts,
@@ -1559,10 +1631,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
 
-    DragController getDragController() {
-        return mDragLayer;
-    }
-
     /**
      * Launches the intent referred by the clicked shortcut.
      *
@@ -1615,20 +1683,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 }
             }
         }
-    }
-
-    private void loadWallpaper() {
-        // The first time the application is started, we load the wallpaper from
-        // the ApplicationContext
-        if (sWallpaper == null) {
-            final Drawable drawable = getWallpaper();
-            if (drawable instanceof BitmapDrawable) {
-                sWallpaper = ((BitmapDrawable) drawable).getBitmap();
-            } else {
-                throw new IllegalStateException("The wallpaper must be a BitmapDrawable.");
-            }
-        }
-        mWorkspace.loadWallpaper(sWallpaper);
     }
 
     /**
@@ -2044,6 +2098,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     /**
+     * Receives notifications when applications are added/removed.
+     */
+    private class CloseSystemDialogsIntentReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            closeSystemDialogs();
+        }
+    }
+
+    /**
      * Receives notifications whenever the user favorites have changed.
      */
     private class FavoritesChangeObserver extends ContentObserver {
@@ -2058,39 +2122,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     /**
-     * Receives intents from other applications to change the wallpaper.
+     * Receives notifications whenever the appwidgets are reset.
      */
-    private static class WallpaperIntentReceiver extends BroadcastReceiver {
-        private final Application mApplication;
-        private WeakReference<Launcher> mLauncher;
-
-        WallpaperIntentReceiver(Application application, Launcher launcher) {
-            mApplication = application;
-            setLauncher(launcher);
-        }
-
-        void setLauncher(Launcher launcher) {
-            mLauncher = new WeakReference<Launcher>(launcher);
+    private class AppWidgetResetObserver extends ContentObserver {
+        public AppWidgetResetObserver() {
+            super(new Handler());
         }
 
         @Override
-        public void onReceive(Context context, Intent intent) {
-            // Load the wallpaper from the ApplicationContext and store it locally
-            // until the Launcher Activity is ready to use it
-            final Drawable drawable = mApplication.getWallpaper();
-            if (drawable instanceof BitmapDrawable) {
-                sWallpaper = ((BitmapDrawable) drawable).getBitmap();
-            } else {
-                throw new IllegalStateException("The wallpaper must be a BitmapDrawable.");
-            }
-
-            // If Launcher is alive, notify we have a new wallpaper
-            if (mLauncher != null) {
-                final Launcher launcher = mLauncher.get();
-                if (launcher != null) {
-                    launcher.loadWallpaper();
-                }
-            }
+        public void onChange(boolean selfChange) {
+            onAppWidgetReset();
         }
     }
 
