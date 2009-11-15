@@ -48,7 +48,7 @@ import java.net.URISyntaxException;
  * for the Launcher.
  */
 public class LauncherModel {
-    static final boolean DEBUG_LOADERS = true;
+    static final boolean DEBUG_LOADERS = false;
     static final String LOG_TAG = "HomeLoaders";
 
     private static final int UI_NOTIFICATION_RATE = 4;
@@ -476,7 +476,7 @@ public class LauncherModel {
                 Utilities.createIconThumbnail(info.activityInfo.loadIcon(manager), context);
         application.filtered = false;
     }
-
+ 
     private static final AtomicInteger sAppsLoaderCount = new AtomicInteger(1);
     private static final AtomicInteger sWorkspaceLoaderCount = new AtomicInteger(1);
 
@@ -1136,24 +1136,47 @@ public class LauncherModel {
     }
 
     /**
+     * Fills in the occupied structure with all of the shortcuts, apps, folders and widgets in
+     * the model. 
+     */
+    void findAllOccupiedCells(boolean[][] occupied, int countX, int countY, int screen) {
+        final ArrayList<ItemInfo> desktopItems = mDesktopItems;
+        if (desktopItems != null) {
+            final int count = desktopItems.size();
+            for (int i = 0; i < count; i++) {
+                ItemInfo item = desktopItems.get(i);
+                addOccupiedCells(occupied, screen, desktopItems.get(i));
+            }
+        }
+        
+        final ArrayList<LauncherAppWidgetInfo> desktopAppWidgets = mDesktopAppWidgets;
+        if (desktopAppWidgets != null) {
+            final int count = desktopAppWidgets.size();
+            for (int i = 0; i < count; i++) {
+                addOccupiedCells(occupied, screen, desktopAppWidgets.get(i));
+            }
+        }
+    }
+
+    /**
+     * Add the footprint of the specified item to the occupied array
+     */
+    private void addOccupiedCells(boolean[][] occupied, int screen,
+            ItemInfo item) {
+        if (item.screen == screen) {
+            for (int xx = item.cellX; xx < item.cellX + item.spanX; xx++) {
+                for (int yy = item.cellY; yy < item.cellY + item.spanY; yy++) {
+                    occupied[xx][yy] = true;
+                }
+            }
+        }
+    }
+    
+    /**
      * @return The current list of applications
      */
     ApplicationsAdapter getApplicationsAdapter() {
         return mApplicationsAdapter;
-    }
-
-    /**
-     * @return The current list of desktop items
-     */
-    ArrayList<ItemInfo> getDesktopItems() {
-        return mDesktopItems;
-    }
-
-    /**
-     * @return The current list of desktop items
-     */
-    ArrayList<LauncherAppWidgetInfo> getDesktopAppWidgets() {
-        return mDesktopAppWidgets;
     }
 
     /**
@@ -1398,26 +1421,6 @@ public class LauncherModel {
     }
 
     /**
-     * Add an item to the database in a specified container. Sets the container, screen, cellX and
-     * cellY fields of the item. Also assigns an ID to the item.
-     */
-    static boolean addGestureToDatabase(Context context, ItemInfo item, boolean notify) {
-        final ContentValues values = new ContentValues();
-        final ContentResolver cr = context.getContentResolver();
-
-        item.onAddToDatabase(values);
-
-        Uri result = cr.insert(notify ? LauncherSettings.Gestures.CONTENT_URI :
-                LauncherSettings.Gestures.CONTENT_URI_NO_NOTIFICATION, values);
-
-        if (result != null) {
-            item.id = Integer.parseInt(result.getPathSegments().get(1));
-        }
-
-        return result != null;
-    }
-
-    /**
      * Update an item to the database in a specified container.
      */
     static void updateItemInDatabase(Context context, ItemInfo item) {
@@ -1450,85 +1453,5 @@ public class LauncherModel {
         cr.delete(LauncherSettings.Favorites.getContentUri(info.id, false), null, null);
         cr.delete(LauncherSettings.Favorites.CONTENT_URI,
                 LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
-    }
-
-    static void deleteGestureFromDatabase(Context context, ItemInfo item) {
-        final ContentResolver cr = context.getContentResolver();
-
-        cr.delete(LauncherSettings.Gestures.getContentUri(item.id, false), null, null);
-    }
-
-    static void updateGestureInDatabase(Context context, ItemInfo item) {
-        final ContentValues values = new ContentValues();
-        final ContentResolver cr = context.getContentResolver();
-
-        item.onAddToDatabase(values);
-
-        cr.update(LauncherSettings.Gestures.getContentUri(item.id, false), values, null, null);
-    }
-
-
-    ApplicationInfo queryGesture(Context context, String id) {
-        final ContentResolver contentResolver = context.getContentResolver();
-        final PackageManager manager = context.getPackageManager();
-        final Cursor c = contentResolver.query(
-                LauncherSettings.Gestures.CONTENT_URI, null, LauncherSettings.Gestures._ID + "=?",
-                new String[] { id }, null);
-
-        ApplicationInfo info = null;
-
-        try {
-            final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures._ID);
-            final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.INTENT);
-            final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.TITLE);
-            final int iconTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ICON_TYPE);
-            final int iconIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ICON);
-            final int iconPackageIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ICON_PACKAGE);
-            final int iconResourceIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ICON_RESOURCE);
-            final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Gestures.ITEM_TYPE);
-
-            String intentDescription;
-            Intent intent;
-
-            if (c.moveToNext()) {
-                int itemType = c.getInt(itemTypeIndex);
-
-                switch (itemType) {
-                    case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                    case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                        intentDescription = c.getString(intentIndex);
-                        try {
-                            intent = Intent.parseUri(intentDescription, 0);
-                        } catch (java.net.URISyntaxException e) {
-                            return null;
-                        }
-
-                        if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                            info = getApplicationInfo(manager, intent, context);
-                        } else {
-                            info = getApplicationInfoShortcut(c, context, iconTypeIndex,
-                                    iconPackageIndex, iconResourceIndex, iconIndex);
-                        }
-
-                        if (info == null) {
-                            info = new ApplicationInfo();
-                            info.icon = manager.getDefaultActivityIcon();
-                        }
-
-                        info.isGesture = true;
-                        info.title = c.getString(titleIndex);
-                        info.intent = intent;
-                        info.id = c.getLong(idIndex);
-
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            w(LOG_TAG, "Could not load gesture with name " + id);
-        } finally {
-            c.close();
-        }
-
-        return info;
     }
 }

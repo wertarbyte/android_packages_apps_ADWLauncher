@@ -71,7 +71,7 @@
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
-            android:theme="@style/Theme"
+            android:theme="@android:style/Theme.Wallpaper.NoTitleBar"
             android:screenOrientation="nosensor"
             android:windowSoftInputMode="stateUnspecified|adjustPan">
             <intent-filter>
@@ -85,7 +85,8 @@
         <activity
             android:name="WallpaperChooser"
             android:label="@string/pick_wallpaper"
-            android:icon="@drawable/ic_launcher_gallery">
+            android:icon="@drawable/ic_launcher_wallpaper"
+            android:finishOnCloseSystemDialogs="true">
             <intent-filter>
                 <action android:name="android.intent.action.SET_WALLPAPER" />
                 <category android:name="android.intent.category.DEFAULT" />
