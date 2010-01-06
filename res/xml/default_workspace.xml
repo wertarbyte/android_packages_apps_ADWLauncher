@@ -43,15 +43,15 @@
         launcher:y="3" />
 
     <favorite
-        launcher:packageName="com.google.android.apps.maps"
-        launcher:className="com.google.android.maps.MapsActivity"
+        launcher:packageName="com.android.mms"
+        launcher:className="com.android.mms.ui.ConversationList"
         launcher:screen="2"
         launcher:x="3"
         launcher:y="3" />
 
     <favorite
-        launcher:packageName="com.android.mms"
-        launcher:className="com.android.mms.ui.ConversationList"
+        launcher:packageName="com.google.android.apps.maps"
+        launcher:className="com.google.android.maps.MapsActivity"
         launcher:screen="2"
         launcher:x="0"
         launcher:y="2" />
