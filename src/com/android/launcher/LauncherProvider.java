@@ -653,7 +653,7 @@ public class LauncherProvider extends ContentProvider {
                 
                 appWidgetManager.bindAppWidgetId(appWidgetId, cn);
             } catch (RuntimeException ex) {
-                Log.e(TAG, "Problem allocating appWidgetId", ex);
+                Log.e(LOG_TAG, "Problem allocating appWidgetId", ex);
             }
             
             return allocatedAppWidgets;
@@ -672,12 +672,12 @@ public class LauncherProvider extends ContentProvider {
                 uri = a.getString(R.styleable.Favorite_uri);
                 intent = Intent.parseUri(uri, 0);
             } catch (URISyntaxException e) {
-                Log.w(TAG, "Shortcut has malformed uri: " + uri);
+                Log.w(LOG_TAG, "Shortcut has malformed uri: " + uri);
                 return false; // Oh well
             }
 
             if (iconResId == 0 || titleResId == 0) {
-                Log.w(TAG, "Shortcut is missing title or icon resource ID");
+                Log.w(LOG_TAG, "Shortcut is missing title or icon resource ID");
                 return false;
             }
 
