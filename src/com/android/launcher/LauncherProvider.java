@@ -17,6 +17,7 @@
 package com.android.launcher;
 
 import android.appwidget.AppWidgetHost;
+import android.appwidget.AppWidgetManager;
 import android.content.ContentProvider;
 import android.content.Context;
 import android.content.ContentValues;
@@ -24,6 +25,7 @@ import android.content.Intent;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentResolver;
+import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.content.res.TypedArray;
 import android.content.pm.PackageManager;
@@ -42,6 +44,7 @@ import android.os.*;
 import android.provider.Settings;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParserException;
