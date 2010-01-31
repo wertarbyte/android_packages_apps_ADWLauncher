@@ -16,8 +16,6 @@
 
 package com.android.launcher;
 
-import static android.util.Log.w;
-
 import android.appwidget.AppWidgetHost;
 import android.content.ContentProvider;
 import android.content.Context;
@@ -26,7 +24,6 @@ import android.content.Intent;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentResolver;
-import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.content.res.TypedArray;
 import android.content.pm.PackageManager;
@@ -45,7 +42,6 @@ import android.os.*;
 import android.provider.Settings;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -59,7 +55,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
     
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 4;
 
     static final String AUTHORITY = "com.android.launcher.settings";
     
@@ -67,6 +63,7 @@ public class LauncherProvider extends ContentProvider {
     static final String EXTRA_BIND_TARGETS = "com.android.launcher.settings.bindtargets";
 
     static final String TABLE_FAVORITES = "favorites";
+    static final String TABLE_GESTURES = "gestures";
     static final String PARAMETER_NOTIFY = "notify";
 
     /**
@@ -176,9 +173,10 @@ public class LauncherProvider extends ContentProvider {
     private static class DatabaseHelper extends SQLiteOpenHelper {
         private static final String TAG_FAVORITES = "favorites";
         private static final String TAG_FAVORITE = "favorite";
-        private static final String TAG_SHORTCUT = "shortcut";
         private static final String TAG_CLOCK = "clock";
         private static final String TAG_SEARCH = "search";
+        private static final String TAG_APPWIDGET = "appwidget";
+        private static final String TAG_SHORTCUT = "shortcut";        
 
         private final Context mContext;
         private final AppWidgetHost mAppWidgetHost;
@@ -370,89 +368,35 @@ public class LauncherProvider extends ContentProvider {
             }
 
             if (version < 4) {
-                version = 4;
-            }
-
-            if (version < 5) {
-                if (updateContactsShortcuts(db)) {
-                    version = 5;
+                db.beginTransaction();
+                try {
+                    db.execSQL("CREATE TABLE gestures (" +
+                        "_id INTEGER PRIMARY KEY," +
+                        "title TEXT," +
+                        "intent TEXT," +
+                        "itemType INTEGER," +
+                        "iconType INTEGER," +
+                        "iconPackage TEXT," +
+                        "iconResource TEXT," +
+                        "icon BLOB" +
+                        ");");
+                    db.setTransactionSuccessful();
+                    version = 4;
+                } catch (SQLException ex) {
+                    // Old version remains, which means we wipe old data
+                    Log.e(LOG_TAG, ex.getMessage(), ex);
+                } finally {
+                    db.endTransaction();
                 }
             }
             
             if (version != DATABASE_VERSION) {
                 Log.w(LOG_TAG, "Destroying all old data.");
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
+                db.execSQL("DROP TABLE IF EXISTS " + TABLE_GESTURES);
                 onCreate(db);
             }
         }
-        
-        private boolean updateContactsShortcuts(SQLiteDatabase db) {
-            Cursor c = null;
-            final String selectWhere = buildOrWhereString(LauncherSettings.Favorites.ITEM_TYPE,
-                    new int[] { LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT });
-
-            db.beginTransaction();
-            try {
-                // Select and iterate through each matching widget
-                c = db.query(TABLE_FAVORITES, new String[] { LauncherSettings.Favorites._ID,
-                        LauncherSettings.Favorites.INTENT }, selectWhere, null, null, null, null);
-                
-                if (LOGD) Log.d(LOG_TAG, "found upgrade cursor count=" + c.getCount());
-                
-                final ContentValues values = new ContentValues();
-                final int idIndex = c.getColumnIndex(LauncherSettings.Favorites._ID);
-                final int intentIndex = c.getColumnIndex(LauncherSettings.Favorites.INTENT);
-                
-                while (c != null && c.moveToNext()) {
-                    long favoriteId = c.getLong(idIndex);
-                    final String intentUri = c.getString(intentIndex);
-                    if (intentUri != null) {
-                        try {
-                            Intent intent = Intent.parseUri(intentUri, 0);
-                            android.util.Log.d("Home", intent.toString());
-                            final Uri uri = intent.getData();
-                            final String data = uri.toString();
-                            if (Intent.ACTION_VIEW.equals(intent.getAction()) &&
-                                    (data.startsWith("content://contacts/people/") ||
-                                    data.startsWith("content://com.android.contacts/contacts/lookup/"))) {
-
-                                intent = new Intent("com.android.contacts.action.QUICK_CONTACT");
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-
-                                intent.setData(uri);
-                                intent.putExtra("mode", 3);
-                                intent.putExtra("exclude_mimes", (String[]) null);
-
-                                values.clear();
-                                values.put(LauncherSettings.Favorites.INTENT, intent.toUri(0));
-    
-                                String updateWhere = LauncherSettings.Favorites._ID + "=" + favoriteId;
-                                db.update(TABLE_FAVORITES, values, updateWhere, null);                                
-                            }
-                        } catch (RuntimeException ex) {
-                            Log.e(LOG_TAG, "Problem upgrading shortcut", ex);
-                        } catch (URISyntaxException e) {
-                            Log.e(LOG_TAG, "Problem upgrading shortcut", e);                            
-                        }
-                    }
-                }
-                
-                db.setTransactionSuccessful();
-            } catch (SQLException ex) {
-                Log.w(LOG_TAG, "Problem while upgrading contacts", ex);
-                return false;
-            } finally {
-                db.endTransaction();
-                if (c != null) {
-                    c.close();
-                }
-            }
-
-            return true;
-        }
-        
         
         /**
          * Upgrade existing clock and photo frame widgets into their new widget
@@ -589,13 +533,15 @@ public class LauncherProvider extends ContentProvider {
                             a.getString(R.styleable.Favorite_y));
 
                     if (TAG_FAVORITE.equals(name)) {
-                        added = addAppShortcut(db, values, a, packageManager, intent);
+                        added = addShortcut(db, values, a, packageManager, intent);
                     } else if (TAG_SEARCH.equals(name)) {
                         added = addSearchWidget(db, values);
                     } else if (TAG_CLOCK.equals(name)) {
                         added = addClockWidget(db, values);
+                    } else if (TAG_APPWIDGET.equals(name)) {
+                        added = addAppWidget(db, values, a);
                     } else if (TAG_SHORTCUT.equals(name)) {
-                        added = addShortcut(db, values, a);
+                        added = addUriShortcut(db, values, a);
                     }
 
                     if (added) i++;
@@ -611,7 +557,7 @@ public class LauncherProvider extends ContentProvider {
             return i;
         }
 
-        private boolean addAppShortcut(SQLiteDatabase db, ContentValues values, TypedArray a,
+        private boolean addShortcut(SQLiteDatabase db, ContentValues values, TypedArray a,
                 PackageManager packageManager, Intent intent) {
 
             ActivityInfo info;
@@ -634,42 +580,6 @@ public class LauncherProvider extends ContentProvider {
                         "/" + className, e);
                 return false;
             }
-            return true;
-        }
-        
-        private boolean addShortcut(SQLiteDatabase db, ContentValues values, TypedArray a) {
-            Resources r = mContext.getResources();
-            
-            final int iconResId = a.getResourceId(R.styleable.Favorite_icon, 0);
-            final int titleResId = a.getResourceId(R.styleable.Favorite_title, 0);
-            
-            Intent intent;
-            String uri = null;
-            try {
-                uri = a.getString(R.styleable.Favorite_uri);
-                intent = Intent.parseUri(uri, 0);
-            } catch (URISyntaxException e) {
-                w(LauncherModel.LOG_TAG, "Shortcut has malformed uri: " + uri);
-                return false; // Oh well
-            }
-            
-            if (iconResId == 0 || titleResId == 0) {
-                w(LauncherModel.LOG_TAG, "Shortcut is missing title or icon resource ID");
-                return false;
-            }
-            
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            values.put(Favorites.INTENT, intent.toUri(0));
-            values.put(Favorites.TITLE, r.getString(titleResId));
-            values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_SHORTCUT);
-            values.put(Favorites.SPANX, 1);
-            values.put(Favorites.SPANY, 1);
-            values.put(Favorites.ICON_TYPE, Favorites.ICON_TYPE_RESOURCE);
-            values.put(Favorites.ICON_PACKAGE, mContext.getPackageName());
-            values.put(Favorites.ICON_RESOURCE, mContext.getResources().getResourceName(iconResId));
-
-            db.insert(TABLE_FAVORITES, null, values);
-
             return true;
         }
 
@@ -715,6 +625,75 @@ public class LauncherProvider extends ContentProvider {
             }
 
             return allocatedAppWidgets;
+        }
+        
+        private boolean addAppWidget(SQLiteDatabase db, ContentValues values, TypedArray a) {
+            String packageName = a.getString(R.styleable.Favorite_packageName);
+            String className = a.getString(R.styleable.Favorite_className);
+
+            if (packageName == null || className == null) {
+                return false;
+            }
+            
+            ComponentName cn = new ComponentName(packageName, className);
+            
+            boolean allocatedAppWidgets = false;
+            final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+
+            try {
+                int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
+                
+                values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPWIDGET);
+                values.put(Favorites.SPANX, a.getString(R.styleable.Favorite_spanX));
+                values.put(Favorites.SPANY, a.getString(R.styleable.Favorite_spanY));
+                values.put(Favorites.APPWIDGET_ID, appWidgetId);
+                db.insert(TABLE_FAVORITES, null, values);
+
+                allocatedAppWidgets = true;
+                
+                appWidgetManager.bindAppWidgetId(appWidgetId, cn);
+            } catch (RuntimeException ex) {
+                Log.e(TAG, "Problem allocating appWidgetId", ex);
+            }
+            
+            return allocatedAppWidgets;
+        }
+        
+        private boolean addUriShortcut(SQLiteDatabase db, ContentValues values,
+                TypedArray a) {
+            Resources r = mContext.getResources();
+
+            final int iconResId = a.getResourceId(R.styleable.Favorite_icon, 0);
+            final int titleResId = a.getResourceId(R.styleable.Favorite_title, 0);
+
+            Intent intent;
+            String uri = null;
+            try {
+                uri = a.getString(R.styleable.Favorite_uri);
+                intent = Intent.parseUri(uri, 0);
+            } catch (URISyntaxException e) {
+                Log.w(TAG, "Shortcut has malformed uri: " + uri);
+                return false; // Oh well
+            }
+
+            if (iconResId == 0 || titleResId == 0) {
+                Log.w(TAG, "Shortcut is missing title or icon resource ID");
+                return false;
+            }
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            values.put(Favorites.INTENT, intent.toUri(0));
+            values.put(Favorites.TITLE, r.getString(titleResId));
+            values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_SHORTCUT);
+            values.put(Favorites.SPANX, 1);
+            values.put(Favorites.SPANY, 1);
+            values.put(Favorites.ICON_TYPE, Favorites.ICON_TYPE_RESOURCE);
+            values.put(Favorites.ICON_PACKAGE, mContext.getPackageName());
+            values.put(Favorites.ICON_RESOURCE, r.getResourceName(iconResId));
+
+            db.insert(TABLE_FAVORITES, null, values);
+
+            return true;
         }
     }
 
