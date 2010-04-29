@@ -400,7 +400,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         super.onResume();
 
         this.setRequestedOrientation(
-        		Settings.System.getInt(this.getContentResolver(), "launcher_orientation", 1) == 0 ?
+        		Settings.System.getInt(this.getContentResolver(), "launcher_orientation", 0) == 0 ?
         				ActivityInfo.SCREEN_ORIENTATION_NOSENSOR : ActivityInfo.SCREEN_ORIENTATION_USER);
         
         if (mRestoring) {
