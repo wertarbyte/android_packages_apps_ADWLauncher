@@ -18,19 +18,5 @@
 <resources>
     <string-array name="wallpapers" translatable="false">
         <item>wallpaper_bentgrass</item>
-        <item>wallpaper_canyon</item>
-        <item>wallpaper_despair</item>
-        <item>wallpaper_electric</item>
-        <item>wallpaper_goldengate</item>
-        <item>wallpaper_grass</item>
-        <item>wallpaper_jellyfish</item>
-        <item>wallpaper_leaves</item>
-        <item>wallpaper_monumentvalley</item>
-        <item>wallpaper_paradise</item>
-        <item>wallpaper_rainbokeh</item>
-        <item>wallpaper_ricefield</item>
-        <item>wallpaper_sunset</item>
-        <item>wallpaper_tree</item>
-        <item>wallpaper_valley</item>
     </string-array>
 </resources>
