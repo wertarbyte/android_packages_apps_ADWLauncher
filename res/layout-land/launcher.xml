@@ -35,68 +35,103 @@
         <include android:id="@+id/cell3" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell4" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell6" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell7" layout="@layout/workspace_screen" />
 
     </com.android.launcher.Workspace>
 
-    <SlidingDrawer
-        android:id="@+id/drawer"
+    <ViewStub
+        android:id="@+id/stub_drawer"
+        android:inflatedId="@+id/all_apps_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-
-        android:orientation="horizontal"
-        android:bottomOffset="4dip"
-        android:handle="@+id/all_apps"
-        android:content="@+id/content">
-        
-        <com.android.launcher.HandleView
-            android:id="@id/all_apps"
-            android:layout_width="56dip"
-            android:layout_height="fill_parent"
-
-            android:background="@drawable/handle"
-
-            android:focusable="true"
-            android:clickable="true"
-
-            android:scaleType="center"
-            android:src="@drawable/handle_icon"
-
-            launcher:direction="vertical" />
-
-        <com.android.launcher.AllAppsGridView
-            android:id="@id/content"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-
-            launcher:texture="@drawable/pattern_carbon_fiber_dark"
-
-            android:scrollbarStyle="outsideInset"
-            android:drawSelectorOnTop="false"
-            android:listSelector="@drawable/grid_selector"
-
-            android:nextFocusLeft="@id/all_apps"
-            android:nextFocusDown="@id/content"
-            android:nextFocusUp="@id/content"
-            android:nextFocusRight="@id/content"
-
-            android:verticalSpacing="10dip"
-            android:numColumns="6" />
-
-    </SlidingDrawer>
+        /> 
+    <com.android.launcher.SliderView
+        android:id="@+id/all_apps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:nextFocusLeft="@id/all_apps_view"
+        android:background="@drawable/handle"
+        android:focusable="true"
+        android:clickable="true"
+        android:scaleType="center"
+        android:src="@drawable/handle_icon"
+        android:layout_gravity="right|center_vertical"
+        launcher:slideDirections="left"
+        launcher:targetDistance="45dip" />
 
     <com.android.launcher.DeleteZone
         android:id="@+id/delete_zone"
         android:layout_width="49dip"
         android:layout_height="wrap_content"
-
         android:scaleType="center"
         android:src="@drawable/ic_delete"
         android:background="@drawable/delete_zone_selector"
-
         android:layout_marginBottom="-25dip"
         android:layout_gravity="right|center_vertical"
         android:visibility="invisible"
-
         launcher:direction="vertical" />
-
+    <ImageView
+        android:src="@drawable/home_arrows_left"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_scroll_left"
+        android:layout_width="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:onClick="previousScreen"/>
+    <ImageView
+        android:src="@drawable/home_arrows_right"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_scroll_right"
+        android:layout_width="wrap_content" 
+        android:layout_gravity="top|right"
+        android:onClick="nextScreen"/>
+    <com.android.launcher.ActionButton
+        android:src="@drawable/rab_empty"
+        android:background="@drawable/rab_bg"
+        android:scaleType="center"
+        android:layout_marginTop="60dip"
+        android:layout_width="wrap_content"
+        android:id="@+id/btn_rab"
+        launcher:ident="RAB"
+        android:layout_height="60dip" 
+        android:layout_gravity="top|right"
+        />
+    <com.android.launcher.ActionButton
+        android:src="@drawable/lab_empty"
+        android:background="@drawable/lab_bg"
+        android:scaleType="center"
+        android:layout_marginBottom="60dip"
+        android:layout_width="wrap_content"
+        android:id="@+id/btn_lab"
+        launcher:ident="LAB"
+        android:layout_height="60dip" 
+        android:layout_gravity="bottom|right"
+        />
+    <com.android.launcher.DockBar
+        android:id="@+id/dockbar"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical|right"
+        launcher:handle="@+id/close_dockbar"
+        launcher:position="right"
+        >
+        <ImageView
+            android:src="@drawable/dockbar_handle_icon_close"
+            android:background="@drawable/dockbar_handle_bg"
+            android:layout_height="fill_parent"
+            android:id="@id/close_dockbar"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"/>
+        <com.android.launcher.MiniLauncher
+            android:id="@+id/mini_content"
+            android:background="@drawable/dockbar_bg"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            launcher:cellWidth="52dip"
+            launcher:cellHeight="50dip"
+            launcher:cells="6"
+            launcher:orientation="vertical"		
+            />
+    </com.android.launcher.DockBar>
 </com.android.launcher.DragLayer>

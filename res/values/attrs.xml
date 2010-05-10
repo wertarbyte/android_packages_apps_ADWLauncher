@@ -89,4 +89,43 @@
         <attr name="title" format="reference" />
         <attr name="uri" format="string" />
     </declare-styleable>
+    <declare-styleable name="AllAppsSlidingView">
+        <attr name="texture" />
+        <attr name="pager_height" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="DockBar">
+        <attr name="handle" format="reference"  />
+        <attr name="content" format="reference"  />
+        <attr name="position">
+            <enum name="top" value="0" />
+            <enum name="bottom" value="1" />
+            <enum name="left" value="2" />
+            <enum name="right" value="3" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="SliderView">
+        <attr name="slideDirections">
+            <flag name="up" value="1" />
+            <flag name="down" value="2" />
+            <flag name="left" value="4" />
+            <flag name="right" value="8" />
+        </attr>
+        <attr name="targetDistance" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="MiniLauncher">
+        <attr name="orientation">
+        	<enum name="vertical" value="0" />
+        	<enum name="horizontal" value="1" />
+        </attr>
+        <attr name="cellWidth"  />
+        <attr name="cellHeight"  />
+        <attr name="cells" format="integer" />
+    </declare-styleable>    
+    <declare-styleable name="ActionButton">
+        <attr name="ident">
+            <enum name="LAB" value="-300" />
+            <enum name="RAB" value="-400" />
+        </attr>
+    </declare-styleable>
+
 </resources>
