@@ -176,7 +176,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
                 com.android.internal.R.styleable.AbsListView, defStyle, 0);
         //TODO: ADW-Check if it's necessary
         boolean bootOpaque=AlmostNexusSettingsHelper.getDrawerFast(context);
-        //ADW force the hack
+	//ADW force the hack
         forceOpaque=!bootOpaque;
         setForceOpaque(bootOpaque);
         a.recycle();
@@ -199,7 +199,10 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
         setSmoothScrollbarEnabled(smoothScrollbar);*/
 
         a.recycle();
-		initWorkspace();
+	a=context.obtainStyledAttributes(attrs, R.styleable.AllAppsSlidingView, defStyle,0);
+	paginatorSpace=a.getDimensionPixelSize(R.styleable.AllAppsSlidingView_pager_height, paginatorSpace);
+	a.recycle();
+	initWorkspace();
 		
 	}
     @Override
