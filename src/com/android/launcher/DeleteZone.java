@@ -42,6 +42,7 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
     private static final int ORIENTATION_HORIZONTAL = 1;
     private static final int TRANSITION_DURATION = 250;
     private static final int ANIMATION_DURATION = 200;
+	private static final String LOG_TAG = "DeleteZone";
 
     private final int[] mLocation = new int[2];
     
@@ -173,14 +174,19 @@ public class DeleteZone extends ImageView implements DropTarget, DragController.
             //ADW Store app data for uninstall if its an Application
             //ADW Thanks to irrenhaus@xda & Rogro82@xda :)
 			if(item instanceof ApplicationInfo){
-				final ApplicationInfo appInfo=(ApplicationInfo) item;
-	            if(appInfo.iconResource != null)
-					UninstallPkg = appInfo.iconResource.packageName;
-				else
-				{
-					PackageManager mgr = DeleteZone.this.getContext().getPackageManager();
-					ResolveInfo res = mgr.resolveActivity(appInfo.intent, 0);
-					UninstallPkg = res.activityInfo.packageName;
+				try{
+					final ApplicationInfo appInfo=(ApplicationInfo) item;
+		            if(appInfo.iconResource != null)
+						UninstallPkg = appInfo.iconResource.packageName;
+					else
+					{
+						PackageManager mgr = DeleteZone.this.getContext().getPackageManager();
+						ResolveInfo res = mgr.resolveActivity(appInfo.intent, 0);
+						UninstallPkg = res.activityInfo.packageName;
+					}
+				}catch (Exception e) {
+					Log.w(LOG_TAG, "Could not load shortcut icon: " + item);
+					UninstallPkg=null;
 				}
 			}            
         }

@@ -403,6 +403,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         		Settings.System.getInt(this.getContentResolver(), "launcher_orientation", 0) == 0 ?
         				ActivityInfo.SCREEN_ORIENTATION_NOSENSOR : ActivityInfo.SCREEN_ORIENTATION_USER);
         
+        int columns = Settings.System.getInt(this.getContentResolver(), Settings.System.LAUNCHER_COLUMN_NUMBER, 5);
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == 1) {
+            this.mAllAppsGrid.setNumColumns(columns);        
+        } else if (orientation == 2) {
+            this.mAllAppsGrid.setNumColumns(columns + 1);
+        }
         if (mRestoring) {
             startLoaders();
         }
@@ -539,7 +546,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         mAllAppsGrid = (AllAppsGridView) drawer.getContent();
         final AllAppsGridView grid = mAllAppsGrid;
-
+        
         final DeleteZone deleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
 
         mHandleView = (HandleView) drawer.findViewById(R.id.all_apps);
