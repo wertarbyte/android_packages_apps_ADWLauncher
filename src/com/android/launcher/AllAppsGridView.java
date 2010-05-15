@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Canvas;
 
@@ -36,6 +37,8 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
     private Paint mPaint;
     private int mTextureWidth;
     private int mTextureHeight;
+    //ADW:Hack the texture thing to make scrolling faster
+    private boolean forceOpaque=false;
 
     public AllAppsGridView(Context context) {
         super(context);
@@ -49,21 +52,27 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
         super(context, attrs, defStyle);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AllAppsGridView, defStyle, 0);
+        //TODO: ADW-Check if it's necessary
+        boolean bootOpaque=AlmostNexusSettingsHelper.getDrawerFast(context);
         final int textureId = a.getResourceId(R.styleable.AllAppsGridView_texture, 0);
-        if (textureId != 0) {
-            mTexture = BitmapFactory.decodeResource(getResources(), textureId);
-            mTextureWidth = mTexture.getWidth();
-            mTextureHeight = mTexture.getHeight();
-
-            mPaint = new Paint();
-            mPaint.setDither(false);
+        setForceOpaque(bootOpaque);
+        if(!forceOpaque){
+	        if (textureId != 0) {
+	            mTexture = BitmapFactory.decodeResource(getResources(), textureId);
+	            mTextureWidth = mTexture.getWidth();
+	            mTextureHeight = mTexture.getHeight();
+	
+	            mPaint = new Paint();
+	            mPaint.setDither(false);
+	        }
         }
         a.recycle();
     }
 
     @Override
     public boolean isOpaque() {
-        return !mTexture.hasAlpha();
+        if(forceOpaque) return true;
+        else return !mTexture.hasAlpha();
     }
 
     @Override
@@ -74,27 +83,28 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 
     @Override
     public void draw(Canvas canvas) {
-        final Bitmap texture = mTexture;
-        final Paint paint = mPaint;
-
-        final int width = getWidth();
-        final int height = getHeight();
-
-        final int textureWidth = mTextureWidth;
-        final int textureHeight = mTextureHeight;
-
-        int x = 0;
-        int y;
-
-        while (x < width) {
-            y = 0;
-            while (y < height) {
-                canvas.drawBitmap(texture, x, y, paint);
-                y += textureHeight;
-            }
-            x += textureWidth;
-        }
-
+    	if(!forceOpaque){
+	        final Bitmap texture = mTexture;
+	        final Paint paint = mPaint;
+	
+	        final int width = getWidth();
+	        final int height = getHeight();
+	
+	        final int textureWidth = mTextureWidth;
+	        final int textureHeight = mTextureHeight;
+	
+	        int x = 0;
+	        int y;
+	
+	        while (x < width) {
+	            y = 0;
+	            while (y < height) {
+	                canvas.drawBitmap(texture, x, y, paint);
+	                y += textureHeight;
+	            }
+	            x += textureWidth;
+	        }
+    	}
         super.draw(canvas);
     }
 
@@ -126,5 +136,27 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 
     void setLauncher(Launcher launcher) {
         mLauncher = launcher;
+    }
+    /**
+     * ADW: modify the cachecolorhint and the drawing cache
+     * when we're not using a background ("fast drawer settings")
+     * @param value
+     */
+    public void setForceOpaque(boolean value){
+    	if(value!=forceOpaque){
+	    	forceOpaque=value;
+	    	if(value){
+	    		this.setBackgroundColor(0xFF000000);
+	    		this.setCacheColorHint(0xFF000000);
+	    		this.setDrawingCacheBackgroundColor(0xFF000000);
+	    		setScrollingCacheEnabled(true);
+	    	}else{
+	    		this.setBackgroundDrawable(null);
+	    		this.setCacheColorHint(Color.TRANSPARENT);
+	    		super.setCacheColorHint(Color.TRANSPARENT);
+	    		this.setDrawingCacheBackgroundColor(Color.TRANSPARENT);
+	    		setScrollingCacheEnabled(true);
+	    	}
+    	}
     }
 }
