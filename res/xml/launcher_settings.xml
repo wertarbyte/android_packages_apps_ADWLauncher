@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+        <!-- This PreferenceScreen tag serves as a screen break (similar to page break
+             in word processing). Like for other preference types, we assign a key
+             here so it is able to save and restore its instance state. -->
+	<PreferenceScreen
+		android:key="screenPreferences"
+		android:title="Screen preferences"
+		android:summary="Screen count, default screen...">
+		<CheckBoxPreference android:title="LWP Support"
+			android:defaultValue="true"
+			android:summary="Activate support for live wallpapers"
+			android:key="lwpSupport" />
+		<CheckBoxPreference android:title="Orientation sensor"
+			android:defaultValue="true"
+			android:summary="Rotate desktop on sensor rotation"
+			android:key="desktopRotation" />
+		<CheckBoxPreference android:title="Hide StatusBar"
+			android:defaultValue="false"
+			android:summary="Hides your statusbar"
+			android:key="hideStatusbar" />
+		<com.android.launcher.dlgSeekBarPreference
+			android:title="Desktop Screens" android:summary="Select the number of desktop screens to use"
+			android:dialogMessage="Select the number of desktop screens to use"
+			android:key="desktopScreens" android:defaultValue="3" android:max="5" />
+		<com.android.launcher.dlgSeekBarPreference
+			android:title="Default Screen" android:summary="Select the screen to set as default"
+			android:dialogMessage="Select the screen to set as default"
+			android:key="defaultScreen" android:defaultValue="2" android:max="4" />
+	</PreferenceScreen>
+	<PreferenceScreen
+		android:key="drawerPrerefences"
+		android:title="Drawer Settings"
+		android:summary="App drawer grid preferences">
+		<CheckBoxPreference android:title="New Drawer"
+			android:defaultValue="true"
+			android:summary="Use the Samsung Galaxy S implementation"
+			android:key="drawerNew" />
+		<CheckBoxPreference android:title="Animated Drawer"
+			android:defaultValue="false"
+			android:summary="Turns whether App Drawer should display animations"
+			android:key="drawerAnimated" />
+		<CheckBoxPreference android:title="Fast Drawer"
+			android:defaultValue="true"
+			android:summary="Turns the use of opaque solid bg to increment scrolling speed"
+			android:key="drawerFast" />
+		<com.android.launcher.dlgSeekBarPreference
+			android:title="Drawer Columns Portrait"
+			android:summary="Select the number of drawer columns to use on portrait layout"
+			android:dialogMessage="Select the number of drawer columns to use on portrait layout"
+			android:key="drawerColumnsPortrait" android:defaultValue="3"
+			android:max="5" />
+		<com.android.launcher.dlgSeekBarPreference
+			android:title="Drawer Rows Portrait"
+			android:summary="Select the number of drawer rows to use on portrait layout"
+			android:dialogMessage="Select the number of drawer rows to use on portrait layout"
+			android:key="drawerRowsPortrait" android:defaultValue="3"
+			android:max="5" />
+		<com.android.launcher.dlgSeekBarPreference
+			android:title="Drawer Columns Landscape"
+			android:summary="Select the number of drawer columns to use on landscape layout"
+			android:dialogMessage="Select the number of drawer columns to use on landscape layout"
+			android:key="drawerColumnsLandscape" android:defaultValue="4"
+			android:max="7" />
+		<com.android.launcher.dlgSeekBarPreference
+			android:title="Drawer Rows Landscape"
+			android:summary="Select the number of drawer rows to use on landscape layout"
+			android:dialogMessage="Select the number of drawer rows to use on landscape layout"
+			android:key="drawerRowsLandscape" android:defaultValue="3"
+			android:max="4" />
+	</PreferenceScreen>
+	<PreferenceScreen
+		android:key="previewsPrerefences"
+		android:summary="Desktop previews preferences"
+		android:title="Previews Settings">
+		<CheckBoxPreference android:title="Home key binding"
+			android:defaultValue="true"
+			android:summary="Use the physical Home key to bring out desktop previews"
+			android:key="previewsHome" />
+		<CheckBoxPreference android:title="Sense previews"
+			android:defaultValue="true"
+			android:summary="Use the new sense-like implementation"
+			android:key="previewsNew" />
+		<CheckBoxPreference android:title="Clean Screen Mode"
+			android:defaultValue="true"
+			android:summary="Hide home icons/widgets when opening previews"
+			android:key="previewsFullScreen" />
+	</PreferenceScreen>
+	<PreferenceScreen
+		android:key="buttonPrerefences"
+		android:summary="Enable/disable ui elements"
+		android:title="UI Settings">
+		<CheckBoxPreference android:title="Desktop dots"
+			android:defaultValue="true"
+			android:summary="Show/hide the nexus style pagination dots"
+			android:key="uiDots" />
+		<CheckBoxPreference android:title="Dockbar"
+			android:defaultValue="true"
+			android:summary="Enable/disable the new dockbar for your shortcuts"
+			android:key="uiDockbar" />
+		<CheckBoxPreference android:title="Closing dockbar"
+			android:defaultValue="false"
+			android:dependency="uiDockbar"
+			android:summary="Auto-close dockbar after app-launch"
+			android:key="uiCloseDockbar" />
+		<CheckBoxPreference android:title="LAB"
+			android:defaultValue="true"
+			android:summary="Enable/disable the customizable Left Action Button"
+			android:key="uiLAB" />
+		<CheckBoxPreference android:title="RAB"
+			android:defaultValue="true"
+			android:summary="Enable/disable the customizable Right Action Button"
+			android:key="uiRAB" />
+		<CheckBoxPreference android:title="Tint AB"
+			android:defaultValue="true"
+			android:summary="Enable/disable icon tint effect on Action Buttons"
+			android:key="uiTint" />
+	</PreferenceScreen>
+	<PreferenceCategory android:title="Build Information">
+		<Preference
+			android:title="ADW Version"
+			android:summary="@string/adw_version"/>
+	</PreferenceCategory>
+</PreferenceScreen>
