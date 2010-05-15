@@ -49,7 +49,7 @@ public class HandleView extends ImageView {
     @Override
     public View focusSearch(int direction) {
         View newFocus = super.focusSearch(direction);
-        if (newFocus == null && mLauncher.isDrawerDown()) {
+        if (newFocus == null && !mLauncher.isAllAppsVisible()) {
             final Workspace workspace = mLauncher.getWorkspace();
             workspace.dispatchUnhandledMove(null, direction);
             return (mOrientation == ORIENTATION_HORIZONTAL && direction == FOCUS_DOWN) ?
@@ -62,7 +62,7 @@ public class HandleView extends ImageView {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         final boolean handled = super.onKeyDown(keyCode, event);
 
-        if (!handled && !mLauncher.isDrawerDown() && !isDirectionKey(keyCode)) {
+        if (!handled && mLauncher.isAllAppsVisible() && !isDirectionKey(keyCode)) {
             return mLauncher.getApplicationsGrid().onKeyDown(keyCode, event);
         }
 
@@ -73,7 +73,7 @@ public class HandleView extends ImageView {
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         final boolean handled = super.onKeyUp(keyCode, event);
 
-        if (!handled && !mLauncher.isDrawerDown() && !isDirectionKey(keyCode)) {
+        if (!handled && mLauncher.isAllAppsVisible() && !isDirectionKey(keyCode)) {
             return mLauncher.getApplicationsGrid().onKeyUp(keyCode, event);
         }
 
