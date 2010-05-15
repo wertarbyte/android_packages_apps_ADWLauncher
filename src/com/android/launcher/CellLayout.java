@@ -20,6 +20,7 @@ import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
@@ -124,7 +125,35 @@ public class CellLayout extends ViewGroup {
     int getCountY() {
         return mPortrait ? mLongAxisCells : mShortAxisCells;
     }
+    //ADW: public getters to use when creating previews
+    int getCellWidth() {
+        return mCellWidth;
+    }
 
+    int getCellHeight() {
+        return mCellHeight;
+    }
+
+    int getLeftPadding() {
+        return mPortrait ? mShortAxisStartPadding : mLongAxisStartPadding;
+    }
+
+    int getTopPadding() {
+        return mPortrait ? mLongAxisStartPadding : mShortAxisStartPadding;        
+    }
+
+    int getRightPadding() {
+        return mPortrait ? mShortAxisEndPadding : mLongAxisEndPadding;
+    }
+
+    int getBottomPadding() {
+        return mPortrait ? mLongAxisEndPadding : mShortAxisEndPadding;        
+    }
+    //ADW: make dispatchDraw available to Launcher for creating previews
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+    }    
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
         // Generate an id for each view, this assumes we have at most 256x256 cells
