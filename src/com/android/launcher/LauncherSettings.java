@@ -134,7 +134,13 @@ class LauncherSettings {
          * The icon is a resource identified by a package name and an integer id.
          */
         static final int CONTAINER_DESKTOP = -100;
-
+        /**
+         * If icons are placed inside dockbar,lab or rab, its container will be one of these
+         * so we can place them inside the correct one.
+         */
+        static final int CONTAINER_DOCKBAR = -200;
+        static final int CONTAINER_LAB = -300;
+        static final int CONTAINER_RAB = -400;
         /**
          * The screen holding the favorite (if container is CONTAINER_DESKTOP)
          * <P>Type: INTEGER</P>
