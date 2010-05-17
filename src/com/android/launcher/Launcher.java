@@ -41,7 +41,9 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
@@ -61,16 +63,25 @@ import android.text.method.TextKeyListener;
 import static android.util.Log.*;
 import android.util.SparseArray;
 import android.view.Display;
+import android.view.Gravity;
+import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.view.WindowManager;
 import android.view.View.OnLongClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,6 +95,9 @@ import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.DataInputStream;
+
+import com.android.launcher.DockBar.DockBarListener;
+import com.android.launcher.SliderView.OnTriggerListener;
 
 /**
  * Default launcher application.
@@ -103,6 +117,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final int MENU_SEARCH = MENU_WALLPAPER_SETTINGS + 1;
     private static final int MENU_NOTIFICATIONS = MENU_SEARCH + 1;
     private static final int MENU_SETTINGS = MENU_NOTIFICATIONS + 1;
+    private static final int MENU_ALMOSTNEXUS = MENU_SETTINGS + 1;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_LIVE_FOLDER = 4;
@@ -111,6 +126,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final int REQUEST_PICK_SHORTCUT = 7;
     private static final int REQUEST_PICK_LIVE_FOLDER = 8;
     private static final int REQUEST_PICK_APPWIDGET = 9;
+    private static final int REQUEST_UPDATE_ALMOSTNEXUS = 10;
 
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
@@ -127,6 +143,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     static final int DIALOG_RENAME_FOLDER = 2;
 
     private static final String PREFERENCES = "launcher.preferences";
+    private static final String ALMOSTNEXUS_PREFERENCES = "launcher.preferences.almostnexus";
 
     // Type: int
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
@@ -154,6 +171,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME = "launcher.rename_folder";
     // Type: long
     private static final String RUNTIME_STATE_PENDING_FOLDER_RENAME_ID = "launcher.rename_folder_id";
+    // Type: boolean
+    private static final String RUNTIME_STATE_DOCKBAR = "launcher.dockbar";
 
     private static final LauncherModel sModel = new LauncherModel();
 
@@ -180,10 +199,17 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private final int[] mCellCoordinates = new int[2];
     private FolderInfo mFolderInfo;
 
-    private SlidingDrawer mDrawer;
     private TransitionDrawable mHandleIcon;
-    private HandleView mHandleView;
-    private AllAppsGridView mAllAppsGrid;
+    /**
+     * ADW: now i use SliderView class instead imageview/HandleView
+     * To slide-to unlock functionality (mainly dockbar, but maybe future additions)
+     */
+    private SliderView mHandleView;
+    /**
+     * mAllAppsGrid will be "AllAppsGridView" or "AllAppsSlidingView"
+     * depending on user settings, so I cast it later.
+     */
+    private View mAllAppsGrid;
 
     private boolean mDesktopLocked = true;
     private Bundle mSavedState;
@@ -200,7 +226,38 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private Bundle mSavedInstanceState;
 
-    private DesktopBinder mBinder;
+	private DesktopBinder mBinder;
+	/**
+	 * ADW: New views/elements for dots, dockbar, lab/rab, etc
+	 */
+	private ImageView mPreviousView;
+	private ImageView mNextView;
+	private MiniLauncher mMiniLauncher;
+	private DockBar mDockBar;
+	private ActionButton mLAB;
+	private ActionButton mRAB;
+	/**
+	 * ADW: variables to store actual status of elements
+	 */
+	private boolean allAppsOpen=false;
+	private boolean allAppsAnimating=false;
+	private boolean showingPreviews=false;
+	private boolean mShouldHideStatusbaronFocus=false;
+	/**
+	 * ADW: A lot of properties to store the custom settings
+	 */
+	private boolean allowDrawerAnimations=true;
+	private boolean newDrawer=true;
+	private boolean newPreviews=true;
+	private boolean homePreviews=true;
+	private boolean fullScreenPreviews=true;
+	private boolean hideStatusBar=false;
+	private boolean showDots=true;
+	private boolean showDockBar=true;
+	private boolean autoCloseDockbar;
+	private boolean showLAB=true;
+	private boolean showRAB=true;
+	private boolean tintActionIcons=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,10 +272,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing("/sdcard/launcher");
         }
-
+        updateAlmostNexusVars();
+        //ADW: Check orientation settings and set it on boot
+        if(!AlmostNexusSettingsHelper.getDesktopRotation(this)){
+        	this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+        }
         checkForLocaleChange();
         setWallpaperDimension();
-
+        //ADW: load the drawer type on boot so we can cast the proper Class later
+        newDrawer=AlmostNexusSettingsHelper.getDrawerNew(Launcher.this);
         setContentView(R.layout.launcher);
         setupViews();
 
@@ -392,24 +454,41 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             if (appWidgetId != -1) {
                 mAppWidgetHost.deleteAppWidgetId(appWidgetId);
             }
+        }else if (requestCode==REQUEST_UPDATE_ALMOSTNEXUS){
+        	//ADW: Update from custom settings
+        	d("AlmostNexus","UPDATE FROM SETTINGS");
+        	updateAlmostNexusUI();
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        this.setRequestedOrientation(
-        		Settings.System.getInt(this.getContentResolver(), "launcher_orientation", 0) == 0 ?
-        				ActivityInfo.SCREEN_ORIENTATION_NOSENSOR : ActivityInfo.SCREEN_ORIENTATION_USER);
-        
-        int columns = Settings.System.getInt(this.getContentResolver(), Settings.System.LAUNCHER_COLUMN_NUMBER, 5);
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == 1) {
-            this.mAllAppsGrid.setNumColumns(columns);        
-        } else if (orientation == 2) {
-            this.mAllAppsGrid.setNumColumns(columns + 1);
+        //ADW: Use custom settings to set the rotation
+        if(AlmostNexusSettingsHelper.getDesktopRotation(this)){
+	        this.setRequestedOrientation(
+	        		Settings.System.getInt(this.getContentResolver(), "launcher_orientation", 0) == 0 ?
+	        				ActivityInfo.SCREEN_ORIENTATION_NOSENSOR : ActivityInfo.SCREEN_ORIENTATION_USER);
+        }else{
+        	this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         }
+        //ADW: Use custom settings to change number of columns (and rows for SlidingGrid) depending on phone rotation
+        int orientation = getResources().getConfiguration().orientation;
+		if(orientation==Configuration.ORIENTATION_PORTRAIT){
+			if(newDrawer){
+				((AllAppsSlidingView) mAllAppsGrid).setNumColumns(AlmostNexusSettingsHelper.getColumnsPortrait(Launcher.this));
+				((AllAppsSlidingView) mAllAppsGrid).setNumRows(AlmostNexusSettingsHelper.getRowsPortrait(Launcher.this));
+			}else{
+				((AllAppsGridView) mAllAppsGrid).setNumColumns(AlmostNexusSettingsHelper.getColumnsPortrait(Launcher.this));
+			}
+		}else {
+			if(newDrawer){
+				((AllAppsSlidingView) mAllAppsGrid).setNumColumns(AlmostNexusSettingsHelper.getColumnsLandscape(Launcher.this));
+				((AllAppsSlidingView) mAllAppsGrid).setNumRows(AlmostNexusSettingsHelper.getRowsLandscape(Launcher.this));
+			}else{
+				((AllAppsGridView) mAllAppsGrid).setNumColumns(AlmostNexusSettingsHelper.getColumnsLandscape(Launcher.this));
+			}
+		}
         if (mRestoring) {
             startLoaders();
         }
@@ -540,29 +619,39 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         mWorkspace = (Workspace) dragLayer.findViewById(R.id.workspace);
         final Workspace workspace = mWorkspace;
-
-        mDrawer = (SlidingDrawer) dragLayer.findViewById(R.id.drawer);
-        final SlidingDrawer drawer = mDrawer;
-
-        mAllAppsGrid = (AllAppsGridView) drawer.getContent();
-        final AllAppsGridView grid = mAllAppsGrid;
-        
+        //ADW: The app drawer is now a ViewStub and we load the resource depending on custom settings
+        ViewStub tmp=(ViewStub)dragLayer.findViewById(R.id.stub_drawer);
+        if(newDrawer){
+        	tmp.setLayoutResource(R.layout.new_drawer);
+        }else{
+        	tmp.setLayoutResource(R.layout.old_drawer);
+        }
+        mAllAppsGrid = tmp.inflate();
+        final View grid = mAllAppsGrid;
         final DeleteZone deleteZone = (DeleteZone) dragLayer.findViewById(R.id.delete_zone);
 
-        mHandleView = (HandleView) drawer.findViewById(R.id.all_apps);
+        mHandleView = (SliderView) dragLayer.findViewById(R.id.all_apps);
         mHandleView.setLauncher(this);
         mHandleIcon = (TransitionDrawable) mHandleView.getDrawable();
         mHandleIcon.setCrossFadeEnabled(true);
-
-        drawer.lock();
-        final DrawerManager drawerManager = new DrawerManager();
-        drawer.setOnDrawerOpenListener(drawerManager);
-        drawer.setOnDrawerCloseListener(drawerManager);
-        drawer.setOnDrawerScrollListener(drawerManager);
-
-        grid.setTextFilterEnabled(false);
-        grid.setDragger(dragLayer);
-        grid.setLauncher(this);
+        mHandleView.setOnTriggerListener(new OnTriggerListener() {
+			//@Override
+			public void onTrigger(View v, int whichHandle) {
+				mDockBar.open();
+			}
+			//@Override
+			public void onGrabbedStateChange(View v, boolean grabbedState) {
+			}
+		});
+        mHandleView.setOnClickListener(this);
+        if(newDrawer){
+        	((AllAppsSlidingView)grid).setDragger(dragLayer);
+        	((AllAppsSlidingView)grid).setLauncher(this);
+        }else{
+        	((AllAppsGridView)grid).setTextFilterEnabled(false);
+        	((AllAppsGridView)grid).setDragger(dragLayer);
+        	((AllAppsGridView)grid).setLauncher(this);
+        }
 
         workspace.setOnLongClickListener(this);
         workspace.setDragger(dragLayer);
@@ -574,7 +663,55 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         dragLayer.setIgnoredDropTarget(grid);
         dragLayer.setDragScoller(workspace);
-        dragLayer.setDragListener(deleteZone);
+        dragLayer.addDragListener(deleteZone);
+        //ADW: Dockbar inner icon viewgroup (MiniLauncher.java)
+        mMiniLauncher = (MiniLauncher) dragLayer.findViewById(R.id.mini_content);
+        mMiniLauncher.setLauncher(this);
+        mMiniLauncher.setOnLongClickListener(this);
+        dragLayer.addDragListener(mMiniLauncher);
+        
+        //ADW: Action Buttons (LAB/RAB)
+        mLAB = (ActionButton) dragLayer.findViewById(R.id.btn_lab);
+        mLAB.setLauncher(this);
+        dragLayer.addDragListener(mLAB);
+        mRAB = (ActionButton) dragLayer.findViewById(R.id.btn_rab);
+        mRAB.setLauncher(this);
+        dragLayer.addDragListener(mRAB);
+        mLAB.setOnClickListener(this);
+        mRAB.setOnClickListener(this);
+		//ADW: Dots ImageViews
+        mPreviousView = (ImageView)findViewById(R.id.btn_scroll_left);
+		mNextView = (ImageView)findViewById(R.id.btn_scroll_right);
+		mPreviousView.setOnLongClickListener(this);
+		mNextView.setOnLongClickListener(this);
+		
+		Drawable previous = mPreviousView.getDrawable();
+		Drawable next = mNextView.getDrawable();
+		mWorkspace.setIndicators(previous, next);
+		//ADW add a listener to the dockbar to show/hide the app-drawer-button and the dots
+		mDockBar=(DockBar)findViewById(R.id.dockbar);
+		mDockBar.setDockBarListener(new DockBarListener() {
+			public void onOpen() {
+				mHandleView.setVisibility(View.GONE);
+				mLAB.setVisibility(View.GONE);
+				mRAB.setVisibility(View.GONE);
+				if(mNextView.getVisibility()==View.VISIBLE){
+					mNextView.setVisibility(View.INVISIBLE);
+					mPreviousView.setVisibility(View.INVISIBLE);
+				}
+			}
+			public void onClose() {
+				mHandleView.setVisibility(View.VISIBLE);
+		    	mRAB.setVisibility(showRAB?View.VISIBLE:View.GONE);
+		    	mLAB.setVisibility(showLAB?View.VISIBLE:View.GONE);
+				if(showDots && !isAllAppsVisible()){
+					mNextView.setVisibility(View.VISIBLE);
+					mPreviousView.setVisibility(View.VISIBLE);
+				}
+				
+			}
+		});
+		updateAlmostNexusUI();
     }
 
     /**
@@ -832,8 +969,22 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             if ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) !=
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) {
 
-                if (!mWorkspace.isDefaultScreenShowing()) {
-                    mWorkspace.moveToDefaultScreen();
+                if(!homePreviews){
+	            	if (!mWorkspace.isDefaultScreenShowing()) {
+	                    mWorkspace.moveToDefaultScreen();
+	                }else{
+	                	if(!showingPreviews){
+	                		showPreviews(mHandleView, 0, mWorkspace.mHomeScreens);
+	                	}else{
+	                		dismissPreviews();
+	                	}
+	                }
+                }else{
+                	if(!showingPreviews){
+                		showPreviews(mHandleView, 0, mWorkspace.mHomeScreens);
+                	}else{
+                		dismissPreviews();
+                	}
                 }
 
                 closeDrawer();
@@ -926,10 +1077,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         // When the drawer is opened and we are saving the state because of a
         // configuration change
-        if (mDrawer.isOpened() && isConfigurationChange) {
+        if (allAppsOpen && isConfigurationChange) {
             outState.putBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, true);
         }
-
+        if(mDockBar.isOpen()){
+        	outState.putBoolean(RUNTIME_STATE_DOCKBAR, true);
+        }
         if (mAddItemCellInfo != null && mAddItemCellInfo.valid && mWaitingForResult) {
             final CellLayout.CellInfo addItemCellInfo = mAddItemCellInfo;
             final CellLayout layout = (CellLayout) mWorkspace.getChildAt(addItemCellInfo.screen);
@@ -965,8 +1118,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         TextKeyListener.getInstance().release();
 
-        mAllAppsGrid.clearTextFilter();
-        mAllAppsGrid.setAdapter(null);
+        if(newDrawer){
+        	((AllAppsSlidingView)mAllAppsGrid).setAdapter(null);
+        }else{
+        	((AllAppsGridView)mAllAppsGrid).clearTextFilter();
+        	((AllAppsGridView)mAllAppsGrid).setAdapter(null);
+        }
         sModel.unbind();
         sModel.abortLoaders();
 
@@ -1076,7 +1233,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         menu.add(0, MENU_SETTINGS, 0, R.string.menu_settings)
                 .setIcon(android.R.drawable.ic_menu_preferences).setAlphabeticShortcut('P')
                 .setIntent(settings);
-
+		//ADW: add custom settings
+		menu.add(0, MENU_ALMOSTNEXUS, 0, "ADWSettings")
+		.setIcon(com.android.internal.R.drawable.ic_menu_preferences)
+		.setAlphabeticShortcut('X');
+        
         return true;
     }
 
@@ -1106,6 +1267,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 return true;
             case MENU_NOTIFICATIONS:
                 showNotifications();
+                return true;
+            case MENU_ALMOSTNEXUS:
+                showCustomConfig();
                 return true;
         }
 
@@ -1327,6 +1491,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private void showNotifications() {
         final StatusBarManager statusBar = (StatusBarManager) getSystemService(STATUS_BAR_SERVICE);
         if (statusBar != null) {
+        	if(hideStatusBar){
+        		fullScreen(false);
+        		mShouldHideStatusbaronFocus=true;
+        	}
             statusBar.expand();
         }
     }
@@ -1387,7 +1555,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 case KeyEvent.KEYCODE_BACK:
                     if (!event.isCanceled()) {
                         mWorkspace.dispatchKeyEvent(event);
-                        if (mDrawer.isOpened()) {
+                        if (allAppsOpen) {
                             closeDrawer();
                         } else {
                             closeFolder();
@@ -1407,13 +1575,13 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     private void closeDrawer(boolean animated) {
-        if (mDrawer.isOpened()) {
+        if (allAppsOpen) {
             if (animated) {
-                mDrawer.animateClose();
+                closeAllApps(true);
             } else {
-                mDrawer.close();
+                closeAllApps(false);
             }
-            if (mDrawer.hasFocus()) {
+            if (mAllAppsGrid.hasFocus()) {
                 mWorkspace.getChildAt(mWorkspace.getCurrentScreen()).requestFocus();
             }
         }
@@ -1441,7 +1609,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      */
     private void onFavoritesChanged() {
         mDesktopLocked = true;
-        mDrawer.lock();
         sModel.loadUserItems(false, this, false, false);
     }
 
@@ -1507,47 +1674,59 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         final Workspace workspace = mWorkspace;
         final boolean desktopLocked = mDesktopLocked;
-
+        final MiniLauncher miniLauncher=(MiniLauncher) mDragLayer.findViewById(R.id.mini_content);
         final int end = Math.min(start + DesktopBinder.ITEMS_COUNT, count);
         int i = start;
 
         for ( ; i < end; i++) {
             final ItemInfo item = shortcuts.get(i);
-            switch (item.itemType) {
-                case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                    final View shortcut = createShortcut((ApplicationInfo) item);
-                    workspace.addInScreen(shortcut, item.screen, item.cellX, item.cellY, 1, 1,
-                            !desktopLocked);
-                    break;
-                case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
-                    final FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
-                            (ViewGroup) workspace.getChildAt(workspace.getCurrentScreen()),
-                            (UserFolderInfo) item);
-                    workspace.addInScreen(newFolder, item.screen, item.cellX, item.cellY, 1, 1,
-                            !desktopLocked);
-                    break;
-                case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
-                    final FolderIcon newLiveFolder = LiveFolderIcon.fromXml(
-                            R.layout.live_folder_icon, this,
-                            (ViewGroup) workspace.getChildAt(workspace.getCurrentScreen()),
-                            (LiveFolderInfo) item);
-                    workspace.addInScreen(newLiveFolder, item.screen, item.cellX, item.cellY, 1, 1,
-                            !desktopLocked);
-                    break;
-                case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
-                    final int screen = workspace.getCurrentScreen();
-                    final View view = mInflater.inflate(R.layout.widget_search,
-                            (ViewGroup) workspace.getChildAt(screen), false);
-
-                    Search search = (Search) view.findViewById(R.id.widget_search);
-                    search.setLauncher(this);
-
-                    final Widget widget = (Widget) item;
-                    view.setTag(widget);
-
-                    workspace.addWidget(view, widget, !desktopLocked);
-                    break;
+            switch ((int)item.container){
+	            case LauncherSettings.Favorites.CONTAINER_LAB:
+	            	mLAB.UpdateLaunchInfo(item);
+	            	break;
+	            case LauncherSettings.Favorites.CONTAINER_RAB:
+	            	mRAB.UpdateLaunchInfo(item);
+	            	break;
+				case LauncherSettings.Favorites.CONTAINER_DOCKBAR:
+					miniLauncher.addItemInDockBar(item);
+					break;
+				default:
+		            switch (item.itemType) {
+		                case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+		                case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+		                    final View shortcut = createShortcut((ApplicationInfo) item);
+		                    workspace.addInScreen(shortcut, item.screen, item.cellX, item.cellY, 1, 1,
+		                            !desktopLocked);
+		                    break;
+		                case LauncherSettings.Favorites.ITEM_TYPE_USER_FOLDER:
+		                    final FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
+		                            (ViewGroup) workspace.getChildAt(workspace.getCurrentScreen()),
+		                            (UserFolderInfo) item);
+		                    workspace.addInScreen(newFolder, item.screen, item.cellX, item.cellY, 1, 1,
+		                            !desktopLocked);
+		                    break;
+		                case LauncherSettings.Favorites.ITEM_TYPE_LIVE_FOLDER:
+		                    final FolderIcon newLiveFolder = LiveFolderIcon.fromXml(
+		                            R.layout.live_folder_icon, this,
+		                            (ViewGroup) workspace.getChildAt(workspace.getCurrentScreen()),
+		                            (LiveFolderInfo) item);
+		                    workspace.addInScreen(newLiveFolder, item.screen, item.cellX, item.cellY, 1, 1,
+		                            !desktopLocked);
+		                    break;
+		                case LauncherSettings.Favorites.ITEM_TYPE_WIDGET_SEARCH:
+		                    final int screen = workspace.getCurrentScreen();
+		                    final View view = mInflater.inflate(R.layout.widget_search,
+		                            (ViewGroup) workspace.getChildAt(screen), false);
+		
+		                    Search search = (Search) view.findViewById(R.id.widget_search);
+		                    search.setLauncher(this);
+		
+		                    final Widget widget = (Widget) item;
+		                    view.setTag(widget);
+		
+		                    workspace.addWidget(view, widget, !desktopLocked);
+		                    break;
+		            }
             }
         }
 
@@ -1583,9 +1762,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
             final boolean allApps = mSavedState.getBoolean(RUNTIME_STATE_ALL_APPS_FOLDER, false);
             if (allApps) {
-                mDrawer.open();
+                showAllApps(false);
             }
-
+            final boolean dockOpen=mSavedState.getBoolean(RUNTIME_STATE_DOCKBAR, false);
+            if(dockOpen){
+            	mDockBar.open();
+            }
             mSavedState = null;
         }
 
@@ -1594,17 +1776,20 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             mSavedInstanceState = null;
         }
 
-        if (mDrawer.isOpened() && !mDrawer.hasFocus()) {
-            mDrawer.requestFocus();
+        if (allAppsOpen && !mAllAppsGrid.hasFocus()) {
+            mAllAppsGrid.requestFocus();
         }
 
         mDesktopLocked = false;
-        mDrawer.unlock();
     }
 
     private void bindDrawer(Launcher.DesktopBinder binder,
             ApplicationsAdapter drawerAdapter) {
-        mAllAppsGrid.setAdapter(drawerAdapter);
+        if(newDrawer){
+        	((AllAppsSlidingView)mAllAppsGrid).setAdapter(drawerAdapter);
+        }else{
+        	((AllAppsGridView)mAllAppsGrid).setAdapter(drawerAdapter);
+        }
         binder.startBindingAppWidgetsWhenIdle();
     }
 
@@ -1651,16 +1836,33 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      */
     public void onClick(View v) {
         Object tag = v.getTag();
+        //TODO:ADW Check whether to display a toast if clicked mLAB or mRAB withount binding
+        if(tag instanceof ItemInfo && tag==null && v instanceof ActionButton){
+    		Toast t=Toast.makeText(this, "No application defined yet, drop something here! :)", Toast.LENGTH_SHORT);
+    		t.show();
+    		return;
+    	}
         if (tag instanceof ApplicationInfo) {
             // Open shortcut
-            final Intent intent = ((ApplicationInfo) tag).intent;
+        	final ApplicationInfo info=(ApplicationInfo) tag;
+            final Intent intent = info.intent;
             int[] pos = new int[2];
             v.getLocationOnScreen(pos);
             intent.setSourceBounds(
                     new Rect(pos[0], pos[1], pos[0]+v.getWidth(), pos[1]+v.getHeight()));
             startActivitySafely(intent);
+            //Close dockbar if setting says so
+            if(info.container==LauncherSettings.Favorites.CONTAINER_DOCKBAR && isDockBarOpen() && autoCloseDockbar){
+            	mDockBar.close();
+            }
         } else if (tag instanceof FolderInfo) {
             handleFolderClick((FolderInfo) tag);
+        }else if (v == mHandleView) {
+            if (allAppsOpen) {
+                closeAllApps(true);
+            } else {
+                showAllApps(true);
+            }
         }
     }
 
@@ -1744,6 +1946,21 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         if (mDesktopLocked) {
             return false;
         }
+		// ADW: Show previews on longpressing the dots
+		switch (v.getId()) {
+		case R.id.btn_scroll_left:
+			mWorkspace.performHapticFeedback(
+					HapticFeedbackConstants.LONG_PRESS,
+					HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+			showPreviousPreview(v);
+			return true;
+		case R.id.btn_scroll_right:
+			mWorkspace.performHapticFeedback(
+					HapticFeedbackConstants.LONG_PRESS,
+					HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+			showNextPreview(v);
+			return true;
+		}
 
         if (!(v instanceof CellLayout)) {
             v = (View) v.getParent();
@@ -1778,14 +1995,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     void closeAllApplications() {
-        mDrawer.close();
+        closeAllApps(false);
     }
 
     View getDrawerHandle() {
         return mHandleView;
     }
 
-    boolean isDrawerDown() {
+    /*boolean isDrawerDown() {
         return !mDrawer.isMoving() && !mDrawer.isOpened();
     }
 
@@ -1795,13 +2012,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     boolean isDrawerMoving() {
         return mDrawer.isMoving();
-    }
+    }*/
 
     Workspace getWorkspace() {
         return mWorkspace;
     }
-
-    GridView getApplicationsGrid() {
+    //ADW: we return a View, so classes using this should cast
+    // to AllAppsGridView or AllAppsSlidingView if they need to access proper members
+    View getApplicationsGrid() {
         return mAllAppsGrid;
     }
 
@@ -1917,7 +2135,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 LauncherModel.updateItemInDatabase(Launcher.this, mFolderInfo);
 
                 if (mDesktopLocked) {
-                    mDrawer.lock();
                     sModel.loadUserItems(false, Launcher.this, false, false);
                 } else {
                     final FolderIcon folderIcon = (FolderIcon)
@@ -1927,7 +2144,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                         getWorkspace().requestLayout();
                     } else {
                         mDesktopLocked = true;
-                        mDrawer.lock();
                         sModel.loadUserItems(false, Launcher.this, false, false);
                     }
                 }
@@ -2152,57 +2368,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
 
-    private class DrawerManager implements SlidingDrawer.OnDrawerOpenListener,
-            SlidingDrawer.OnDrawerCloseListener, SlidingDrawer.OnDrawerScrollListener {
-        private boolean mOpen;
-
-        public void onDrawerOpened() {
-            if (!mOpen) {
-                mHandleIcon.reverseTransition(150);
-
-                final Rect bounds = mWorkspace.mDrawerBounds;
-                offsetBoundsToDragLayer(bounds, mAllAppsGrid);
-
-                mOpen = true;
-            }
-        }
-
-        private void offsetBoundsToDragLayer(Rect bounds, View view) {
-            view.getDrawingRect(bounds);
-
-            while (view != mDragLayer) {
-                bounds.offset(view.getLeft(), view.getTop());
-                view = (View) view.getParent();
-            }
-        }
-
-        public void onDrawerClosed() {
-            if (mOpen) {
-                mHandleIcon.reverseTransition(150);
-                mWorkspace.mDrawerBounds.setEmpty();
-                mOpen = false;
-            }
-
-            mAllAppsGrid.setSelection(0);
-            mAllAppsGrid.clearTextFilter();
-        }
-
-        public void onScrollStarted() {
-            if (PROFILE_DRAWER) {
-                android.os.Debug.startMethodTracing("/sdcard/launcher-drawer");
-            }
-
-            mWorkspace.mDrawerContentWidth = mAllAppsGrid.getWidth();
-            mWorkspace.mDrawerContentHeight = mAllAppsGrid.getHeight();
-        }
-
-        public void onScrollEnded() {
-            if (PROFILE_DRAWER) {
-                android.os.Debug.stopMethodTracing();
-            }
-        }
-    }
-
     private static class DesktopBinder extends Handler implements MessageQueue.IdleHandler {
         static final int MESSAGE_BIND_ITEMS = 0x1;
         static final int MESSAGE_BIND_APPWIDGETS = 0x2;
@@ -2293,5 +2458,487 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 }
             }
         }
+    }
+    /****************************************************************
+     * ADW: Start custom functions/modifications
+     ***************************************************************/
+    
+    /**
+     * ADW: Show the custom settings activity
+     */
+    private void showCustomConfig(){
+    	Intent launchPreferencesIntent = new Intent().setClass(this, MyLauncherSettings.class);
+        startActivityForResult(launchPreferencesIntent,REQUEST_UPDATE_ALMOSTNEXUS);    	   	
+    }
+    private void updateAlmostNexusVars(){
+		allowDrawerAnimations=AlmostNexusSettingsHelper.getDrawerAnimated(Launcher.this);
+		newPreviews=AlmostNexusSettingsHelper.getNewPreviews(this);
+		homePreviews=AlmostNexusSettingsHelper.getPreviewsHome(this);
+		fullScreenPreviews=AlmostNexusSettingsHelper.getFullScreenPreviews(this);
+		hideStatusBar=AlmostNexusSettingsHelper.getHideStatusbar(this);
+		showDots=AlmostNexusSettingsHelper.getUIDots(this);
+		showDockBar=AlmostNexusSettingsHelper.getUIDockbar(this);
+		autoCloseDockbar=AlmostNexusSettingsHelper.getUICloseDockbar(this);
+		showLAB=AlmostNexusSettingsHelper.getUILAB(this);
+		showRAB=AlmostNexusSettingsHelper.getUIRAB(this);    	
+    }
+    /**
+     * ADW: Refresh UI status variables and elements after changing settings.
+     */
+    private void updateAlmostNexusUI(){
+    	updateAlmostNexusVars();
+		boolean tint=AlmostNexusSettingsHelper.getUITint(this);
+		if(tint!=tintActionIcons){
+			tintActionIcons=tint;
+			mRAB.updateIcon();
+			mLAB.updateIcon();
+		}
+		if(newDrawer){
+			((AllAppsSlidingView) mAllAppsGrid).setForceOpaque(AlmostNexusSettingsHelper.getDrawerFast(Launcher.this));
+		}else{
+			((AllAppsGridView) mAllAppsGrid).setForceOpaque(AlmostNexusSettingsHelper.getDrawerFast(Launcher.this));
+		}
+		
+    	fullScreen(hideStatusBar);
+    	if(!mDockBar.isOpen() && !showingPreviews){
+	    	mNextView.setVisibility(showDots?View.VISIBLE:View.GONE);
+	    	mPreviousView.setVisibility(showDots?View.VISIBLE:View.GONE);
+	    	mRAB.setVisibility(showRAB?View.VISIBLE:View.GONE);
+	    	mLAB.setVisibility(showLAB?View.VISIBLE:View.GONE);
+	    	mHandleView.setSlidingEnabled(showDockBar);
+    	}
+    }
+    /**
+     * ADW: Create a copy of an application icon/shortcut with a reflection
+     * @param layoutResId
+     * @param parent
+     * @param info
+     * @return
+     */
+    View createSmallShortcut(int layoutResId, ViewGroup parent, ApplicationInfo info) {
+        ImageView favorite = (ImageView) mInflater.inflate(layoutResId, parent, false);
+
+        if (!info.filtered) {
+            info.icon = Utilities.createIconThumbnail(info.icon, this);
+            info.filtered = true;
+        }
+        favorite.setImageDrawable(Utilities.drawReflection(info.icon, this));
+        favorite.setTag(info);
+        favorite.setOnClickListener(this);
+        return favorite;
+    }
+    /**
+     * ADW: Create a copy of an folder icon with a reflection
+     * @param layoutResId
+     * @param parent
+     * @param info
+     * @return
+     */
+    View createSmallFolder(int layoutResId, ViewGroup parent, UserFolderInfo info) {
+        ImageView favorite = (ImageView) mInflater.inflate(layoutResId, parent, false);
+
+        final Resources resources = getResources();
+        Drawable d = resources.getDrawable(R.drawable.ic_launcher_folder);
+        d=Utilities.drawReflection(d, this);
+        favorite.setImageDrawable(d);
+        favorite.setTag(info);
+        favorite.setOnClickListener(this);
+        return favorite;
+    }
+    /**
+     * ADW: Create a copy of an LiveFolder icon with a reflection
+     * @param layoutResId
+     * @param parent
+     * @param info
+     * @return
+     */
+    View createSmallLiveFolder(int layoutResId, ViewGroup parent, LiveFolderInfo info) {
+        ImageView favorite = (ImageView) mInflater.inflate(layoutResId, parent, false);
+
+        final Resources resources = getResources();
+        Drawable d = info.icon;
+        if (d == null) {
+        	d = Utilities.createIconThumbnail(
+            resources.getDrawable(R.drawable.ic_launcher_folder), this);
+        	info.filtered = true;
+        }
+        d=Utilities.drawReflection(d, this);
+        favorite.setImageDrawable(d);
+        favorite.setTag(info);
+        favorite.setOnClickListener(this);
+        return favorite;
+    }
+    /**
+     * ADW:Create a smaller copy of an icon for use inside Action Buttons
+     * @param info
+     * @return
+     */
+    Drawable createSmallActionButtonIcon(ItemInfo info){
+        Drawable d = null;
+    	final Resources resources = getResources();
+        if(info instanceof ApplicationInfo){
+            if (!((ApplicationInfo)info).filtered) {
+            	((ApplicationInfo)info).icon = Utilities.createIconThumbnail(((ApplicationInfo)info).icon, this);
+            	((ApplicationInfo)info).filtered = true;
+            }
+            d=((ApplicationInfo)info).icon;
+        }else if(info instanceof LiveFolderInfo){
+        	d=((LiveFolderInfo)info).icon;
+            if (d == null) {
+            	d = Utilities.createIconThumbnail(
+                resources.getDrawable(R.drawable.ic_launcher_folder), this);
+            	((LiveFolderInfo)info).filtered = true;
+            }        	
+        }else if(info instanceof UserFolderInfo){
+        	d = resources.getDrawable(R.drawable.ic_launcher_folder);
+        }
+        if (d == null) {
+        	d = Utilities.createIconThumbnail(
+            resources.getDrawable(R.drawable.ic_launcher_shortcut), this);
+        }
+        d=Utilities.scaledDrawable(d, this,tintActionIcons);
+    	
+    	return d;
+    }
+    //ADW: Previews Functions
+    public void previousScreen(View v) {
+	    mWorkspace.scrollLeft();
+	}
+    public void nextScreen(View v) {
+	    mWorkspace.scrollRight();
+	}
+    protected boolean isPreviewing(){
+    	return showingPreviews;
+    }
+    protected boolean isFullScreenPreviewing(){
+    	return showingPreviews && fullScreenPreviews;
+    }
+    private void fullScreen(boolean enable){
+    	if(enable){
+	    	// go full screen
+	    	WindowManager.LayoutParams attrs = getWindow().getAttributes();
+	    	attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+	    	getWindow().setAttributes(attrs);
+    	}else{
+	    	// go non-full screen
+	    	WindowManager.LayoutParams attrs = getWindow().getAttributes();
+	    	attrs.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+	    	getWindow().setAttributes(attrs);
+    	}
+    }
+    private void hideDesktop(boolean enable){
+    	if(enable){
+	    	mHandleView.setVisibility(View.INVISIBLE);
+	    	mNextView.setVisibility(View.INVISIBLE);
+	    	mPreviousView.setVisibility(View.INVISIBLE);
+    		mRAB.setVisibility(View.INVISIBLE);
+    		mLAB.setVisibility(View.INVISIBLE);
+	        if(mDockBar.isOpen()){
+	        	mDockBar.setVisibility(View.INVISIBLE);
+	        }    		
+    	}else{
+	        if(mDockBar.isOpen()){
+	        	mDockBar.setVisibility(View.VISIBLE);
+	        }else{
+		    	mHandleView.setVisibility(View.VISIBLE);
+		    	if(showDots){
+			    	mNextView.setVisibility(View.VISIBLE);
+			    	mPreviousView.setVisibility(View.VISIBLE);
+		    	}
+		    	if(showRAB){
+		    		mRAB.setVisibility(View.VISIBLE);
+		    	}
+		    	if(showLAB){
+		    		mLAB.setVisibility(View.VISIBLE);
+		    	}
+	        }
+    	}
+    }
+    private void dismissPreviews(){
+    	dismissPreview(mNextView);
+    	dismissPreview(mPreviousView);
+    	dismissPreview(mHandleView);
+    }
+    private void dismissPreview(final View v) {
+    	final PopupWindow window = (PopupWindow) v.getTag();
+        if (window != null) {
+            hideDesktop(false);
+            window.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                public void onDismiss() {
+                    ViewGroup group = (ViewGroup) v.getTag(R.id.workspace);
+                    int count = group.getChildCount();
+                    for (int i = 0; i < count; i++) {
+                        ((ImageView) group.getChildAt(i)).setImageDrawable(null);
+                    }
+                    ArrayList<Bitmap> bitmaps = (ArrayList<Bitmap>) v.getTag(R.id.icon);
+                    for (Bitmap bitmap : bitmaps) bitmap.recycle();
+
+                    v.setTag(R.id.workspace, null);
+                    v.setTag(R.id.icon, null);
+                    window.setOnDismissListener(null);
+                }
+            });
+            window.dismiss();
+            showingPreviews=false;
+            mWorkspace.unlock();
+            mWorkspace.invalidate();
+            mDesktopLocked=false;
+        }
+        v.setTag(null);
+    }
+
+    private void showPreviousPreview(View anchor) {
+        int current = mWorkspace.getCurrentScreen();
+        if(newPreviews){
+	        if (current <= 0) return;
+	        showPreviews(anchor, 0, mWorkspace.getCurrentScreen());
+        }else{
+        	showPreviews(anchor, 0, mWorkspace.getChildCount());
+        }
+    }
+
+    private void showNextPreview(View anchor) {
+        int current = mWorkspace.getCurrentScreen();
+        if(newPreviews){
+	        if (current >= mWorkspace.getChildCount() - 1) return;
+	        showPreviews(anchor, mWorkspace.getCurrentScreen()+1, mWorkspace.getChildCount());
+        }else{
+        	showPreviews(anchor, 0, mWorkspace.getChildCount());
+        }
+    }
+
+    private void showPreviews(final View anchor, int start, int end) {
+        //check first if it's already open
+        final PopupWindow window = (PopupWindow) anchor.getTag();
+        if (window != null) return;
+        showingPreviews=true;
+    	Resources resources = getResources();
+
+        Workspace workspace = mWorkspace;
+        CellLayout cell = ((CellLayout) workspace.getChildAt(start));
+        float max;
+        ViewGroup preview;
+        if(newPreviews){
+        	max = 3;
+            preview= new PreviewsHolder(this);
+        }else{
+        	max = workspace.getChildCount();
+            preview = new LinearLayout(this);
+        }
+        
+        Rect r = new Rect();
+        resources.getDrawable(R.drawable.preview_background).getPadding(r);
+        int extraW = (int) ((r.left + r.right) * max);
+        int extraH = r.top + r.bottom;
+
+        int aW = cell.getWidth() - extraW;
+        float w = aW / max;
+
+        int width = cell.getWidth();
+        int height = cell.getHeight();
+        int x = cell.getLeftPadding();
+        int y = cell.getTopPadding();
+        //width -= (x + cell.getRightPadding());
+        //height -= (y + cell.getBottomPadding());
+
+        float scale = w / width;
+
+        int count = end - start;
+
+        final float sWidth = width * scale;
+        float sHeight = height * scale;
+
+
+        PreviewTouchHandler handler = new PreviewTouchHandler(anchor);
+        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>(count);
+
+        for (int i = start; i < end; i++) {
+            ImageView image = new ImageView(this);
+            cell = (CellLayout) workspace.getChildAt(i);
+
+            Bitmap bitmap = Bitmap.createBitmap((int) sWidth, (int) sHeight,
+                    Bitmap.Config.ARGB_8888);
+            
+            Canvas c = new Canvas(bitmap);
+            c.scale(scale, scale);
+            c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
+            cell.dispatchDraw(c);
+
+            image.setBackgroundDrawable(resources.getDrawable(R.drawable.preview_background));
+            image.setImageBitmap(bitmap);
+            image.setTag(i);
+            image.setOnClickListener(handler);
+            image.setOnFocusChangeListener(handler);
+            image.setFocusable(true);
+            if (i == mWorkspace.getCurrentScreen()) image.requestFocus();
+
+            preview.addView(image,
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            bitmaps.add(bitmap);            
+        }
+       
+        PopupWindow p = new PopupWindow(this);
+        p.setContentView(preview);
+        if(newPreviews){
+	        p.setWidth(width);
+	        p.setHeight(height);
+	        p.setAnimationStyle(R.style.AnimationPreview);
+        }else{
+        	p.setWidth((int) (sWidth * count + extraW));
+        	p.setHeight((int) (sHeight + extraH));
+            p.setAnimationStyle(R.style.AnimationPreview);
+        }
+        p.setOutsideTouchable(true);
+        p.setFocusable(true);
+        p.setBackgroundDrawable(new ColorDrawable(0));
+        if(newPreviews){
+        	p.showAtLocation(anchor, Gravity.BOTTOM, 0, 0);
+        }else{
+        	p.showAsDropDown(anchor, 0, 0);
+        }
+        p.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            public void onDismiss() {
+                dismissPreview(anchor);
+            }
+        });
+        anchor.setTag(p);
+        anchor.setTag(R.id.workspace, preview);
+        anchor.setTag(R.id.icon, bitmaps);
+        if(fullScreenPreviews){
+	        hideDesktop(true);
+	        mWorkspace.lock();
+	        mDesktopLocked=true;
+	        mWorkspace.invalidate();
+        }
+    }
+    class PreviewTouchHandler implements View.OnClickListener, Runnable, View.OnFocusChangeListener {
+        private final View mAnchor;
+        public PreviewTouchHandler(View anchor) {
+            mAnchor = anchor;
+        }
+        public void onClick(View v) {
+            mWorkspace.snapToScreen((Integer) v.getTag());
+            v.post(this);
+        }
+        public void run() {
+            dismissPreview(mAnchor);            
+        }
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus) {
+                mWorkspace.snapToScreen((Integer) v.getTag());
+            }
+        }
+    }
+    /**
+     * ADW: Override this to hide statusbar when necessary
+     */
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		// TODO Auto-generated method stub
+    	super.onWindowFocusChanged(hasFocus);
+		if(mShouldHideStatusbaronFocus && hideStatusBar){
+			fullScreen(true);
+			mShouldHideStatusbaronFocus=false;
+		}
+	}
+	
+	/************************************************
+	 * ADW: Functions to handle Apps Grid
+	 */
+    private void showAllApps(boolean animated){
+		if(!allAppsOpen){
+			allAppsOpen=true;
+	        mWorkspace.lock();
+	        mDesktopLocked=true;
+	        mWorkspace.invalidate();			
+			//allApps.setVisibility(View.VISIBLE);
+			mAllAppsGrid.setVisibility(View.VISIBLE);
+			if(animated && allowDrawerAnimations){
+				Animation animation = AnimationUtils.loadAnimation(this,R.anim.apps_fade_in);
+				animation.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
+					public void onAnimationStart(Animation animation) {
+						// TODO Auto-generated method stub
+					}
+					public void onAnimationRepeat(Animation animation) {
+						// TODO Auto-generated method stub
+					}
+					public void onAnimationEnd(Animation animation) {
+						// TODO Auto-generated method stub
+						allAppsAnimating=false;
+					}
+				});
+				allAppsAnimating=true;
+				mAllAppsGrid.startAnimation(animation);
+			}else{
+
+			}
+			mHandleIcon.startTransition(150);
+    	    mPreviousView.setVisibility(View.GONE);
+    	    mNextView.setVisibility(View.GONE);			
+		}
+
+    }
+    private void closeAllApps(boolean animated){		
+		if(allAppsOpen){
+			allAppsOpen=false;
+	        mWorkspace.unlock();
+	        mDesktopLocked=false;
+	        mWorkspace.invalidate();			
+			if(animated && allowDrawerAnimations){
+				Animation animation = AnimationUtils.loadAnimation(this,R.anim.apps_fade_out);
+				animation.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
+					public void onAnimationStart(Animation animation) {
+						// TODO Auto-generated method stub
+					}
+					public void onAnimationRepeat(Animation animation) {
+						// TODO Auto-generated method stub
+					}
+					public void onAnimationEnd(Animation animation) {
+						// TODO Auto-generated method stub
+						mAllAppsGrid.setVisibility(View.GONE);
+						allAppsAnimating=false;
+			            if(newDrawer){
+			            	((AllAppsSlidingView)mAllAppsGrid).setSelection(0);
+			            }else{
+			            	((AllAppsGridView)mAllAppsGrid).setSelection(0);
+			            	((AllAppsGridView)mAllAppsGrid).clearTextFilter();
+			            }
+					}
+				});
+				allAppsAnimating=true;
+				mAllAppsGrid.startAnimation(animation);
+			}else{
+				mAllAppsGrid.setVisibility(View.GONE);
+			}
+			mHandleIcon.resetTransition();
+			if(!isDockBarOpen() && showDots){
+				mPreviousView.setVisibility(View.VISIBLE);
+	    	    mNextView.setVisibility(View.VISIBLE);
+			}else{
+				mPreviousView.setVisibility(View.GONE);
+	    	    mNextView.setVisibility(View.GONE);
+			}
+		}    	
+    }
+    boolean isAllAppsVisible() {
+    	return allAppsOpen;
+    }
+    boolean isAllAppsOpaque() {
+    	return mAllAppsGrid.isOpaque() && !allAppsAnimating;
+    }
+    protected boolean isDockBarOpen(){
+    	return mDockBar.isOpen();
+    }
+    protected int getTrashPadding(){
+		return mDockBar.getSize();
+    }
+    /**
+     * Obtain a fast blurred copy of background+current screen
+     * @return
+     */
+    protected Bitmap getBlurredBg(){
+        Workspace workspace = mWorkspace;
+    	return workspace.getWallpaperSection();
     }
 }

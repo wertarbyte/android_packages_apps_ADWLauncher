@@ -21,11 +21,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ComponentName;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.LightingColorFilter;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -104,7 +108,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     final Rect mClipBounds = new Rect();
     int mDrawerContentHeight;
     int mDrawerContentWidth;
-
+    //ADW: Dots Indicators
+    private Drawable mPreviousIndicator;
+    private Drawable mNextIndicator;
+    //rogro82@xda
+    int mHomeScreens = 0;
+    int mHomeScreensLoaded = 0;
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -127,9 +136,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         mWallpaperManager = WallpaperManager.getInstance(context);
         
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Workspace, defStyle, 0);
-        mDefaultScreen = a.getInt(R.styleable.Workspace_defaultScreen, 1);
-        a.recycle();
+        /* Rogro82@xda Extended : Load the default and number of homescreens from the settings database */
+        mHomeScreens = AlmostNexusSettingsHelper.getDesktopScreens(context);
+        mDefaultScreen = AlmostNexusSettingsHelper.getDefaultScreen(context);
+        if(mDefaultScreen>mHomeScreens-1) mDefaultScreen=0;
 
         initWorkspace();
     }
@@ -152,7 +162,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (!(child instanceof CellLayout)) {
             throw new IllegalArgumentException("A Workspace can only have CellLayout children.");
         }
-        super.addView(child, index, params);
+        /* Rogro82@xda Extended : Only load the number of home screens set */
+        if(mHomeScreensLoaded < mHomeScreens){
+            mHomeScreensLoaded++;
+            super.addView(child, index, params);
+        }
     }
 
     @Override
@@ -245,6 +259,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         clearVacantCache();
         mCurrentScreen = Math.max(0, Math.min(currentScreen, getChildCount() - 1));
         scrollTo(mCurrentScreen * getWidth(), 0);
+        //ADW: dots
+        indicatorLevels(mCurrentScreen);
         invalidate();
     }
 
@@ -306,7 +322,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      */
     void addInScreen(View child, int screen, int x, int y, int spanX, int spanY, boolean insert) {
         if (screen < 0 || screen >= getChildCount()) {
-            throw new IllegalStateException("The screen must be >= 0 and < " + getChildCount());
+            /* Rogro82@xda Extended : Do not throw an exception else it will crash when there is an item on a hidden homescreen */
+            return;
+            //throw new IllegalStateException("The screen must be >= 0 and < " + getChildCount());
         }
 
         clearVacantCache();
@@ -391,6 +409,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             postInvalidate();
         } else if (mNextScreen != INVALID_SCREEN) {
             mCurrentScreen = Math.max(0, Math.min(mNextScreen, getChildCount() - 1));
+            //ADW: dots
+            indicatorLevels(mCurrentScreen);
             Launcher.setScreen(mCurrentScreen);
             mNextScreen = INVALID_SCREEN;
             clearChildrenCache();
@@ -409,24 +429,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         // If the all apps drawer is open and the drawing region for the workspace
         // is contained within the drawer's bounds, we skip the drawing. This requires
         // the drawer to be fully opaque.
-        if (mLauncher.isDrawerUp()) {
-            final Rect clipBounds = mClipBounds;
-            canvas.getClipBounds(clipBounds);
-            clipBounds.offset(-mScrollX, -mScrollY);
-            if (mDrawerBounds.contains(clipBounds)) {
-                return;
-            }
-        } else if (mLauncher.isDrawerMoving()) {
-            restore = true;
-            canvas.save(Canvas.CLIP_SAVE_FLAG);
-
-            final View view = mLauncher.getDrawerHandle();
-            final int top = view.getTop() + view.getHeight();
-
-            canvas.clipRect(mScrollX, top, mScrollX + mDrawerContentWidth,
-                    top + mDrawerContentHeight, Region.Op.DIFFERENCE);
+        if((mLauncher.isAllAppsVisible() && mLauncher.isAllAppsOpaque()) || mLauncher.isFullScreenPreviewing()){
+        	return;
         }
-
         // ViewGroup.dispatchDraw() supports many features we don't need:
         // clip to padding, layout animation, animation listener, disappearing
         // children, etc. The following implementation attempts to fast-track
@@ -514,7 +519,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
-        if (mLauncher.isDrawerDown()) {
+        if(!mLauncher.isAllAppsVisible()){
             final Folder openFolder = getOpenFolder();
             if (openFolder != null) {
                 return openFolder.requestFocus(direction, previouslyFocusedRect);
@@ -549,7 +554,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-        if (mLauncher.isDrawerDown()) {
+        if (!mLauncher.isAllAppsVisible()) {
             final Folder openFolder = getOpenFolder();
             if (openFolder == null) {
                 getChildAt(mCurrentScreen).addFocusables(views, direction);
@@ -570,7 +575,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mLocked || !mLauncher.isDrawerDown()) {
+        if (mLocked || mLauncher.isAllAppsVisible()) {
             return true;
         }
 
@@ -692,7 +697,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (mLocked || !mLauncher.isDrawerDown()) {
+        if (mLocked || mLauncher.isAllAppsVisible()) {
             return true;
         }
 
@@ -785,6 +790,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         boolean changingScreens = whichScreen != mCurrentScreen;
         
         mNextScreen = whichScreen;
+        //ADW: dots
+        indicatorLevels(mNextScreen);
         
         View focusedChild = getFocusedChild();
         if (focusedChild != null && changingScreens && focusedChild == getChildAt(mCurrentScreen)) {
@@ -1280,5 +1287,68 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 return new SavedState[size];
             }
         };
+    }
+    /**************************************************
+     * ADW: Custom modifications
+     */
+    
+    /**
+     * Pagination indicators (dots)
+     */
+    void setIndicators(Drawable previous, Drawable next) {
+        mPreviousIndicator = previous;
+        mNextIndicator = next;
+    	indicatorLevels(mCurrentScreen);
+    }
+    void indicatorLevels(int mCurrent){
+    	int numScreens=getChildCount();
+    	mPreviousIndicator.setLevel(mCurrentScreen);
+    	mNextIndicator.setLevel(numScreens-mCurrentScreen-1);    	
+    }
+    /**
+     * Make a blurred bitmap copy of current wallpaper plus the current screen items
+     * @return
+     */
+    public Bitmap getWallpaperSection() {
+    	CellLayout cell = ((CellLayout) getChildAt(mCurrentScreen));
+    	LightingColorFilter cf = new LightingColorFilter(0xFF777777, 0);
+    	Paint paint = new Paint();
+    	paint.setDither(false);
+    	paint.setColorFilter(cf);
+    	int width = (cell.getMeasuredWidth() > 0) ? cell.getMeasuredWidth() : 0;
+    	int height = (cell.getMeasuredHeight() > 0) ? cell.getMeasuredHeight(): 0;
+    	// TODO:ADW check screen width&height when cell layout not rendered, so
+    	// measured w&h are 0
+    	if (width == 0 || height == 0) {
+    		Display display = mLauncher.getWindowManager().getDefaultDisplay();
+    		int w = display.getWidth();
+    		int h = display.getHeight();
+    		this.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
+    				MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
+    		width = getMeasuredWidth();
+    		height = getMeasuredHeight();
+    	}
+    	/*
+    	 * float percent=(float)mCurrentScreen/(float)(mHomeScreens-1); float
+    	 * x=(float)(mWallpaperWidth/2)*percent; float
+    	 * y=(mWallpaperHeight-height)/2;
+    	 */
+    	Drawable d = mWallpaperManager.getFastDrawable();
+
+    	Bitmap b = Bitmap.createBitmap((int) width, (int) height,
+    			Bitmap.Config.RGB_565);
+    	Canvas canvas = new Canvas(b);
+    	canvas.drawARGB(255, 0, 255, 0);
+    	/*
+    	 * Rect src=new Rect((int)x, (int)y, (int)x+width, (int)y+height); Rect
+    	 * dst=new Rect(0,0,width,height); canvas.drawBitmap(mWallpaper, src,
+    	 * dst, mPaint);
+    	 */
+    	d.draw(canvas);
+    	cell.dispatchDraw(canvas);
+    	canvas.drawBitmap(b, 0, 0, paint);
+    	b = Bitmap.createScaledBitmap(b, width / 3, height / 3, true);
+    	b = Bitmap.createScaledBitmap(b, width, height, true);
+    	return b;
     }
 }
