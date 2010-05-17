@@ -44,6 +44,8 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
         columnsLandscape.setMin(1);
         dlgSeekBarPreference rowsLandscape= (dlgSeekBarPreference) findPreference("drawerRowsLandscape");
         rowsLandscape.setMin(1);
+        Preference lwpSupport = (Preference) findPreference("lwpSupport");
+        lwpSupport.setOnPreferenceChangeListener(this);
     }
 	@Override
 	protected void onPause(){
@@ -115,6 +117,17 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 				AlertDialog alert = builder.create();
 				alert.show();
 			}
+		}else if(preference.getKey().equals("lwpSupport")){
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("This setting will cause launcher to restart")
+			       .setCancelable(false)
+			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+							shouldRestart=true;
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			alert.show();
 		}
         return true;  
 	}

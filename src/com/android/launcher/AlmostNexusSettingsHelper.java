@@ -106,5 +106,9 @@ public final class AlmostNexusSettingsHelper {
 		boolean newD = sp.getBoolean("uiTint", true);
 		return newD;
 	}
-	
+	public static boolean getLWPSupport(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
+		boolean newD = sp.getBoolean("lwpSupport", true);
+		return newD;
+	}
 }

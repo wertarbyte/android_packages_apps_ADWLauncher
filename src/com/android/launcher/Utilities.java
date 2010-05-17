@@ -198,8 +198,13 @@ final class Utilities {
 
         return bitmap;
     }
-    //TODO: ADW Create an icon drawable with reflection :P
-    //Thanks to http://www.inter-fuser.com/2009/12/android-reflections-with-bitmaps.html
+    /**
+     *  ADW Create an icon drawable with reflection :P
+     *  Thanks to http://www.inter-fuser.com/2009/12/android-reflections-with-bitmaps.html
+     * @param icon
+     * @param context
+     * @return
+     */
     static Drawable drawReflection(Drawable icon,Context context){
     	final Resources resources=context.getResources();
     	sIconWidth = sIconHeight = (int) resources.getDimension(android.R.dimen.app_icon_size);
@@ -255,8 +260,14 @@ final class Utilities {
        
        return new FastBitmapDrawable(Bitmap.createScaledBitmap(bitmapWithReflection,Math.round((float)sIconWidth*ratio),sIconHeight,true));
     }
-    //TODO: ADW Create an icon drawable with reflection :P
-    //Thanks to http://www.inter-fuser.com/2009/12/android-reflections-with-bitmaps.html
+    /**
+     *  ADW Create an icon drawable scaled
+     *  Used for Action Buttons
+     * @param icon
+     * @param context
+     * @param tint
+     * @return
+     */
     static Drawable scaledDrawable(Drawable icon,Context context, boolean tint){
     	final Resources resources=context.getResources();
     	sIconWidth = sIconHeight = (int) resources.getDimension(android.R.dimen.app_icon_size);
@@ -282,6 +293,28 @@ final class Utilities {
     	Bitmap endImage=Bitmap.createScaledBitmap(original, (int)(width*scale), (int)(height*scale), true);
     	original.recycle();
     	return new FastBitmapDrawable(endImage);
-    }   
+    }
+    /**
+     * ADW: Use donut syule wallpaper rendering, we need this method to fit wallpaper bitmap
+     */
+    static Bitmap centerToFit(Bitmap bitmap, int width, int height, Context context) {
+        final int bitmapWidth = bitmap.getWidth();
+        final int bitmapHeight = bitmap.getHeight();
 
+        if (bitmapWidth < width || bitmapHeight < height) {
+            int color = context.getResources().getColor(R.color.window_background);
+
+            Bitmap centered = Bitmap.createBitmap(bitmapWidth < width ? width : bitmapWidth,
+                    bitmapHeight < height ? height : bitmapHeight, Bitmap.Config.RGB_565);
+            centered.setDensity(bitmap.getDensity());
+            Canvas canvas = new Canvas(centered);
+            canvas.drawColor(color);
+            canvas.drawBitmap(bitmap, (width - bitmapWidth) / 2.0f, (height - bitmapHeight) / 2.0f,
+                    null);
+
+            bitmap = centered;
+        }
+
+        return bitmap;
+    }
 }

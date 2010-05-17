@@ -27,6 +27,7 @@ import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.Display;
@@ -114,6 +115,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     //rogro82@xda
     int mHomeScreens = 0;
     int mHomeScreensLoaded = 0;
+    //ADW: port from donut wallpaper drawing
+    private Paint mPaint;
+    private Bitmap mWallpaper;
+    private int mWallpaperWidth;
+    private int mWallpaperHeight;
+    private float mWallpaperOffset;
+    private boolean mWallpaperLoaded;
+    private boolean lwpSupport=true;
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -419,7 +428,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean isOpaque() {
-        return false;
+        //ADW: hack to use old rendering
+        if(!lwpSupport && mWallpaperLoaded){
+            return !mWallpaper.hasAlpha();
+        }else{
+        	return false;
+        }
     }
 
     @Override
@@ -431,6 +445,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         // the drawer to be fully opaque.
         if((mLauncher.isAllAppsVisible() && mLauncher.isAllAppsOpaque()) || mLauncher.isFullScreenPreviewing()){
         	return;
+        }
+        //ADW: If using old wallpaper rendering method...
+        if(!lwpSupport){
+        	float x = mScrollX * mWallpaperOffset;
+    		if (x + mWallpaperWidth < mRight - mLeft) {
+    			x = mRight - mLeft - mWallpaperWidth;
+    		}
+    		canvas.drawBitmap(mWallpaper, x, (mBottom - mTop - mWallpaperHeight) / 2, mPaint);
         }
         // ViewGroup.dispatchDraw() supports many features we don't need:
         // clip to padding, layout animation, animation listener, disappearing
@@ -482,7 +504,27 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         for (int i = 0; i < count; i++) {
             getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
         }
+        //ADW: measure wallpaper when using old rendering
+    	if(!lwpSupport){
+    		if (mWallpaperLoaded) {
+    		    mWallpaperLoaded = false;
 
+    		    Display display = mLauncher.getWindowManager().getDefaultDisplay();
+    		    boolean isPortrait = display.getWidth() < display.getHeight();
+
+    		    final int _width = isPortrait ? display.getWidth() : display.getHeight();
+    		    final int _height = isPortrait ? display.getHeight() : display.getWidth();
+    		    
+    		    mWallpaper = Utilities.centerToFit(mWallpaper, _width * Launcher.WALLPAPER_SCREENS_SPAN,
+    		            _height, mLauncher);
+    		    mWallpaperWidth = mWallpaper.getWidth();
+    		    mWallpaperHeight = mWallpaper.getHeight();
+    		}
+
+    		final int wallpaperWidth = mWallpaperWidth;
+    		mWallpaperOffset = wallpaperWidth > width ? (count * width - wallpaperWidth) /
+    		        ((count - 1) * (float) width) : 1.0f;
+    	}
         if (mFirstLayout) {
             scrollTo(mCurrentScreen * width, 0);
             updateWallpaperOffset(width * (getChildCount() - 1));
@@ -1311,7 +1353,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      */
     public Bitmap getWallpaperSection() {
     	CellLayout cell = ((CellLayout) getChildAt(mCurrentScreen));
-    	LightingColorFilter cf = new LightingColorFilter(0xFF777777, 0);
+    	LightingColorFilter cf = new LightingColorFilter(0xFF555555, 0);
     	Paint paint = new Paint();
     	paint.setDither(false);
     	paint.setColorFilter(cf);
@@ -1347,8 +1389,29 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     	d.draw(canvas);
     	cell.dispatchDraw(canvas);
     	canvas.drawBitmap(b, 0, 0, paint);
-    	b = Bitmap.createScaledBitmap(b, width / 3, height / 3, true);
+    	b = Bitmap.createScaledBitmap(b, width / 2, height / 2, true);
     	b = Bitmap.createScaledBitmap(b, width, height, true);
     	return b;
     }
+    /**
+     * ADW: Make a local copy of wallpaper bitmap to use instead wallpapermanager
+     *
+     */
+	public void setLWP(boolean supported){
+		lwpSupport=supported;
+		if(!lwpSupport){
+			final Drawable drawable = mWallpaperManager.getDrawable();
+			if (drawable instanceof BitmapDrawable) {
+				mWallpaper = ((BitmapDrawable) drawable).getBitmap();
+				mWallpaperLoaded=true;
+			}
+		}else{
+			if(mWallpaper!=null){
+				mWallpaper.recycle();
+				mWallpaperLoaded=false;
+			}
+		}
+		invalidate();
+		requestLayout();
+	}
 }

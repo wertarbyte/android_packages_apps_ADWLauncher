@@ -258,10 +258,18 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	private boolean showLAB=true;
 	private boolean showRAB=true;
 	private boolean tintActionIcons=true;
+	private boolean lwpSupport=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        //ADW: Hack theme for no lwp support
+		lwpSupport=AlmostNexusSettingsHelper.getLWPSupport(this);
+		if(lwpSupport){
+			setTheme(android.R.style.Theme_Wallpaper_NoTitleBar);
+		}else{
+			setTheme(R.style.Theme);
+		}
+    	super.onCreate(savedInstanceState);
         mInflater = getLayoutInflater();
 
         mAppWidgetManager = AppWidgetManager.getInstance(this);
@@ -489,6 +497,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 				((AllAppsGridView) mAllAppsGrid).setNumColumns(AlmostNexusSettingsHelper.getColumnsLandscape(Launcher.this));
 			}
 		}
+		mWorkspace.setLWP(lwpSupport);
         if (mRestoring) {
             startLoaders();
         }
@@ -2481,6 +2490,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 		autoCloseDockbar=AlmostNexusSettingsHelper.getUICloseDockbar(this);
 		showLAB=AlmostNexusSettingsHelper.getUILAB(this);
 		showRAB=AlmostNexusSettingsHelper.getUIRAB(this);    	
+		lwpSupport=AlmostNexusSettingsHelper.getLWPSupport(this);
     }
     /**
      * ADW: Refresh UI status variables and elements after changing settings.
