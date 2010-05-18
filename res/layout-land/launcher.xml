@@ -46,31 +46,37 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         /> 
-    <com.android.launcher.SliderView
-        android:id="@+id/all_apps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:nextFocusLeft="@id/all_apps_view"
-        android:background="@drawable/handle"
-        android:focusable="true"
-        android:clickable="true"
-        android:scaleType="center"
-        android:src="@drawable/handle_icon"
-        android:layout_gravity="right|center_vertical"
-        launcher:slideDirections="left"
-        launcher:targetDistance="45dip" />
-
-    <com.android.launcher.DeleteZone
-        android:id="@+id/delete_zone"
-        android:layout_width="49dip"
-        android:layout_height="wrap_content"
-        android:scaleType="center"
-        android:src="@drawable/ic_delete"
-        android:background="@drawable/delete_zone_selector"
-        android:layout_marginBottom="-25dip"
-        android:layout_gravity="right|center_vertical"
-        android:visibility="invisible"
-        launcher:direction="vertical" />
+    <LinearLayout
+    	android:id="@+id/drawer_toolbar"
+    	android:orientation="vertical"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent"
+		android:gravity="center_vertical"
+		android:layout_gravity="right|center_vertical">
+	    <com.android.launcher.ActionButton
+	        android:src="@drawable/rab_empty"
+	        android:background="@drawable/rab_bg"
+	        android:scaleType="center"
+	        android:layout_width="wrap_content"
+	        android:id="@+id/btn_rab"
+	        launcher:ident="RAB"
+	        android:layout_height="60dip" 
+	        />
+		<ImageView
+			android:layout_width="50dip"
+			android:layout_height="50dip"
+			android:background="@drawable/handle"
+			/>
+	    <com.android.launcher.ActionButton
+	        android:src="@drawable/lab_empty"
+	        android:background="@drawable/lab_bg"
+	        android:scaleType="center"
+	        android:layout_width="wrap_content"
+	        android:id="@+id/btn_lab"
+	        launcher:ident="LAB"
+	        android:layout_height="60dip" 
+	        />
+    </LinearLayout>
     <ImageView
         android:src="@drawable/home_arrows_left"
         android:layout_height="wrap_content"
@@ -85,28 +91,29 @@
         android:layout_width="wrap_content" 
         android:layout_gravity="top|right"
         android:onClick="nextScreen"/>
-    <com.android.launcher.ActionButton
-        android:src="@drawable/rab_empty"
-        android:background="@drawable/rab_bg"
-        android:scaleType="center"
-        android:layout_marginTop="60dip"
+    <com.android.launcher.SliderView
+        android:id="@+id/all_apps"
         android:layout_width="wrap_content"
-        android:id="@+id/btn_rab"
-        launcher:ident="RAB"
-        android:layout_height="60dip" 
-        android:layout_gravity="top|right"
-        />
-    <com.android.launcher.ActionButton
-        android:src="@drawable/lab_empty"
-        android:background="@drawable/lab_bg"
+        android:layout_height="wrap_content"
+        android:nextFocusLeft="@id/all_apps_view"
+        android:focusable="true"
+        android:clickable="true"
         android:scaleType="center"
-        android:layout_marginBottom="60dip"
+        android:src="@drawable/handle_icon"
+        android:layout_gravity="right|center_vertical"
+        launcher:slideDirections="left"
+        launcher:targetDistance="45dip" />
+
+    <com.android.launcher.DeleteZone
+        android:id="@+id/delete_zone"
         android:layout_width="wrap_content"
-        android:id="@+id/btn_lab"
-        launcher:ident="LAB"
-        android:layout_height="60dip" 
-        android:layout_gravity="bottom|right"
-        />
+        android:layout_height="wrap_content"
+        android:scaleType="center"
+        android:src="@drawable/ic_delete"
+        android:background="@drawable/delete_zone_selector"
+        android:layout_gravity="right|center_vertical"
+        android:visibility="invisible"
+        launcher:direction="vertical" />
     <com.android.launcher.DockBar
         android:id="@+id/dockbar"
         android:layout_width="wrap_content"

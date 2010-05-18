@@ -45,24 +45,66 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	/> 
+	<LinearLayout
+		android:id="@+id/drawer_toolbar"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
+		android:layout_gravity="bottom|center_horizontal">
+	    <com.android.launcher.ActionButton
+			android:src="@drawable/lab_empty"
+			android:background="@drawable/lab_bg"
+			android:scaleType="center"
+			android:layout_height="wrap_content"
+			android:id="@+id/btn_lab"
+			launcher:ident="LAB"
+			android:layout_width="70dip" 
+			/>
+		<ImageView
+			android:layout_width="50dip"
+			android:layout_height="50dip"
+			android:background="@drawable/handle"
+			/>
+	    <com.android.launcher.ActionButton
+			android:src="@drawable/rab_empty"
+			android:background="@drawable/rab_bg"
+			android:scaleType="center"
+			android:layout_height="wrap_content"
+			android:id="@+id/btn_rab"
+			launcher:ident="RAB"
+			android:layout_width="70dip" 
+			/>
+	</LinearLayout>
+    <ImageView
+		android:src="@drawable/home_arrows_left"
+		android:layout_height="wrap_content"
+		android:id="@+id/btn_scroll_left"
+		android:layout_width="wrap_content"
+		android:layout_gravity="bottom|left"
+		android:onClick="previousScreen"/>
+	<ImageView
+		android:src="@drawable/home_arrows_right"
+		android:layout_height="wrap_content"
+		android:id="@+id/btn_scroll_right"
+		android:layout_width="wrap_content"
+		android:layout_gravity="bottom|right" 
+		android:onClick="nextScreen"/>
     <com.android.launcher.SliderView
-        android:id="@+id/all_apps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:clickable="true"
-        android:scaleType="center"
-        android:src="@drawable/handle_icon"
-        android:background="@drawable/handle"
-	android:layout_gravity="bottom|center_horizontal"
-	launcher:slideDirections="up"
-	launcher:targetDistance="45dip"
+		android:id="@+id/all_apps"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:focusable="true"
+		android:clickable="true"
+		android:scaleType="center"
+		android:src="@drawable/handle_icon"
+		android:layout_gravity="bottom|center_horizontal"
+		launcher:slideDirections="up"
+		launcher:targetDistance="45dip"
         />
-
     <com.android.launcher.DeleteZone
         android:id="@+id/delete_zone"
         android:layout_width="wrap_content"
-        android:layout_height="49dip"
+        android:layout_height="wrap_content"
 
         android:scaleType="center"
         android:src="@drawable/ic_delete"
@@ -72,42 +114,7 @@
         android:visibility="invisible"
         
         launcher:direction="horizontal" />
-    <ImageView
-	android:src="@drawable/home_arrows_left"
-	android:layout_height="wrap_content"
-	android:id="@+id/btn_scroll_left"
-	android:layout_width="wrap_content"
-	android:layout_gravity="bottom|left"
-	android:onClick="previousScreen"/>
-    <ImageView
-	android:src="@drawable/home_arrows_right"
-	android:layout_height="wrap_content"
-	android:id="@+id/btn_scroll_right"
-	android:layout_width="wrap_content" 
-	android:layout_gravity="bottom|right"
-	android:onClick="nextScreen"/>
-    <com.android.launcher.ActionButton
-	android:src="@drawable/rab_empty"
-	android:background="@drawable/rab_bg"
-        android:scaleType="center"
-	android:layout_marginRight="60dip"
-	android:layout_height="wrap_content"
-	android:id="@+id/btn_rab"
-	launcher:ident="RAB"
-	android:layout_width="75dip" 
-	android:layout_gravity="bottom|right"
-	/>
-    <com.android.launcher.ActionButton
-	android:src="@drawable/lab_empty"
-	android:background="@drawable/lab_bg"
-	android:scaleType="center"
-	android:layout_marginLeft="60dip"
-	android:layout_height="wrap_content"
-	android:id="@+id/btn_lab"
-	launcher:ident="LAB"
-	android:layout_width="75dip" 
-	android:layout_gravity="bottom|left"
-	/>
+
     <com.android.launcher.DockBar
 	android:id="@+id/dockbar"
 	android:layout_width="fill_parent"
