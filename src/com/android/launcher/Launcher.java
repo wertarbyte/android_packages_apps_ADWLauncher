@@ -697,13 +697,17 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 		Drawable previous = mPreviousView.getDrawable();
 		Drawable next = mNextView.getDrawable();
 		mWorkspace.setIndicators(previous, next);
+		
+		//ADW linearlayout with apptray, lab and rab
+		final View drwToolbar=findViewById(R.id.drawer_toolbar);
 		//ADW add a listener to the dockbar to show/hide the app-drawer-button and the dots
 		mDockBar=(DockBar)findViewById(R.id.dockbar);
 		mDockBar.setDockBarListener(new DockBarListener() {
 			public void onOpen() {
 				mHandleView.setVisibility(View.GONE);
-				mLAB.setVisibility(View.GONE);
-				mRAB.setVisibility(View.GONE);
+				/*mLAB.setVisibility(View.GONE);
+				mRAB.setVisibility(View.GONE);*/
+				drwToolbar.setVisibility(View.GONE);
 				if(mNextView.getVisibility()==View.VISIBLE){
 					mNextView.setVisibility(View.INVISIBLE);
 					mPreviousView.setVisibility(View.INVISIBLE);
@@ -711,8 +715,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 			}
 			public void onClose() {
 				mHandleView.setVisibility(View.VISIBLE);
-		    	mRAB.setVisibility(showRAB?View.VISIBLE:View.GONE);
-		    	mLAB.setVisibility(showLAB?View.VISIBLE:View.GONE);
+		    	/*mRAB.setVisibility(showRAB?View.VISIBLE:View.GONE);
+		    	mLAB.setVisibility(showLAB?View.VISIBLE:View.GONE);*/
+				drwToolbar.setVisibility(View.VISIBLE);
 				if(showDots && !isAllAppsVisible()){
 					mNextView.setVisibility(View.VISIBLE);
 					mPreviousView.setVisibility(View.VISIBLE);
