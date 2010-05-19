@@ -2520,8 +2520,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     	if(!mDockBar.isOpen() && !showingPreviews){
 	    	mNextView.setVisibility(showDots?View.VISIBLE:View.GONE);
 	    	mPreviousView.setVisibility(showDots?View.VISIBLE:View.GONE);
-	    	mRAB.setVisibility(showRAB?View.VISIBLE:View.GONE);
-	    	mLAB.setVisibility(showLAB?View.VISIBLE:View.GONE);
+	    	mRAB.setVisibility(showRAB?View.VISIBLE:View.INVISIBLE);
+	    	mLAB.setVisibility(showLAB?View.VISIBLE:View.INVISIBLE);
 	    	mHandleView.setSlidingEnabled(showDockBar);
     	}
     }
@@ -2644,12 +2644,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     	}
     }
     private void hideDesktop(boolean enable){
+    	final View drwToolbar=findViewById(R.id.drawer_toolbar);
     	if(enable){
 	    	mHandleView.setVisibility(View.INVISIBLE);
 	    	mNextView.setVisibility(View.INVISIBLE);
 	    	mPreviousView.setVisibility(View.INVISIBLE);
-    		mRAB.setVisibility(View.INVISIBLE);
-    		mLAB.setVisibility(View.INVISIBLE);
+    		//mRAB.setVisibility(View.INVISIBLE);
+    		//mLAB.setVisibility(View.INVISIBLE);
+	    	drwToolbar.setVisibility(View.GONE);
 	        if(mDockBar.isOpen()){
 	        	mDockBar.setVisibility(View.INVISIBLE);
 	        }    		
@@ -2657,17 +2659,18 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	        if(mDockBar.isOpen()){
 	        	mDockBar.setVisibility(View.VISIBLE);
 	        }else{
+	        	drwToolbar.setVisibility(View.VISIBLE);
 		    	mHandleView.setVisibility(View.VISIBLE);
 		    	if(showDots){
 			    	mNextView.setVisibility(View.VISIBLE);
 			    	mPreviousView.setVisibility(View.VISIBLE);
 		    	}
-		    	if(showRAB){
+		    	/*if(showRAB){
 		    		mRAB.setVisibility(View.VISIBLE);
 		    	}
 		    	if(showLAB){
 		    		mLAB.setVisibility(View.VISIBLE);
-		    	}
+		    	}*/
 	        }
     	}
     }
