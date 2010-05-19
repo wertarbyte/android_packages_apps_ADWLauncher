@@ -136,7 +136,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             launcher:cellWidth="52dip"
-            launcher:cellHeight="50dip"
+            launcher:cellHeight="48dip"
             launcher:cells="6"
             launcher:orientation="vertical"		
             />
