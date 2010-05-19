@@ -703,8 +703,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 		mDockBar.setDockBarListener(new DockBarListener() {
 			public void onOpen() {
 				mHandleView.setVisibility(View.GONE);
-				/*mLAB.setVisibility(View.GONE);
-				mRAB.setVisibility(View.GONE);*/
 				drwToolbar.setVisibility(View.GONE);
 				if(mNextView.getVisibility()==View.VISIBLE){
 					mNextView.setVisibility(View.INVISIBLE);
@@ -713,8 +711,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 			}
 			public void onClose() {
 				mHandleView.setVisibility(View.VISIBLE);
-		    	/*mRAB.setVisibility(showRAB?View.VISIBLE:View.GONE);
-		    	mLAB.setVisibility(showLAB?View.VISIBLE:View.GONE);*/
 				drwToolbar.setVisibility(View.VISIBLE);
 				if(showDots && !isAllAppsVisible()){
 					mNextView.setVisibility(View.VISIBLE);
@@ -2649,8 +2645,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	    	mHandleView.setVisibility(View.INVISIBLE);
 	    	mNextView.setVisibility(View.INVISIBLE);
 	    	mPreviousView.setVisibility(View.INVISIBLE);
-    		//mRAB.setVisibility(View.INVISIBLE);
-    		//mLAB.setVisibility(View.INVISIBLE);
 	    	drwToolbar.setVisibility(View.GONE);
 	        if(mDockBar.isOpen()){
 	        	mDockBar.setVisibility(View.INVISIBLE);
@@ -2665,12 +2659,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 			    	mNextView.setVisibility(View.VISIBLE);
 			    	mPreviousView.setVisibility(View.VISIBLE);
 		    	}
-		    	/*if(showRAB){
-		    		mRAB.setVisibility(View.VISIBLE);
-		    	}
-		    	if(showLAB){
-		    		mLAB.setVisibility(View.VISIBLE);
-		    	}*/
 	        }
     	}
     }
