@@ -27,6 +27,18 @@
 			android:title="Default Screen" android:summary="Select the screen to set as default"
 			android:dialogMessage="Select the screen to set as default"
 			android:key="defaultScreen" android:defaultValue="2" android:max="4" />
+		<com.android.launcher.dlgSeekBarPreference
+			android:title="Desktop scrolling speed"
+			android:summary="Set the speed used to fling desktops screens"
+			android:dialogMessage="The lower the value, the faster you will fling"
+			android:key="desktopSpeed" android:defaultValue="600"
+			android:max="2000" />
+		<com.android.launcher.dlgSeekBarPreference
+			android:title="Desktop overshoot"
+			android:summary="Allow to scroll past fisrt/last desktop screens"
+			android:dialogMessage="Set it to 0 to disable overshooting"
+			android:key="desktopBounce" android:defaultValue="25"
+			android:max="100" />
 	</PreferenceScreen>
 	<PreferenceScreen
 		android:key="drawerPrerefences"

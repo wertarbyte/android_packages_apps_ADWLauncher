@@ -111,4 +111,14 @@ public final class AlmostNexusSettingsHelper {
 		boolean newD = sp.getBoolean("lwpSupport", true);
 		return newD;
 	}
+	public static int getDesktopSpeed(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
+		int newD = sp.getInt("desktopSpeed", 600);
+		return newD;
+	}
+	public static int getDesktopBounce(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
+		int newD = sp.getInt("desktopBounce", 25);
+		return newD;
+	}
 }

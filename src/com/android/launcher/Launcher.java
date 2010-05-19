@@ -2539,6 +2539,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 		showLAB=AlmostNexusSettingsHelper.getUILAB(this);
 		showRAB=AlmostNexusSettingsHelper.getUIRAB(this);    	
 		lwpSupport=AlmostNexusSettingsHelper.getLWPSupport(this);
+		if(mWorkspace!=null){
+			mWorkspace.setSpeed(AlmostNexusSettingsHelper.getDesktopSpeed(this));
+			mWorkspace.setBounceAmount(AlmostNexusSettingsHelper.getDesktopBounce(this));
+		}
     }
     /**
      * ADW: Refresh UI status variables and elements after changing settings.

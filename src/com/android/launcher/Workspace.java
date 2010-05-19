@@ -30,6 +30,7 @@ import android.graphics.Region;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -55,7 +56,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     /**
      * The velocity at which a fling gesture will cause us to snap to the next screen
      */
-    private static final int SNAP_VELOCITY = 1000;
+    private static final int SNAP_VELOCITY = 500;
 
     private int mDefaultScreen;
 
@@ -123,6 +124,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private float mWallpaperOffset;
     private boolean mWallpaperLoaded;
     private boolean lwpSupport=true;
+    //ADW: speed for desktop transitions
+    private int mScrollingSpeed=600;
+    //ADW: bounce scroll
+    private int mScrollingBounce=50;
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -405,8 +410,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     private void updateWallpaperOffset(int scrollRange) {
-        mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 0 );
-        mWallpaperManager.setWallpaperOffsets(getWindowToken(), mScrollX / (float) scrollRange, 0);
+    	//ADW: we set a condition to not move wallpaper beyond the "bounce" zone
+    	if(mScrollX<=getChildAt(getChildCount() - 1).getRight() - (mRight - mLeft)){
+    		mWallpaperManager.setWallpaperOffsetSteps(1.0f / (getChildCount() - 1), 0 );
+    		mWallpaperManager.setWallpaperOffsets(getWindowToken(), mScrollX / (float) scrollRange, 0);
+    	}
     }
     
     @Override
@@ -452,7 +460,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     		if (x + mWallpaperWidth < mRight - mLeft) {
     			x = mRight - mLeft - mWallpaperWidth;
     		}
-    		canvas.drawBitmap(mWallpaper, x, (mBottom - mTop - mWallpaperHeight) / 2, mPaint);
+        	//ADW: added tweaks for when scrolling "beyond bounce limits" :P
+    		if (mScrollX<0)x=mScrollX;
+        	if(mScrollX>getChildAt(getChildCount() - 1).getRight() - (mRight - mLeft)){
+        		x=(mScrollX-mWallpaperWidth+(mRight-mLeft));
+        	}
+    		canvas.drawBitmap(mWallpaper, x, (mBottom - mWallpaperHeight) / 2, mPaint);
         }
         // ViewGroup.dispatchDraw() supports many features we don't need:
         // clip to padding, layout animation, animation listener, disappearing
@@ -545,6 +558,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 childLeft += childWidth;
             }
         }
+        //ADW:updateWallpaperoffset
+        updateWallpaperOffset();
     }
 
     @Override
@@ -771,15 +786,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
                 mLastMotionX = x;
 
                 if (deltaX < 0) {
-                    if (mScrollX > 0) {
-                        scrollBy(Math.max(-mScrollX, deltaX), 0);
+                    if (mScrollX > -mScrollingBounce) {
+                        scrollBy(Math.min(deltaX,mScrollingBounce), 0);
                         updateWallpaperOffset();
                     }
                 } else if (deltaX > 0) {
                     final int availableToScroll = getChildAt(getChildCount() - 1).getRight() -
-                            mScrollX - getWidth();
+                            mScrollX - getWidth()+mScrollingBounce;
                     if (availableToScroll > 0) {
-                        scrollBy(Math.min(availableToScroll, deltaX), 0);
+                        scrollBy(deltaX, 0);
                         updateWallpaperOffset();
                     }
                 }
@@ -839,10 +854,21 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         if (focusedChild != null && changingScreens && focusedChild == getChildAt(mCurrentScreen)) {
             focusedChild.clearFocus();
         }
+
         
+        final int screenDelta = Math.abs(whichScreen - mCurrentScreen);
+        int durationOffset = 1;
+		// Faruq: Added to allow easing even when Screen doesn't changed (when revert happens)
+		//Log.d("Workspace", "whichScreen: "+whichScreen+"; mCurrentScreen: "+mCurrentScreen+"; getChildCount: "+(getChildCount()-1));
+		if (screenDelta == 0) {
+		durationOffset = 400;
+		//Log.d("Workspace", "Increasing duration by "+durationOffset+" times");
+		}
+		final int duration = mScrollingSpeed + durationOffset;
         final int newX = whichScreen * getWidth();
         final int delta = newX - mScrollX;
-        mScroller.startScroll(mScrollX, 0, delta, 0, Math.abs(delta) * 2);
+        //mScroller.startScroll(mScrollX, 0, delta, 0, Math.abs(delta) * 2);
+        mScroller.startScroll(mScrollX, 0, delta, 0, duration);
         invalidate();
     }
 
@@ -1413,5 +1439,19 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 		}
 		invalidate();
 		requestLayout();
+	}
+	/**
+	 * ADW: Set the desktop scrolling speed (default scrolling duration)
+	 * @param speed
+	 */
+	public void setSpeed(int speed){
+		mScrollingSpeed=speed;
+	}
+	/**
+	 * ADW: Set the desktop scrolling bounce amount (0 to disable)
+	 * @param amount
+	 */
+	public void setBounceAmount(int amount){
+		mScrollingBounce=amount;
 	}
 }
