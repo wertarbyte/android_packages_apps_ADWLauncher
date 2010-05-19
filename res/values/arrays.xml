@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+       <string-array name="menu_binding_entries">
+                <item>Move to default desktop</item>
+                <item>Move to default desktop/show previews</item>
+                <item>Show previews</item>
+                <item>Open/close App Drawer</item>
+                <item>Show/hide statusbar</item>
+        </string-array>
+        <string-array name="menu_binding_values">
+                <item>1</item>
+                <item>2</item>
+                <item>3</item>
+                <item>4</item>
+                <item>5</item>
+        </string-array>
+</resources>

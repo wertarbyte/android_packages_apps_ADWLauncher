@@ -71,9 +71,9 @@ public final class AlmostNexusSettingsHelper {
 		boolean newD = sp.getBoolean("previewsFullScreen", true);
 		return newD;
 	}
-	public static boolean getPreviewsHome(Context context) {
+	public static int getHomeBinding(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
-		boolean newD = sp.getBoolean("previewsHome", true);
+		int newD = Integer.valueOf(sp.getString("homeBinding", "3"));
 		return newD;
 	}
 	public static boolean getUIDots(Context context) {

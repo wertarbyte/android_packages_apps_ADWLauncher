@@ -249,7 +249,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	private boolean allowDrawerAnimations=true;
 	private boolean newDrawer=true;
 	private boolean newPreviews=true;
-	private boolean homePreviews=true;
 	private boolean fullScreenPreviews=true;
 	private boolean hideStatusBar=false;
 	private boolean showDots=true;
@@ -259,7 +258,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	private boolean showRAB=true;
 	private boolean tintActionIcons=true;
 	private boolean lwpSupport=true;
-
+	/**
+	 * ADW: Home binding constants
+	 */
+	private static final int BIND_DEFAULT=1;
+	private static final int BIND_HOME_PREVIEWS=2;
+	private static final int BIND_PREVIEWS=3;
+	private static final int BIND_APPS=4;
+	private static final int BIND_STATUSBAR=5;
+	private int mHomeBinding=BIND_PREVIEWS;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //ADW: Hack theme for no lwp support
@@ -465,7 +472,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             }
         }else if (requestCode==REQUEST_UPDATE_ALMOSTNEXUS){
         	//ADW: Update from custom settings
-        	d("AlmostNexus","UPDATE FROM SETTINGS");
         	updateAlmostNexusUI();
         }
     }
@@ -525,7 +531,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     @Override
     protected void onPause() {
         super.onPause();
-        closeDrawer(false);
+        //ADW: removed cause it was closing app-drawer every time Home button is triggered
+        //ADW: it should be done only on certain circumstances
+        //closeDrawer(false);
     }
 
     @Override
@@ -976,9 +984,17 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
             if ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) !=
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) {
-
-                if(!homePreviews){
+            	//ADW: switch home button binding user selection
+                switch (mHomeBinding) {
+				case BIND_DEFAULT:
+					dismissPreviews();
+					if (!mWorkspace.isDefaultScreenShowing()) {
+						mWorkspace.moveToDefaultScreen();
+					}
+					break;
+				case BIND_HOME_PREVIEWS:
 	            	if (!mWorkspace.isDefaultScreenShowing()) {
+	            		dismissPreviews();
 	                    mWorkspace.moveToDefaultScreen();
 	                }else{
 	                	if(!showingPreviews){
@@ -987,15 +1003,40 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	                		dismissPreviews();
 	                	}
 	                }
-                }else{
+					break;
+				case BIND_PREVIEWS:
                 	if(!showingPreviews){
                 		showPreviews(mHandleView, 0, mWorkspace.mHomeScreens);
                 	}else{
                 		dismissPreviews();
                 	}
+					break;
+				case BIND_APPS:
+					dismissPreviews();
+					if(isAllAppsVisible()){
+						closeDrawer();
+					}else{
+						showAllApps(true);
+					}
+					break;
+				case BIND_STATUSBAR:
+					WindowManager.LayoutParams attrs = getWindow().getAttributes();
+			    	if((attrs.flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN){
+				    	// go non-full screen
+				    	attrs.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+				    	getWindow().setAttributes(attrs);
+			    	}else{
+				    	// go full screen
+				    	attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+				    	getWindow().setAttributes(attrs);
+			    	}
+					break;
+				default:
+					break;
+				}
+                if(mHomeBinding!=BIND_APPS){
+                	closeDrawer();
                 }
-
-                closeDrawer();
 
                 final View v = getWindow().peekDecorView();
                 if (v != null && v.getWindowToken() != null) {
@@ -1143,7 +1184,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
-        if (requestCode >= 0) mWaitingForResult = true;
+        //ADW: closing drawer, removed from onpause
+    	closeDrawer(false);
+    	if (requestCode >= 0) mWaitingForResult = true;
         super.startActivityForResult(intent, requestCode);
     }
 
@@ -1942,6 +1985,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         	mWorkspace.addInScreen(openFolder, folderInfo.screen, 0, 0, 4, 4);
         }
         openFolder.onOpen();
+        //ADW: closing drawer, removed from onpause
+    	closeDrawer(false);
     }
 
     /**
@@ -2485,7 +2530,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private void updateAlmostNexusVars(){
 		allowDrawerAnimations=AlmostNexusSettingsHelper.getDrawerAnimated(Launcher.this);
 		newPreviews=AlmostNexusSettingsHelper.getNewPreviews(this);
-		homePreviews=AlmostNexusSettingsHelper.getPreviewsHome(this);
+		mHomeBinding=AlmostNexusSettingsHelper.getHomeBinding(this);
 		fullScreenPreviews=AlmostNexusSettingsHelper.getFullScreenPreviews(this);
 		hideStatusBar=AlmostNexusSettingsHelper.getHideStatusbar(this);
 		showDots=AlmostNexusSettingsHelper.getUIDots(this);
