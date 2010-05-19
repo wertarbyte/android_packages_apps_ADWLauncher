@@ -1942,7 +1942,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         openFolder.bind(folderInfo);
         folderInfo.opened = true;
 
-        mWorkspace.addInScreen(openFolder, folderInfo.screen, 0, 0, 4, 4);
+        if(folderInfo.container==LauncherSettings.Favorites.CONTAINER_DOCKBAR || folderInfo.container==LauncherSettings.Favorites.CONTAINER_LAB || folderInfo.container==LauncherSettings.Favorites.CONTAINER_RAB){
+        	mWorkspace.addInScreen(openFolder, mWorkspace.getCurrentScreen(), 0, 0, 4, 4);
+        }else{
+        	mWorkspace.addInScreen(openFolder, folderInfo.screen, 0, 0, 4, 4);
+        }
         openFolder.onOpen();
     }
 
