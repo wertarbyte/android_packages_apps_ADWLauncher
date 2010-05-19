@@ -282,9 +282,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
         updateAlmostNexusVars();
         //ADW: Check orientation settings and set it on boot
-        if(!AlmostNexusSettingsHelper.getDesktopRotation(this)){
-        	this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-        }
+        this.setRequestedOrientation(
+        		AlmostNexusSettingsHelper.getDesktopRotation(this)?
+        				ActivityInfo.SCREEN_ORIENTATION_USER:ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
+        );
         checkForLocaleChange();
         setWallpaperDimension();
         //ADW: load the drawer type on boot so we can cast the proper Class later
@@ -473,13 +474,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     protected void onResume() {
         super.onResume();
         //ADW: Use custom settings to set the rotation
-        if(AlmostNexusSettingsHelper.getDesktopRotation(this)){
-	        this.setRequestedOrientation(
-	        		Settings.System.getInt(this.getContentResolver(), "launcher_orientation", 0) == 0 ?
-	        				ActivityInfo.SCREEN_ORIENTATION_NOSENSOR : ActivityInfo.SCREEN_ORIENTATION_USER);
-        }else{
-        	this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-        }
+        this.setRequestedOrientation(
+        		AlmostNexusSettingsHelper.getDesktopRotation(this)?
+        				ActivityInfo.SCREEN_ORIENTATION_USER:ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
+        );
         //ADW: Use custom settings to change number of columns (and rows for SlidingGrid) depending on phone rotation
         int orientation = getResources().getConfiguration().orientation;
 		if(orientation==Configuration.ORIENTATION_PORTRAIT){
