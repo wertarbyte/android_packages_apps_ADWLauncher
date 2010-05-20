@@ -258,6 +258,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	private boolean showRAB=true;
 	private boolean tintActionIcons=true;
 	private boolean lwpSupport=true;
+	private boolean hideAppsBg=false;
 	/**
 	 * ADW: Home binding constants
 	 */
@@ -2539,6 +2540,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 		showLAB=AlmostNexusSettingsHelper.getUILAB(this);
 		showRAB=AlmostNexusSettingsHelper.getUIRAB(this);    	
 		lwpSupport=AlmostNexusSettingsHelper.getLWPSupport(this);
+		hideAppsBg=AlmostNexusSettingsHelper.getUIAppsBg(this);
 		if(mWorkspace!=null){
 			mWorkspace.setSpeed(AlmostNexusSettingsHelper.getDesktopSpeed(this));
 			mWorkspace.setBounceAmount(AlmostNexusSettingsHelper.getDesktopBounce(this));
@@ -2568,6 +2570,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	    	mRAB.setVisibility(showRAB?View.VISIBLE:View.INVISIBLE);
 	    	mLAB.setVisibility(showLAB?View.VISIBLE:View.INVISIBLE);
 	    	mHandleView.setSlidingEnabled(showDockBar);
+	    	View appsBg=findViewById(R.id.appsBg);
+	    	appsBg.setVisibility(hideAppsBg?View.INVISIBLE:View.VISIBLE);
     	}
     }
     /**

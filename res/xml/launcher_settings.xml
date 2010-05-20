@@ -131,6 +131,11 @@
 			android:defaultValue="true"
 			android:summary="Enable/disable icon tint effect on Action Buttons"
 			android:key="uiTint" />
+		<CheckBoxPreference android:title="Hide AllApps Bg"
+			android:defaultValue="false"
+			android:summary="Hide the background for the App-Drawer button"
+			android:key="uiAppsBg" />
+
 	</PreferenceScreen>
 	<PreferenceCategory android:title="Build Information">
 		<Preference

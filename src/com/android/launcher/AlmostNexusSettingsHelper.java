@@ -121,4 +121,9 @@ public final class AlmostNexusSettingsHelper {
 		int newD = sp.getInt("desktopBounce", 25);
 		return newD;
 	}
+	public static boolean getUIAppsBg(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
+		boolean newD = sp.getBoolean("uiAppsBg", false);
+		return newD;
+	}
 }
