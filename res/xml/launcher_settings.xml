@@ -135,7 +135,10 @@
 			android:defaultValue="false"
 			android:summary="Hide the background for the App-Drawer button"
 			android:key="uiAppsBg" />
-
+		<CheckBoxPreference android:title="Hide AB Bg"
+			android:defaultValue="false"
+			android:summary="Hide the background for the Action Buttons"
+			android:key="uiABBg" />
 	</PreferenceScreen>
 	<PreferenceCategory android:title="Build Information">
 		<Preference

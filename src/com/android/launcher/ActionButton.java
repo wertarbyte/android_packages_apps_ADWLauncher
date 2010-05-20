@@ -17,7 +17,7 @@ public class ActionButton extends ImageView implements DropTarget, DragListener 
     private DragLayer mDragLayer;
 	private int mIdent=LauncherSettings.Favorites.CONTAINER_LAB;
 	private ItemInfo mCurrentInfo;
-	
+	private Drawable bgResource;
 	public ActionButton(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
@@ -34,6 +34,10 @@ public class ActionButton extends ImageView implements DropTarget, DragListener 
 		setHapticFeedbackEnabled(true);
 		TypedArray a=context.obtainStyledAttributes(attrs,R.styleable.ActionButton,defStyle,0);
 		mIdent=a.getInt(R.styleable.ActionButton_ident, mIdent);
+		a.recycle();
+		a=context.obtainStyledAttributes(attrs, android.R.styleable.View, defStyle,0);
+		bgResource=a.getDrawable(android.R.styleable.View_background);
+		a.recycle();
 	}
 
 	public boolean acceptDrop(DragSource source, int x, int y, int xOffset,
@@ -183,5 +187,15 @@ public class ActionButton extends ImageView implements DropTarget, DragListener 
 	        setImageDrawable(myIcon);
 	        invalidate();
     	}
+	}
+	/**
+	 * ADW: show/hide background
+	 * @param enable
+	 */
+	public void hideBg(boolean hide){
+		if(!hide)
+			this.setBackgroundDrawable(bgResource);
+		else
+			this.setBackgroundDrawable(null);
 	}
 }
