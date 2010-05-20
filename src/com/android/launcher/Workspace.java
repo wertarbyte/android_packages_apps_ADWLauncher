@@ -447,13 +447,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     @Override
     protected void dispatchDraw(Canvas canvas) {
         boolean restore = false;
-
-        // If the all apps drawer is open and the drawing region for the workspace
-        // is contained within the drawer's bounds, we skip the drawing. This requires
-        // the drawer to be fully opaque.
-        if((mLauncher.isAllAppsVisible() && mLauncher.isAllAppsOpaque()) || mLauncher.isFullScreenPreviewing()){
-        	return;
-        }
         //ADW: If using old wallpaper rendering method...
         if(!lwpSupport){
         	float x = mScrollX * mWallpaperOffset;
@@ -466,6 +459,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         		x=(mScrollX-mWallpaperWidth+(mRight-mLeft));
         	}
     		canvas.drawBitmap(mWallpaper, x, (mBottom - mWallpaperHeight) / 2, mPaint);
+        }
+        // If the all apps drawer is open and the drawing region for the workspace
+        // is contained within the drawer's bounds, we skip the drawing. This requires
+        // the drawer to be fully opaque.
+        if((mLauncher.isAllAppsVisible() && mLauncher.isAllAppsOpaque()) || mLauncher.isFullScreenPreviewing()){
+        	return;
         }
         // ViewGroup.dispatchDraw() supports many features we don't need:
         // clip to padding, layout animation, animation listener, disappearing

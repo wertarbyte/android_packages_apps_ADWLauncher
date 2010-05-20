@@ -984,6 +984,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
             if ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) !=
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) {
+                if(mHomeBinding!=BIND_APPS){
+                	closeDrawer();
+                }
             	//ADW: switch home button binding user selection
                 switch (mHomeBinding) {
 				case BIND_DEFAULT:
@@ -1034,9 +1037,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 				default:
 					break;
 				}
-                if(mHomeBinding!=BIND_APPS){
-                	closeDrawer();
-                }
 
                 final View v = getWindow().peekDecorView();
                 if (v != null && v.getWindowToken() != null) {
