@@ -1055,15 +1055,18 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	    	Rect frame = new Rect();
 	    	int realScreen=mCurrentHolder;
 	    	final ViewGroup h=(ViewGroup)getChildAt(realScreen);
-	    	for(int i=0;i<h.getChildCount();i++){
-	        	final View child = h.getChildAt(i);
-	            if (child.getVisibility() == View.VISIBLE) {
-	                child.getHitRect(frame);
-	                if (frame.contains(x, y)) {
-	                    return child;
-	                }
-	            }
-	        }
+	    	//ADW: fix possible nullPointerException when flinging too fast
+	    	if(h!=null){
+		    	for(int i=0;i<h.getChildCount();i++){
+		        	final View child = h.getChildAt(i);
+		            if (child.getVisibility() == View.VISIBLE) {
+		                child.getHitRect(frame);
+		                if (frame.contains(x, y)) {
+		                    return child;
+		                }
+		            }
+		        }
+	    	}
     	}
         return null;
     }
