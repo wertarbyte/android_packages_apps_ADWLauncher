@@ -2918,7 +2918,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	        mDesktopLocked=true;
 	        mWorkspace.invalidate();			
 			//allApps.setVisibility(View.VISIBLE);
-			mAllAppsGrid.setVisibility(View.VISIBLE);
+			/*mAllAppsGrid.setVisibility(View.VISIBLE);
 			if(animated && allowDrawerAnimations){
 				Animation animation = AnimationUtils.loadAnimation(this,R.anim.apps_fade_in);
 				animation.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
@@ -2937,7 +2937,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 				mAllAppsGrid.startAnimation(animation);
 			}else{
 
-			}
+			}*/
+            if(newDrawer){
+    	        ((AllAppsSlidingView) mAllAppsGrid).open(animated && allowDrawerAnimations);
+            }else{
+    	        ((AllAppsGridView) mAllAppsGrid).open(animated && allowDrawerAnimations);
+            }
 			mHandleIcon.startTransition(150);
     	    mPreviousView.setVisibility(View.GONE);
     	    mNextView.setVisibility(View.GONE);			
@@ -2950,7 +2955,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	        mWorkspace.unlock();
 	        mDesktopLocked=false;
 	        mWorkspace.invalidate();			
-			if(animated && allowDrawerAnimations){
+			/*if(animated && allowDrawerAnimations){
 				Animation animation = AnimationUtils.loadAnimation(this,R.anim.apps_fade_out);
 				animation.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
 					public void onAnimationStart(Animation animation) {
@@ -2975,7 +2980,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 				mAllAppsGrid.startAnimation(animation);
 			}else{
 				mAllAppsGrid.setVisibility(View.GONE);
-			}
+			}*/
 			mHandleIcon.resetTransition();
 			if(!isDockBarOpen() && showDots){
 				mPreviousView.setVisibility(View.VISIBLE);
@@ -2984,6 +2989,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 				mPreviousView.setVisibility(View.GONE);
 	    	    mNextView.setVisibility(View.GONE);
 			}
+            if(newDrawer){
+    	        ((AllAppsSlidingView) mAllAppsGrid).close(animated && allowDrawerAnimations);
+            	((AllAppsSlidingView)mAllAppsGrid).setSelection(0);
+            }else{
+    	        ((AllAppsGridView) mAllAppsGrid).close(animated && allowDrawerAnimations);
+            	((AllAppsGridView)mAllAppsGrid).setSelection(0);
+            	((AllAppsGridView)mAllAppsGrid).clearTextFilter();
+            }
+
 		}    	
     }
     boolean isAllAppsVisible() {

@@ -1055,15 +1055,18 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	    	Rect frame = new Rect();
 	    	int realScreen=mCurrentHolder;
 	    	final ViewGroup h=(ViewGroup)getChildAt(realScreen);
-	    	for(int i=0;i<h.getChildCount();i++){
-	        	final View child = h.getChildAt(i);
-	            if (child.getVisibility() == View.VISIBLE) {
-	                child.getHitRect(frame);
-	                if (frame.contains(x, y)) {
-	                    return child;
-	                }
-	            }
-	        }
+	    	//ADW: fix possible nullPointerException when flinging too fast
+	    	if(h!=null){
+		    	for(int i=0;i<h.getChildCount();i++){
+		        	final View child = h.getChildAt(i);
+		            if (child.getVisibility() == View.VISIBLE) {
+		                child.getHitRect(frame);
+		                if (frame.contains(x, y)) {
+		                    return child;
+		                }
+		            }
+		        }
+	    	}
     	}
         return null;
     }
@@ -2120,62 +2123,18 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 			}
 		}
 	}
-	@Override
-	public void setVisibility(int visibility) {
-		// TODO Auto-generated method stub
-        if(visibility==View.VISIBLE){
-			mTexture=mLauncher.getBlurredBg();
-	        mTextureWidth = mTexture.getWidth();
-	        mTextureHeight = mTexture.getHeight();
-	
-	        mPaint = new Paint();
-	        mPaint.setDither(false);
-	        enableChildrenCache();
-        }else{
-        	clearChildrenCache();
-        }
-		super.setVisibility(visibility);
+	public void open(boolean animate) {
+		// TODO add animation control for current holderlayout children
+		mTexture=mLauncher.getBlurredBg();
+        mTextureWidth = mTexture.getWidth();
+        mTextureHeight = mTexture.getHeight();
+		setVisibility(View.VISIBLE);
+        enableChildrenCache();
+        invalidate();
 	}
-	@Override
-	public void setAnimation(Animation animation) {
-		// TODO Auto-generated method stub
-		if(getChildCount()<=0){
-			super.setAnimation(animation);
-		}else{
-			enableChildrenCache();
-			getChildAt(mCurrentHolder).setAnimation(animation);
-		}
+	public void close(boolean animate){
+    	clearChildrenCache();
+		setVisibility(View.GONE);
 	}
-	/*@Override
-	public void startAnimation(Animation animation) {
-		// TODO Auto-generated method stub
-		Log.d("LOL","Is this empty?"+getChildCount());
-		
-		mAnimation=animation;
-		misAnimating=true;
-		mBlockLayouts=false;
-		requestLayout();
-		mAnimation.setAnimationListener(new AnimationListener() {
-			
-			public void onAnimationStart(Animation animation) {
-				// TODO Auto-generated method stub
-				misAnimating=true;
-			}
-			
-			public void onAnimationRepeat(Animation animation) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			public void onAnimationEnd(Animation animation) {
-				// TODO Auto-generated method stub
-				misAnimating=false;
-				mAnimation=null;
-				mBlockLayouts=false;
-				requestLayout();
-			}
-		});	
-		//super.startAnimation(animation);
-	}*/
 
 }
