@@ -54,7 +54,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	private boolean isAnimating;
 	private long startTime;
 	private float mScaleFactor;
-	private Rect mIconRect=null;
+	private int mIconSize=0;
 
     public AllAppsGridView(Context context) {
         super(context);
@@ -168,6 +168,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	 */
 	@Override
 	public void draw(Canvas canvas) {
+		Log.d("APPSSLIDING","draw: mStatus="+mStatus);
 		long currentTime;
 		if(startTime==0){
 			startTime=SystemClock.uptimeMillis();
@@ -241,9 +242,9 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	@Override
 	protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
 		int saveCount = canvas.save();
-		if(mIconRect==null){
+		if(mIconSize==0){
 			Drawable[] tmp=((TextView)child).getCompoundDrawables();
-			mIconRect=tmp[1].getBounds();
+			mIconSize=tmp[1].getIntrinsicHeight()+child.getPaddingTop();
 		}
 		child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_LOW);
 		child.setDrawingCacheEnabled(true);
@@ -258,10 +259,10 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 				x=child.getLeft()+(distH*(mScaleFactor-1))*(mScaleFactor+1);
 				y=child.getTop()+(distV*(mScaleFactor-1))*(mScaleFactor+1);
 				float width=child.getWidth()*mScaleFactor;
-				float height=(child.getHeight()-(child.getHeight()-mIconRect.bottom))*mScaleFactor;
-				Rect r1=new Rect(0, 0, cache.getWidth(), cache.getHeight()-(child.getHeight()-mIconRect.bottom));
+				float height=(child.getHeight()-(child.getHeight()-mIconSize))*mScaleFactor;
+				Rect r1=new Rect(0, 0, cache.getWidth(), cache.getHeight()-(child.getHeight()-mIconSize));
 				Rect r2=new Rect((int)x, (int)y, (int)x+(int)width, (int)y+(int)height);
-					canvas.drawBitmap(cache, r1, r2, mPaint);
+				canvas.drawBitmap(cache, r1, r2, mPaint);
 			}else{
 				child.draw(canvas);
 			}
@@ -275,6 +276,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	 * Open/close public methods
 	 */
 	public void open(boolean animate){
+		Log.d("ALLAPPSGRID","OPEN: children="+getChildCount());
         //setCacheColorHint(0);
         setDrawingCacheBackgroundColor(0);
 		clearChildrenCache();

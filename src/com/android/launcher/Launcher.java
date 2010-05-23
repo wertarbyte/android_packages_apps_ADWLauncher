@@ -2991,10 +2991,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 			}
             if(newDrawer){
     	        ((AllAppsSlidingView) mAllAppsGrid).close(animated && allowDrawerAnimations);
-            	((AllAppsSlidingView)mAllAppsGrid).setSelection(0);
+            	//((AllAppsSlidingView)mAllAppsGrid).setSelection(0);
             }else{
     	        ((AllAppsGridView) mAllAppsGrid).close(animated && allowDrawerAnimations);
-            	((AllAppsGridView)mAllAppsGrid).setSelection(0);
+            	//((AllAppsGridView)mAllAppsGrid).setSelection(0);
             	((AllAppsGridView)mAllAppsGrid).clearTextFilter();
             }
 

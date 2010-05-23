@@ -1,29 +1,57 @@
 package com.android.launcher;
 
+import com.android.launcher.SliderView.OnTriggerListener;
+
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.TextView;
 
 public class HolderLayout extends ViewGroup {
-
+    //ADW: Animation vars
+	private final static int CLOSED=1;
+	private final static int OPEN=2;
+	private final static int CLOSING=3;
+	private final static int OPENING=4;
+	private int mStatus=OPEN;
+	private boolean isAnimating;
+	private long startTime;
+	private float mScaleFactor;
+	private Rect mIconRect=null;
+	private int mIconSize=0;
+	private Paint mPaint;
+	//ADW: listener to dispatch open/close animation events
+	private OnFadingListener mOnFadingListener;
 	public HolderLayout(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
+		mPaint=new Paint();
+		mPaint.setDither(false);
 	}
 
 	public HolderLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
+		mPaint=new Paint();
+		mPaint.setDither(false);
 	}
 
 	public HolderLayout(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
+		mPaint=new Paint();
+		mPaint.setDither(false);
 	}
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -95,6 +123,166 @@ public class HolderLayout extends ViewGroup {
     public boolean onTouchEvent(MotionEvent ev) {
     	//Log.d("HolderLayout","TOUCH");
 		return true;
+    }
+    /**
+     * ADW: easing functions for animation
+     */
+	static float easeOut (float time, float begin, float end, float duration) {
+		float change=end- begin;
+		return change*((time=time/duration-1)*time*time + 1) + begin;
+	}
+	static float easeIn (float time, float begin, float end, float duration) {
+		float change=end- begin;
+		return change*(time/=duration)*time*time + begin;
+	}
+	static float easeInOut (float time, float begin, float end, float duration) {
+		float change=end- begin;
+		if ((time/=duration/2.0f) < 1) return change/2.0f*time*time*time + begin;
+		return change/2.0f*((time-=2.0f)*time*time + 2.0f) + begin;
+	}
+	/**
+	 * ADW: Override drawing methods to do animation
+	 */
+	@Override
+	public void dispatchDraw(Canvas canvas) {
+		Log.d("HOLDERLAYOUT","dispatchdraw from:"+this+" mStatus="+mStatus);
+		long currentTime;
+		if(startTime==0){
+			startTime=SystemClock.uptimeMillis();
+			currentTime=0;
+		}else{
+			currentTime=SystemClock.uptimeMillis()-startTime;
+		}
+		if(mStatus==OPENING){
+			mScaleFactor=easeOut(currentTime, 5.0f, 1.0f, 800);
+		}else if (mStatus==CLOSING){
+			mScaleFactor=easeIn(currentTime, 1.0f, 5.0f, 800);
+		}
+		if(currentTime>=800){
+			isAnimating=false;
+			if(mStatus==OPENING){
+				mStatus=OPEN;
+				dispatchFadingEvent(OnFadingListener.OPEN);
+				clearChildrenCache();
+				setChildrenDrawingCacheEnabled(true);
+			}else if(mStatus==CLOSING){
+				mStatus=CLOSED;
+				dispatchFadingEvent(OnFadingListener.CLOSE);
+				//setVisibility(View.GONE);
+			}
+		}
+		int alpha=255;
+		if(isAnimating){
+			float porcentajeScale=1.2f-((mScaleFactor-1)/4.0f);
+			if(porcentajeScale>1)porcentajeScale=1;
+			if(porcentajeScale<0)porcentajeScale=0;
+			alpha=(int)(porcentajeScale*255);
+		}
+		mPaint.setAlpha(alpha);
+		if(mStatus!=CLOSED){
+			//canvas.drawARGB(alpha,0, 0, 0);
+    		//canvas.drawARGB(alpha,0, 0, 0);
+			super.dispatchDraw(canvas);
+		}
+
+	}
+	private void clearChildrenCache(){
+		for(int i=0;i<getChildCount();i++){
+			getChildAt(i).destroyDrawingCache();
+		}
+	}
+	@Override
+	protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+		int saveCount = canvas.save();
+		if(mIconSize==0){
+			Drawable[] tmp=((TextView)child).getCompoundDrawables();
+			mIconSize=tmp[1].getIntrinsicHeight()+child.getPaddingTop();
+		}
+		child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_LOW);
+		child.setDrawingCacheEnabled(true);
+		Bitmap cache=child.getDrawingCache();
+		if(isAnimating){
+			postInvalidate();
+			if(cache!=null){
+				float x;
+				float y;
+				int distH=(child.getLeft()+(child.getWidth()/2))-(getWidth()/2);
+				int distV=(child.getTop()+(child.getHeight()/2))-(getHeight()/2);
+				x=child.getLeft()+(distH*(mScaleFactor-1))*(mScaleFactor+1);
+				y=child.getTop()+(distV*(mScaleFactor-1))*(mScaleFactor+1);
+				float width=child.getWidth()*mScaleFactor;
+				float height=(child.getHeight()-(child.getHeight()-mIconSize))*mScaleFactor;
+				Rect r1=new Rect(0, 0, cache.getWidth(), cache.getHeight()-(child.getHeight()-mIconSize));
+				Rect r2=new Rect((int)x, (int)y, (int)x+(int)width, (int)y+(int)height);
+				canvas.drawBitmap(cache, r1, r2, mPaint);
+			}else{
+				child.draw(canvas);
+			}
+		}else{
+			canvas.drawBitmap(cache, child.getLeft(), child.getTop(), mPaint);
+		}
+		canvas.restoreToCount(saveCount);
+		return true;
+	}
+	/**
+	 * Open/close public methods
+	 */
+	public void open(boolean animate){
+        //setCacheColorHint(0);
+		Log.d("HOLDERLAYOUT","open:("+animate+")");
+        setDrawingCacheBackgroundColor(0);
+		clearChildrenCache();
+		setChildrenDrawingCacheEnabled(true);
+		if(animate){
+			isAnimating=true;
+			mStatus=OPENING;
+		}else{
+			isAnimating=false;
+			mStatus=OPEN;
+			dispatchFadingEvent(OnFadingListener.OPEN);
+		}
+		startTime=0;
+		//this.setVisibility(View.VISIBLE);
+		invalidate();
+	}
+	public void close(boolean animate){
+		Log.d("HOLDERLAYOUT","close:("+animate+")");
+        //setCacheColorHint(0);
+        setDrawingCacheBackgroundColor(0);
+		clearChildrenCache();
+		setChildrenDrawingCacheEnabled(true);
+		if(animate){
+			mStatus=CLOSING;
+			isAnimating=true;
+		}else{
+			mStatus=CLOSED;
+			isAnimating=false;
+			//setVisibility(View.GONE);
+			dispatchFadingEvent(OnFadingListener.CLOSE);
+		}
+		startTime=0;
+		invalidate();
+	}
+    /**
+     * Interface definition for a callback to be invoked when an open/close animation
+     * starts/ends
+     */
+    public interface OnFadingListener {
+        public static final int OPEN=1;
+        public static final int CLOSE=2;
+        void onUpdate(int Status);
+    }
+    public void setOnFadingListener(OnFadingListener listener) {
+        mOnFadingListener = listener;
+    }
+    /**
+     * Dispatches a trigger event to listener. Ignored if a listener is not set.
+     * @param whichHandle the handle that triggered the event.
+     */
+    private void dispatchFadingEvent(int status) {
+        if (mOnFadingListener != null) {
+            mOnFadingListener.onUpdate(status);
+        }
     }
 
 }
