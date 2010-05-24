@@ -44,12 +44,18 @@
 		android:key="drawerPrerefences"
 		android:title="Drawer Settings"
 		android:summary="App drawer grid preferences">
+		<com.android.launcher.dlgSeekBarPreference
+			android:title="Zoom effect speed"
+			android:summary="Set the time in milliseconds for the zoom effect"
+			android:dialogMessage="Set the time in milliseconds for the zoom effect"
+			android:key="zoomSpeed" android:defaultValue="800"
+			android:max="4700" />
 		<CheckBoxPreference android:title="New Drawer"
 			android:defaultValue="true"
 			android:summary="Use the Samsung Galaxy S implementation"
 			android:key="drawerNew" />
 		<CheckBoxPreference android:title="Animated Drawer"
-			android:defaultValue="false"
+			android:defaultValue="true"
 			android:summary="Turns whether App Drawer should display animations"
 			android:key="drawerAnimated" />
 		<CheckBoxPreference android:title="Fast Drawer"
