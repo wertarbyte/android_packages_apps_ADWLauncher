@@ -55,7 +55,9 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	private long startTime;
 	private float mScaleFactor;
 	private int mIconSize=0;
-
+	private int mBgAlpha=255;
+	private Paint mLabelPaint;
+	private boolean shouldDrawLabels=false;
     public AllAppsGridView(Context context) {
         super(context);
     }
@@ -81,12 +83,14 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
         }
         a.recycle();
         mPaint = new Paint();
-        mPaint.setDither(false);
+        mPaint.setDither(false); 
+        mLabelPaint=new Paint();
+        mLabelPaint.setDither(false);
     }
 
     @Override
     public boolean isOpaque() {
-        if(forceOpaque) return true;
+        if(forceOpaque) return mBgAlpha>=250;
         else return !mTexture.hasAlpha();
     }
 
@@ -135,13 +139,13 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	    	forceOpaque=value;
 	    	if(value){
 	    		//this.setBackgroundColor(0xFF000000);
-	    		//this.setCacheColorHint(0xFF000000);
-	    		//this.setDrawingCacheBackgroundColor(0xFF000000);
+	    		this.setCacheColorHint(0xFF000000);
+	    		this.setDrawingCacheBackgroundColor(0xFF000000);
 	    		setScrollingCacheEnabled(true);
 	    	}else{
-	    		this.setBackgroundDrawable(null);
-	    		//this.setCacheColorHint(Color.TRANSPARENT);
-	    		//super.setCacheColorHint(Color.TRANSPARENT);
+	    		//this.setBackgroundDrawable(null);
+	    		this.setCacheColorHint(Color.TRANSPARENT);
+	    		super.setCacheColorHint(Color.TRANSPARENT);
 	    		this.setDrawingCacheBackgroundColor(Color.TRANSPARENT);
 	    		setScrollingCacheEnabled(true);
 	    	}
@@ -168,7 +172,6 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	 */
 	@Override
 	public void draw(Canvas canvas) {
-		Log.d("APPSSLIDING","draw: mStatus="+mStatus);
 		long currentTime;
 		if(startTime==0){
 			startTime=SystemClock.uptimeMillis();
@@ -177,33 +180,36 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 			currentTime=SystemClock.uptimeMillis()-startTime;
 		}
 		if(mStatus==OPENING){
-			mScaleFactor=easeOut(currentTime, 5.0f, 1.0f, 800);
+			mScaleFactor=easeOut(currentTime, 3.0f, 1.0f, 800);
 		}else if (mStatus==CLOSING){
-			mScaleFactor=easeIn(currentTime, 1.0f, 5.0f, 800);
+			mScaleFactor=easeIn(currentTime, 1.0f, 3.0f, 800);
 		}
 		if(currentTime>=800){
 			isAnimating=false;
 			if(mStatus==OPENING){
 				mStatus=OPEN;
-				if(forceOpaque){
-					//setCacheColorHint(0xFF000000);
-					setDrawingCacheBackgroundColor(0xFF000000);
-				}
 				clearChildrenCache();
+				if(forceOpaque){
+					setCacheColorHint(0xFF000000);
+					setDrawingCacheBackgroundColor(0xFF000000);
+			        setHorizontalFadingEdgeEnabled(true);
+			        setVerticalFadingEdgeEnabled(true);
+				}
 				setChildrenDrawingCacheEnabled(true);
+				setDrawingCacheEnabled(true);
 			}else if(mStatus==CLOSING){
 				mStatus=CLOSED;
 				setVisibility(View.GONE);
 			}
 		}
-		int alpha=255;
+		shouldDrawLabels=(currentTime>400 && mStatus==OPENING)||(currentTime<400 && mStatus==CLOSING);
 		if(isAnimating){
-			float porcentajeScale=1.2f-((mScaleFactor-1)/4.0f);
+			float porcentajeScale=1.0f-((mScaleFactor-1)/4.0f);
 			if(porcentajeScale>1)porcentajeScale=1;
 			if(porcentajeScale<0)porcentajeScale=0;
-			alpha=(int)(porcentajeScale*255);
+			mBgAlpha=(int)(porcentajeScale*255);
 		}
-		mPaint.setAlpha(alpha);
+		mPaint.setAlpha(mBgAlpha);
 		if(getVisibility()==View.VISIBLE){
 			//canvas.drawARGB(alpha,0, 0, 0);
 	    	if(!forceOpaque){
@@ -228,7 +234,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 		            x += textureWidth;
 		        }
 	    	}else{
-	    		canvas.drawARGB(alpha,0, 0, 0);
+	    		canvas.drawARGB(mBgAlpha,0, 0, 0);
 	    	}
 			super.draw(canvas);
 		}
@@ -256,12 +262,19 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 				float y;
 				int distH=(child.getLeft()+(child.getWidth()/2))-(getWidth()/2);
 				int distV=(child.getTop()+(child.getHeight()/2))-(getHeight()/2);
-				x=child.getLeft()+(distH*(mScaleFactor-1))*(mScaleFactor+1);
-				y=child.getTop()+(distV*(mScaleFactor-1))*(mScaleFactor+1);
+				x=child.getLeft()+(distH*(mScaleFactor-1))*(mScaleFactor);
+				y=child.getTop()+(distV*(mScaleFactor-1))*(mScaleFactor);
 				float width=child.getWidth()*mScaleFactor;
 				float height=(child.getHeight()-(child.getHeight()-mIconSize))*mScaleFactor;
 				Rect r1=new Rect(0, 0, cache.getWidth(), cache.getHeight()-(child.getHeight()-mIconSize));
 				Rect r2=new Rect((int)x, (int)y, (int)x+(int)width, (int)y+(int)height);
+				if(shouldDrawLabels){
+					//ADW: try to manually draw labels
+					Rect rl1=new Rect(0,mIconSize,cache.getWidth(),cache.getHeight());
+					Rect rl2=new Rect(child.getLeft(),child.getTop()+mIconSize,child.getLeft()+cache.getWidth(),child.getTop()+cache.getHeight());
+					mLabelPaint.setAlpha(mBgAlpha-50);
+					canvas.drawBitmap(cache, rl1, rl2, mLabelPaint);
+				}
 				canvas.drawBitmap(cache, r1, r2, mPaint);
 			}else{
 				child.draw(canvas);
@@ -277,10 +290,12 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	 */
 	public void open(boolean animate){
 		Log.d("ALLAPPSGRID","OPEN: children="+getChildCount());
-        //setCacheColorHint(0);
+		setCacheColorHint(0);
         setDrawingCacheBackgroundColor(0);
 		clearChildrenCache();
 		setChildrenDrawingCacheEnabled(true);
+        setHorizontalFadingEdgeEnabled(false);
+        setVerticalFadingEdgeEnabled(false);
 		if(animate){
 			isAnimating=true;
 			mStatus=OPENING;
@@ -293,8 +308,10 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 		invalidate();
 	}
 	public void close(boolean animate){
-        //setCacheColorHint(0);
+        setCacheColorHint(0);
         setDrawingCacheBackgroundColor(0);
+        setHorizontalFadingEdgeEnabled(false);
+        setVerticalFadingEdgeEnabled(false);
 		clearChildrenCache();
 		setChildrenDrawingCacheEnabled(true);
 		if(animate){

@@ -31,6 +31,9 @@ public class HolderLayout extends ViewGroup {
 	private Rect mIconRect=null;
 	private int mIconSize=0;
 	private Paint mPaint;
+	private Paint mLabelPaint;
+	private boolean shouldDrawLabels=false;
+
 	//ADW: listener to dispatch open/close animation events
 	private OnFadingListener mOnFadingListener;
 	public HolderLayout(Context context) {
@@ -38,6 +41,8 @@ public class HolderLayout extends ViewGroup {
 		// TODO Auto-generated constructor stub
 		mPaint=new Paint();
 		mPaint.setDither(false);
+        mLabelPaint=new Paint();
+        mLabelPaint.setDither(false);
 	}
 
 	public HolderLayout(Context context, AttributeSet attrs) {
@@ -45,6 +50,8 @@ public class HolderLayout extends ViewGroup {
 		// TODO Auto-generated constructor stub
 		mPaint=new Paint();
 		mPaint.setDither(false);
+        mLabelPaint=new Paint();
+        mLabelPaint.setDither(false);
 	}
 
 	public HolderLayout(Context context, AttributeSet attrs, int defStyle) {
@@ -52,6 +59,8 @@ public class HolderLayout extends ViewGroup {
 		// TODO Auto-generated constructor stub
 		mPaint=new Paint();
 		mPaint.setDither(false);
+        mLabelPaint=new Paint();
+        mLabelPaint.setDither(false);
 	}
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -145,7 +154,6 @@ public class HolderLayout extends ViewGroup {
 	 */
 	@Override
 	public void dispatchDraw(Canvas canvas) {
-		Log.d("HOLDERLAYOUT","dispatchdraw from:"+this+" mStatus="+mStatus);
 		long currentTime;
 		if(startTime==0){
 			startTime=SystemClock.uptimeMillis();
@@ -154,9 +162,9 @@ public class HolderLayout extends ViewGroup {
 			currentTime=SystemClock.uptimeMillis()-startTime;
 		}
 		if(mStatus==OPENING){
-			mScaleFactor=easeOut(currentTime, 5.0f, 1.0f, 800);
+			mScaleFactor=easeOut(currentTime, 3.0f, 1.0f, 800);
 		}else if (mStatus==CLOSING){
-			mScaleFactor=easeIn(currentTime, 1.0f, 5.0f, 800);
+			mScaleFactor=easeIn(currentTime, 1.0f, 3.0f, 800);
 		}
 		if(currentTime>=800){
 			isAnimating=false;
@@ -171,12 +179,14 @@ public class HolderLayout extends ViewGroup {
 				//setVisibility(View.GONE);
 			}
 		}
+		shouldDrawLabels=(currentTime>400 && mStatus==OPENING)||(currentTime<400 && mStatus==CLOSING);
 		int alpha=255;
 		if(isAnimating){
-			float porcentajeScale=1.2f-((mScaleFactor-1)/4.0f);
-			if(porcentajeScale>1)porcentajeScale=1;
+			float porcentajeScale=1.0f-((mScaleFactor-1)/4.0f);
+			if(porcentajeScale>=0.9f)porcentajeScale=1;
 			if(porcentajeScale<0)porcentajeScale=0;
 			alpha=(int)(porcentajeScale*255);
+			dispatchFadingAlphaEvent(alpha);
 		}
 		mPaint.setAlpha(alpha);
 		if(mStatus!=CLOSED){
@@ -208,12 +218,19 @@ public class HolderLayout extends ViewGroup {
 				float y;
 				int distH=(child.getLeft()+(child.getWidth()/2))-(getWidth()/2);
 				int distV=(child.getTop()+(child.getHeight()/2))-(getHeight()/2);
-				x=child.getLeft()+(distH*(mScaleFactor-1))*(mScaleFactor+1);
-				y=child.getTop()+(distV*(mScaleFactor-1))*(mScaleFactor+1);
+				x=child.getLeft()+(distH*(mScaleFactor-1))*(mScaleFactor);
+				y=child.getTop()+(distV*(mScaleFactor-1))*(mScaleFactor);
 				float width=child.getWidth()*mScaleFactor;
 				float height=(child.getHeight()-(child.getHeight()-mIconSize))*mScaleFactor;
 				Rect r1=new Rect(0, 0, cache.getWidth(), cache.getHeight()-(child.getHeight()-mIconSize));
 				Rect r2=new Rect((int)x, (int)y, (int)x+(int)width, (int)y+(int)height);
+				if(shouldDrawLabels){
+					//ADW: try to manually draw labels
+					Rect rl1=new Rect(0,mIconSize,cache.getWidth(),cache.getHeight());
+					Rect rl2=new Rect(child.getLeft(),child.getTop()+mIconSize,child.getLeft()+cache.getWidth(),child.getTop()+cache.getHeight());
+					mLabelPaint.setAlpha(mPaint.getAlpha()-50);
+					canvas.drawBitmap(cache, rl1, rl2, mLabelPaint);
+				}
 				canvas.drawBitmap(cache, r1, r2, mPaint);
 			}else{
 				child.draw(canvas);
@@ -229,7 +246,6 @@ public class HolderLayout extends ViewGroup {
 	 */
 	public void open(boolean animate){
         //setCacheColorHint(0);
-		Log.d("HOLDERLAYOUT","open:("+animate+")");
         setDrawingCacheBackgroundColor(0);
 		clearChildrenCache();
 		setChildrenDrawingCacheEnabled(true);
@@ -246,7 +262,6 @@ public class HolderLayout extends ViewGroup {
 		invalidate();
 	}
 	public void close(boolean animate){
-		Log.d("HOLDERLAYOUT","close:("+animate+")");
         //setCacheColorHint(0);
         setDrawingCacheBackgroundColor(0);
 		clearChildrenCache();
@@ -271,6 +286,7 @@ public class HolderLayout extends ViewGroup {
         public static final int OPEN=1;
         public static final int CLOSE=2;
         void onUpdate(int Status);
+        void onAlphaChange(int alpha);
     }
     public void setOnFadingListener(OnFadingListener listener) {
         mOnFadingListener = listener;
@@ -284,5 +300,13 @@ public class HolderLayout extends ViewGroup {
             mOnFadingListener.onUpdate(status);
         }
     }
-
+    /**
+     * Dispatches a trigger event to listener. Ignored if a listener is not set.
+     * @param whichHandle the handle that triggered the event.
+     */
+    private void dispatchFadingAlphaEvent(int alpha) {
+        if (mOnFadingListener != null) {
+            mOnFadingListener.onAlphaChange(alpha);
+        }
+    }
 }

@@ -3,6 +3,8 @@ package com.android.launcher;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.android.launcher.HolderLayout.OnFadingListener;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
@@ -160,6 +162,8 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	private int mScrollToScreen;
 	//ADW: Animation variables
 	private boolean isAnimating=false;
+	private OnFadingListener mFadingListener;
+	private int mBgAlpha=255;
 	public AllAppsSlidingView(Context context) {
 		super(context);
 		initWorkspace();
@@ -197,7 +201,8 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	}
     @Override
     public boolean isOpaque() {
-    	return true;
+    	if(mBgAlpha>=250)return true;
+    	else return false;
     }
 	
     private void initWorkspace() {
@@ -220,6 +225,35 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
         mTouchSlop = configuration.getScaledTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
         mPager=new PreviewPager(getContext());
+        //ADW: listener to handle holderlayouts animations
+        mFadingListener=new OnFadingListener() {
+			@Override
+			public void onUpdate(int Status) {
+				// TODO Auto-generated method stub
+				if(Status==OnFadingListener.CLOSE){
+					setVisibility(View.GONE);
+				}else{
+			    	if(forceOpaque){
+			    		setCacheColorHint(0xFF000000);
+			    		setDrawingCacheBackgroundColor(0xFF000000);
+			    	}else{
+			    		setCacheColorHint(Color.TRANSPARENT);
+						setDrawingCacheBackgroundColor(Color.TRANSPARENT);
+			    	}					
+					enableChildrenCache();
+					setDrawingCacheEnabled(true);
+					setAlwaysDrawnWithCacheEnabled(true);
+				}
+			}
+			
+			@Override
+			public void onAlphaChange(int alpha) {
+				// TODO Auto-generated method stub
+				mBgAlpha=alpha;
+				//ADW: hack to redraw pager background..... :-(
+				invalidate(mPager.getLeft(), mPager.getTop(), mPager.getRight(), mPager.getBottom());
+			}
+		};
     }
     @Override
     protected void onFinishInflate() {
@@ -276,28 +310,12 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	    	final Bitmap texture = mTexture;
 	        final Paint paint = mPaint;
 	
-	        /*final int width = getWidth();
-	        final int height = getHeight();
-	
-	        final int textureWidth = mTextureWidth;
-	        final int textureHeight = mTextureHeight;*/
-	
 	        int x = getScrollX();//0;
 	        int y=0;
-	        /*
-	        while ((x-getScrollX()) < width) {
-	            y = 0;
-	            while (y < height) {
-	                canvas.drawBitmap(texture, x, y, paint);
-	                y += textureHeight;
-	            }
-	            x += textureWidth;
-	        }*/
-	        /*Matrix matrix=new Matrix();
-	        matrix.setScale(3, 3);
-	        matrix.postTranslate(x, y);
-	        canvas.drawBitmap(texture, matrix, mPaint);*/
+	        mPaint.setAlpha(mBgAlpha);
 	        canvas.drawBitmap(texture, x, y, mPaint);
+    	}else{
+    		canvas.drawARGB(mBgAlpha, 0, 0, 0);
     	}
 
         final boolean clipToPadding = (mGroupFlags & CLIP_TO_PADDING_MASK) == CLIP_TO_PADDING_MASK;
@@ -397,7 +415,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
         int pos=startPos;
         int x=marginLeft;
         int y=marginTop;
-        final HolderLayout holder=new HolderLayout(getContext());
+        HolderLayout holder=new HolderLayout(getContext());
         for(int i=0;i<mNumRows;i++){
         	for(int j=0;j<mNumColumns;j++){
         		if(pos<mAdapter.getCount()){
@@ -432,19 +450,9 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     	holder.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_LOW);
         holder.setDrawingCacheEnabled(true);
         holder.setTag(pageNum);
+        holder.setOnFadingListener(mFadingListener);
         addViewInLayout(holder, getChildCount(), holderParams, true);
         if(pageNum==mCurrentScreen && isAnimating){
-        	Log.d("ALLAPPSSLIDING","make animated opening page:"+pageNum);
-    		HolderLayout.OnFadingListener listener=new HolderLayout.OnFadingListener() {
-				@Override
-				public void onUpdate(int Status) {
-					if(Status==HolderLayout.OnFadingListener.CLOSE){
-						holder.setOnFadingListener(null);
-						isAnimating=false;
-					}
-				}
-			};
-			holder.setOnFadingListener(listener);
         	holder.open(true);
         }
     }
@@ -953,14 +961,12 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
         return null;
     }
     private void snapToDestination() {
-    	Log.d("ALLAPPSSLIDING","SNAPTODESTINATION");
         final int screenWidth = mPageWidth;
         final int whichScreen = (getScrollX() + (screenWidth / 2)) / screenWidth;
         snapToScreen(whichScreen);
     }
 
     void snapToScreen(int whichScreen) {
-    	Log.d("ALLAPPSSLIDING","SNAPTOSCREEN");
         if (!mScroller.isFinished()) return;
 
         enableChildrenCache();
@@ -1813,7 +1819,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     	if(value!=forceOpaque){
 	    	forceOpaque=value;
 	    	if(value){
-	    		setBackgroundColor(0xFF000000);
+	    		//setBackgroundColor(0xFF000000);
 	    		setCacheColorHint(0xFF000000);
 	    		setDrawingCacheBackgroundColor(0xFF000000);
 	    	}else{
@@ -1867,8 +1873,13 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
         mTextureWidth = mTexture.getWidth();
         mTextureHeight = mTexture.getHeight();
 		setVisibility(View.VISIBLE);
-        enableChildrenCache();
+        clearChildrenCache();
     	if(animate){
+    		mBgAlpha=0;
+    		setCacheColorHint(Color.TRANSPARENT);
+			setDrawingCacheBackgroundColor(Color.TRANSPARENT);
+			setDrawingCacheEnabled(false);
+			setAlwaysDrawnWithCacheEnabled(false);
     		final HolderLayout holder=(HolderLayout) getChildAt(mCurrentHolder);
     		if(holder==null){
     			isAnimating=true;
@@ -1881,17 +1892,11 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	public void close(boolean animate){
     	clearChildrenCache();
     	if(animate){
-    		final HolderLayout holder=(HolderLayout) getChildAt(mCurrentHolder);
-    		HolderLayout.OnFadingListener listener=new HolderLayout.OnFadingListener() {
-				@Override
-				public void onUpdate(int Status) {
-					if(Status==HolderLayout.OnFadingListener.CLOSE){
-						holder.setOnFadingListener(null);
-						setVisibility(View.GONE);
-					}
-				}
-			};
-			holder.setOnFadingListener(listener);
+    		setCacheColorHint(Color.TRANSPARENT);
+			setDrawingCacheBackgroundColor(Color.TRANSPARENT);
+			setDrawingCacheEnabled(false);
+			setAlwaysDrawnWithCacheEnabled(false);
+    		HolderLayout holder=(HolderLayout) getChildAt(mCurrentHolder);
 			holder.close(animate);
     	}else{
     		setVisibility(View.GONE);
