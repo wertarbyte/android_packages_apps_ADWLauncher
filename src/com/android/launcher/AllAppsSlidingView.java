@@ -287,7 +287,9 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
             scrollTo(mScroller.getCurrX(),mScroller.getCurrY());
             postInvalidate();
         } else if (mNextScreen != INVALID_SCREEN) {
-            if(mCurrentScreen!=Math.max(0, Math.min(mNextScreen, mTotalScreens - 1))){
+        	mLayoutMode=LAYOUT_NORMAL;
+        	mNextScreen = INVALID_SCREEN;
+            /*if(mCurrentScreen!=Math.max(0, Math.min(mNextScreen, mTotalScreens - 1))){
             	mCurrentScreen = Math.max(0, Math.min(mNextScreen, mTotalScreens - 1));
 	            mNextScreen = INVALID_SCREEN;
 	        	mPager.setCurrentItem(mCurrentScreen);
@@ -299,7 +301,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	        		}
 	        	}
 	        	clearChildrenCache();
-            }
+            }*/
         }
     }
 
@@ -974,7 +976,17 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
         whichScreen = Math.max(0, Math.min(whichScreen, mTotalScreens - 1));
         boolean changingScreens = whichScreen != mCurrentScreen;
         
-        mNextScreen = whichScreen;
+        mNextScreen=whichScreen;
+        mCurrentScreen = whichScreen;
+    	mPager.setCurrentItem(mCurrentScreen);
+    	for(int i=1;i<getChildCount();i++){
+    		if(getChildAt(i).getTag().equals(mCurrentScreen)){
+    			mCurrentHolder=i;
+    			break;
+    		}
+    	}
+    	clearChildrenCache();
+        
         if(changingScreens){
         	mLayoutMode=LAYOUT_SCROLLING;
         }
