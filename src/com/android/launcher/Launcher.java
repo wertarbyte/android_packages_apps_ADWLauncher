@@ -2547,6 +2547,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 			mWorkspace.setSpeed(AlmostNexusSettingsHelper.getDesktopSpeed(this));
 			mWorkspace.setBounceAmount(AlmostNexusSettingsHelper.getDesktopBounce(this));
 		}
+		int animationSpeed=AlmostNexusSettingsHelper.getZoomSpeed(this);
+        if(mAllAppsGrid!=null){
+			if(newDrawer){
+		        ((AllAppsSlidingView) mAllAppsGrid).setAnimationSpeed(animationSpeed);
+	        }else{
+		        ((AllAppsGridView) mAllAppsGrid).setAnimationSpeed(animationSpeed);
+	        }
+        }
     }
     /**
      * ADW: Refresh UI status variables and elements after changing settings.

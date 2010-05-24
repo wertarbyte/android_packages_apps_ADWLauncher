@@ -58,6 +58,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	private int mBgAlpha=255;
 	private Paint mLabelPaint;
 	private boolean shouldDrawLabels=false;
+	private int mAnimationDuration=800;
     public AllAppsGridView(Context context) {
         super(context);
     }
@@ -180,11 +181,11 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 			currentTime=SystemClock.uptimeMillis()-startTime;
 		}
 		if(mStatus==OPENING){
-			mScaleFactor=easeOut(currentTime, 3.0f, 1.0f, 800);
+			mScaleFactor=easeOut(currentTime, 3.0f, 1.0f, mAnimationDuration);
 		}else if (mStatus==CLOSING){
-			mScaleFactor=easeIn(currentTime, 1.0f, 3.0f, 800);
+			mScaleFactor=easeIn(currentTime, 1.0f, 3.0f, mAnimationDuration);
 		}
-		if(currentTime>=800){
+		if(currentTime>=mAnimationDuration){
 			isAnimating=false;
 			if(mStatus==OPENING){
 				mStatus=OPEN;
@@ -202,10 +203,10 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 				setVisibility(View.GONE);
 			}
 		}
-		shouldDrawLabels=(currentTime>400 && mStatus==OPENING)||(currentTime<400 && mStatus==CLOSING);
+		shouldDrawLabels=(currentTime>mAnimationDuration/2 && mStatus==OPENING)||(currentTime<mAnimationDuration/2 && mStatus==CLOSING);
 		if(isAnimating){
-			float porcentajeScale=1.0f-((mScaleFactor-1)/4.0f);
-			if(porcentajeScale>1)porcentajeScale=1;
+			float porcentajeScale=1.0f-((mScaleFactor-1)/2.0f);
+			if(porcentajeScale>0.9)porcentajeScale=1;
 			if(porcentajeScale<0)porcentajeScale=0;
 			mBgAlpha=(int)(porcentajeScale*255);
 		}
@@ -272,7 +273,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 					//ADW: try to manually draw labels
 					Rect rl1=new Rect(0,mIconSize,cache.getWidth(),cache.getHeight());
 					Rect rl2=new Rect(child.getLeft(),child.getTop()+mIconSize,child.getLeft()+cache.getWidth(),child.getTop()+cache.getHeight());
-					mLabelPaint.setAlpha(mBgAlpha-50);
+					mLabelPaint.setAlpha(mBgAlpha);
 					canvas.drawBitmap(cache, rl1, rl2, mLabelPaint);
 				}
 				canvas.drawBitmap(cache, r1, r2, mPaint);
@@ -289,7 +290,6 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	 * Open/close public methods
 	 */
 	public void open(boolean animate){
-		Log.d("ALLAPPSGRID","OPEN: children="+getChildCount());
 		setCacheColorHint(0);
         setDrawingCacheBackgroundColor(0);
 		clearChildrenCache();
@@ -324,5 +324,8 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 		}
 		startTime=0;
 		invalidate();
+	}
+	public void setAnimationSpeed(int speed){
+		mAnimationDuration=speed;
 	}
 }

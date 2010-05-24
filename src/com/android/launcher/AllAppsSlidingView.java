@@ -164,6 +164,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	private boolean isAnimating=false;
 	private OnFadingListener mFadingListener;
 	private int mBgAlpha=255;
+	private int mAnimationDuration=800;
 	public AllAppsSlidingView(Context context) {
 		super(context);
 		initWorkspace();
@@ -455,7 +456,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
         holder.setOnFadingListener(mFadingListener);
         addViewInLayout(holder, getChildCount(), holderParams, true);
         if(pageNum==mCurrentScreen && isAnimating){
-        	holder.open(true);
+        	holder.open(true, mAnimationDuration);
         }
     }
     private void addRemovePages(int current, int next){
@@ -1896,7 +1897,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     		if(holder==null){
     			isAnimating=true;
     		}else{
-    			holder.open(animate);
+    			holder.open(animate, mAnimationDuration);
     		}
     	}
         invalidate();
@@ -1909,9 +1910,12 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 			setDrawingCacheEnabled(false);
 			setAlwaysDrawnWithCacheEnabled(false);
     		HolderLayout holder=(HolderLayout) getChildAt(mCurrentHolder);
-			holder.close(animate);
+			holder.close(animate, mAnimationDuration);
     	}else{
     		setVisibility(View.GONE);
     	}
+	}
+	public void setAnimationSpeed(int speed){
+		mAnimationDuration=speed;
 	}
 }

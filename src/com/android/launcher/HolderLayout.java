@@ -33,6 +33,7 @@ public class HolderLayout extends ViewGroup {
 	private Paint mPaint;
 	private Paint mLabelPaint;
 	private boolean shouldDrawLabels=false;
+	private int mAnimationDuration=800;
 
 	//ADW: listener to dispatch open/close animation events
 	private OnFadingListener mOnFadingListener;
@@ -162,11 +163,11 @@ public class HolderLayout extends ViewGroup {
 			currentTime=SystemClock.uptimeMillis()-startTime;
 		}
 		if(mStatus==OPENING){
-			mScaleFactor=easeOut(currentTime, 3.0f, 1.0f, 800);
+			mScaleFactor=easeOut(currentTime, 3.0f, 1.0f, mAnimationDuration);
 		}else if (mStatus==CLOSING){
-			mScaleFactor=easeIn(currentTime, 1.0f, 3.0f, 800);
+			mScaleFactor=easeIn(currentTime, 1.0f, 3.0f, mAnimationDuration);
 		}
-		if(currentTime>=800){
+		if(currentTime>=mAnimationDuration){
 			isAnimating=false;
 			if(mStatus==OPENING){
 				mStatus=OPEN;
@@ -179,10 +180,10 @@ public class HolderLayout extends ViewGroup {
 				//setVisibility(View.GONE);
 			}
 		}
-		shouldDrawLabels=(currentTime>400 && mStatus==OPENING)||(currentTime<400 && mStatus==CLOSING);
+		shouldDrawLabels=(currentTime>mAnimationDuration/2 && mStatus==OPENING)||(currentTime<mAnimationDuration/2 && mStatus==CLOSING);
 		int alpha=255;
 		if(isAnimating){
-			float porcentajeScale=1.0f-((mScaleFactor-1)/4.0f);
+			float porcentajeScale=1.0f-((mScaleFactor-1)/3.0f);
 			if(porcentajeScale>=0.9f)porcentajeScale=1;
 			if(porcentajeScale<0)porcentajeScale=0;
 			alpha=(int)(porcentajeScale*255);
@@ -190,8 +191,6 @@ public class HolderLayout extends ViewGroup {
 		}
 		mPaint.setAlpha(alpha);
 		if(mStatus!=CLOSED){
-			//canvas.drawARGB(alpha,0, 0, 0);
-    		//canvas.drawARGB(alpha,0, 0, 0);
 			super.dispatchDraw(canvas);
 		}
 
@@ -228,7 +227,7 @@ public class HolderLayout extends ViewGroup {
 					//ADW: try to manually draw labels
 					Rect rl1=new Rect(0,mIconSize,cache.getWidth(),cache.getHeight());
 					Rect rl2=new Rect(child.getLeft(),child.getTop()+mIconSize,child.getLeft()+cache.getWidth(),child.getTop()+cache.getHeight());
-					mLabelPaint.setAlpha(mPaint.getAlpha()-50);
+					mLabelPaint.setAlpha(mPaint.getAlpha());
 					canvas.drawBitmap(cache, rl1, rl2, mLabelPaint);
 				}
 				canvas.drawBitmap(cache, r1, r2, mPaint);
@@ -244,8 +243,9 @@ public class HolderLayout extends ViewGroup {
 	/**
 	 * Open/close public methods
 	 */
-	public void open(boolean animate){
+	public void open(boolean animate, int speed){
         //setCacheColorHint(0);
+		mAnimationDuration=speed;
         setDrawingCacheBackgroundColor(0);
 		clearChildrenCache();
 		setChildrenDrawingCacheEnabled(true);
@@ -261,8 +261,9 @@ public class HolderLayout extends ViewGroup {
 		//this.setVisibility(View.VISIBLE);
 		invalidate();
 	}
-	public void close(boolean animate){
+	public void close(boolean animate, int speed){
         //setCacheColorHint(0);
+		mAnimationDuration=speed;
         setDrawingCacheBackgroundColor(0);
 		clearChildrenCache();
 		setChildrenDrawingCacheEnabled(true);

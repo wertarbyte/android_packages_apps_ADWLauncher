@@ -38,7 +38,7 @@ public final class AlmostNexusSettingsHelper {
 	}
 	public static boolean getDrawerAnimated(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
-		boolean animated = sp.getBoolean("drawerAnimated", false);
+		boolean animated = sp.getBoolean("drawerAnimated", true);
 		return animated;
 	}
 	public static boolean getDrawerFast(Context context) {
@@ -129,6 +129,11 @@ public final class AlmostNexusSettingsHelper {
 	public static boolean getUIABBg(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
 		boolean newD = sp.getBoolean("uiABBg", false);
+		return newD;
+	}
+	public static int getZoomSpeed(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
+		int newD = sp.getInt("zoomSpeed", 800)+300;
 		return newD;
 	}
 }
