@@ -234,6 +234,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 				if(Status==OnFadingListener.CLOSE){
 					setVisibility(View.GONE);
 				}else{
+					isAnimating=false;
 			    	if(forceOpaque){
 			    		setCacheColorHint(0xFF000000);
 			    		setDrawingCacheBackgroundColor(0xFF000000);
@@ -284,16 +285,18 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     
     @Override
     public void computeScroll() {
+    	Log.d("APPSSLIDING","currentpage="+mCurrentScreen+" currentholder="+mCurrentHolder);
+    	Log.d("APPSSLIDING","childrensss:"+getChildCount());
         if (mScroller.computeScrollOffset()) {
             scrollTo(mScroller.getCurrX(),mScroller.getCurrY());
             postInvalidate();
         } else if (mNextScreen != INVALID_SCREEN) {
         	mLayoutMode=LAYOUT_NORMAL;
         	mNextScreen = INVALID_SCREEN;
-            /*if(mCurrentScreen!=Math.max(0, Math.min(mNextScreen, mTotalScreens - 1))){
-            	mCurrentScreen = Math.max(0, Math.min(mNextScreen, mTotalScreens - 1));
-	            mNextScreen = INVALID_SCREEN;
-	        	mPager.setCurrentItem(mCurrentScreen);
+            //if(mCurrentScreen!=Math.max(0, Math.min(mNextScreen, mTotalScreens - 1))){
+            	//mCurrentScreen = Math.max(0, Math.min(mNextScreen, mTotalScreens - 1));
+	            //mNextScreen = INVALID_SCREEN;
+	        	//mPager.setCurrentItem(mCurrentScreen);
 	        	mLayoutMode=LAYOUT_NORMAL;
 	        	for(int i=1;i<getChildCount();i++){
 	        		if(getChildAt(i).getTag().equals(mCurrentScreen)){
@@ -302,7 +305,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	        		}
 	        	}
 	        	clearChildrenCache();
-            }*/
+            //}
         }
     }
 
@@ -979,13 +982,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
         
         mNextScreen=whichScreen;
         mCurrentScreen = whichScreen;
-    	mPager.setCurrentItem(mCurrentScreen);
-    	for(int i=1;i<getChildCount();i++){
-    		if(getChildAt(i).getTag().equals(mCurrentScreen)){
-    			mCurrentHolder=i;
-    			break;
-    		}
-    	}
+        mPager.setCurrentItem(mCurrentScreen);
     	clearChildrenCache();
         
         if(changingScreens){
@@ -1893,6 +1890,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 			setDrawingCacheBackgroundColor(Color.TRANSPARENT);
 			setDrawingCacheEnabled(false);
 			setAlwaysDrawnWithCacheEnabled(false);
+			Log.d("APPSSLIDING","OPEN currentHolder="+mCurrentHolder);
     		final HolderLayout holder=(HolderLayout) getChildAt(mCurrentHolder);
     		if(holder==null){
     			isAnimating=true;
