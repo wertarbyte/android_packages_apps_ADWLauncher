@@ -165,6 +165,10 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	private OnFadingListener mFadingListener;
 	private int mBgAlpha=255;
 	private int mAnimationDuration=800;
+    //ADW: speed for new scrolling transitions
+    private int mScrollingSpeed=600;
+    //ADW: bounce scroll
+    private int mScrollingBounce=50;
 	public AllAppsSlidingView(Context context) {
 		super(context);
 		initWorkspace();
@@ -285,27 +289,20 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     
     @Override
     public void computeScroll() {
-    	Log.d("APPSSLIDING","currentpage="+mCurrentScreen+" currentholder="+mCurrentHolder);
-    	Log.d("APPSSLIDING","childrensss:"+getChildCount());
         if (mScroller.computeScrollOffset()) {
             scrollTo(mScroller.getCurrX(),mScroller.getCurrY());
             postInvalidate();
         } else if (mNextScreen != INVALID_SCREEN) {
         	mLayoutMode=LAYOUT_NORMAL;
         	mNextScreen = INVALID_SCREEN;
-            //if(mCurrentScreen!=Math.max(0, Math.min(mNextScreen, mTotalScreens - 1))){
-            	//mCurrentScreen = Math.max(0, Math.min(mNextScreen, mTotalScreens - 1));
-	            //mNextScreen = INVALID_SCREEN;
-	        	//mPager.setCurrentItem(mCurrentScreen);
-	        	mLayoutMode=LAYOUT_NORMAL;
-	        	for(int i=1;i<getChildCount();i++){
-	        		if(getChildAt(i).getTag().equals(mCurrentScreen)){
-	        			mCurrentHolder=i;
-	        			break;
-	        		}
-	        	}
-	        	clearChildrenCache();
-            //}
+        	mLayoutMode=LAYOUT_NORMAL;
+        	for(int i=1;i<getChildCount();i++){
+        		if(getChildAt(i).getTag().equals(mCurrentScreen)){
+        			mCurrentHolder=i;
+        			break;
+        		}
+        	}
+        	clearChildrenCache();
         }
     }
 
@@ -614,13 +611,13 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	                }
                 	
 	                if (deltaX < 0) {
-	                    if (getScrollX() > 0) {
-	                        scrollBy(Math.max(-getScrollX(), deltaX), 0);
+	                    if (getScrollX() > -mScrollingBounce) {
+	                        scrollBy(Math.min(deltaX,mScrollingBounce), 0);
 	                    }
 	                } else if (deltaX > 0) {
-	                	final int availableToScroll = ((mTotalScreens)*mPageWidth)-getScrollX()-mPageWidth;
+	                	final int availableToScroll = ((mTotalScreens)*mPageWidth)-getScrollX()-mPageWidth+mScrollingBounce;
 	                	if (availableToScroll > 0) {
-	                        scrollBy(Math.min(availableToScroll, deltaX), 0);
+	                        scrollBy(deltaX, 0);
 	                    }
 	                }
                 }
@@ -981,6 +978,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
         boolean changingScreens = whichScreen != mCurrentScreen;
         
         mNextScreen=whichScreen;
+        final int screenDelta = Math.abs(whichScreen - mCurrentScreen);
         mCurrentScreen = whichScreen;
         mPager.setCurrentItem(mCurrentScreen);
     	clearChildrenCache();
@@ -992,11 +990,17 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
         if (focusedChild != null && changingScreens && focusedChild == getChildAt(mCurrentHolder)) {
             focusedChild.clearFocus();
         }
+
         
+        int durationOffset = 1;
+		// Faruq: Added to allow easing even when Screen doesn't changed (when revert happens)
+		if (screenDelta == 0) {
+			durationOffset = 200;
+		}
+		final int duration = mScrollingSpeed + durationOffset;
         final int newX = whichScreen * mPageWidth;
         final int delta = newX - getScrollX();
-        int speed=Math.abs(delta) *2;
-        mScroller.startScroll(getScrollX(), 0, delta, 0, speed);
+        mScroller.startScroll(getScrollX(), 0, delta, 0, duration);
         invalidate();
     }
 	@Override
@@ -1879,9 +1883,11 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	public void open(boolean animate) {
 		// TODO add animation control for current holderlayout children
 		mScroller.forceFinished(true);
-		mTexture=mLauncher.getBlurredBg();
-        mTextureWidth = mTexture.getWidth();
-        mTextureHeight = mTexture.getHeight();
+		if(!forceOpaque){
+			mTexture=mLauncher.getBlurredBg();
+	        mTextureWidth = mTexture.getWidth();
+	        mTextureHeight = mTexture.getHeight();
+		}
 		setVisibility(View.VISIBLE);
         clearChildrenCache();
     	if(animate){
