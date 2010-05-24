@@ -1896,7 +1896,6 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 			setDrawingCacheBackgroundColor(Color.TRANSPARENT);
 			setDrawingCacheEnabled(false);
 			setAlwaysDrawnWithCacheEnabled(false);
-			Log.d("APPSSLIDING","OPEN currentHolder="+mCurrentHolder);
     		final HolderLayout holder=(HolderLayout) getChildAt(mCurrentHolder);
     		if(holder==null){
     			isAnimating=true;
