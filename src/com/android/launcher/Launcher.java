@@ -2542,7 +2542,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 		showRAB=AlmostNexusSettingsHelper.getUIRAB(this);    	
 		lwpSupport=AlmostNexusSettingsHelper.getLWPSupport(this);
 		hideAppsBg=AlmostNexusSettingsHelper.getUIAppsBg(this);
-		hideABBg=AlmostNexusSettingsHelper.getUIAppsBg(this);
+		hideABBg=AlmostNexusSettingsHelper.getUIABBg(this);
 		if(mWorkspace!=null){
 			mWorkspace.setSpeed(AlmostNexusSettingsHelper.getDesktopSpeed(this));
 			mWorkspace.setBounceAmount(AlmostNexusSettingsHelper.getDesktopBounce(this));
