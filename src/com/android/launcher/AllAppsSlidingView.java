@@ -606,17 +606,20 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
                 final VelocityTracker velocityTracker = mVelocityTracker;
                 velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                 int velocityX = (int) velocityTracker.getXVelocity();
-                int moveScreens=Math.round(velocityX/1000);
+                //ADW: remove for now the "multi-page scrolling", is causing a lot of mess...
+                /*int moveScreens=Math.round(velocityX/1000);
                 int destinationScreen=mCurrentScreen-moveScreens;
                 if(destinationScreen<0) destinationScreen=0;
-                if(destinationScreen>mTotalScreens-1)destinationScreen=mTotalScreens-1;
+                if(destinationScreen>mTotalScreens-1)destinationScreen=mTotalScreens-1;*/
                 
                 if (velocityX > SNAP_VELOCITY && mCurrentScreen > 0) {
                     // Fling hard enough to move left
-                    snapToScreen(destinationScreen);
+                    //snapToScreen(destinationScreen);
+                	snapToScreen(mCurrentScreen-1);
                 } else if (velocityX < -SNAP_VELOCITY && mCurrentScreen < (mTotalScreens - 1)) {
                     // Fling hard enough to move right
-                	snapToScreen(destinationScreen);
+                	//snapToScreen(destinationScreen);
+                	snapToScreen(mCurrentScreen+1);
                 } else {
                     snapToDestination();
                 }
