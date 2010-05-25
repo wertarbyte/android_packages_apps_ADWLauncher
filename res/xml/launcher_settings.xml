@@ -48,7 +48,7 @@
 			android:title="Zoom effect speed"
 			android:summary="Set the time in milliseconds for the zoom effect"
 			android:dialogMessage="Set the time in milliseconds for the zoom effect"
-			android:key="zoomSpeed" android:defaultValue="500"
+			android:key="zoomSpeed" android:defaultValue="300"
 			android:max="4700" />
 		<CheckBoxPreference android:title="New Drawer"
 			android:defaultValue="true"

@@ -133,7 +133,7 @@ public final class AlmostNexusSettingsHelper {
 	}
 	public static int getZoomSpeed(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
-		int newD = sp.getInt("zoomSpeed", 800)+300;
+		int newD = sp.getInt("zoomSpeed", 300)+300;
 		return newD;
 	}
 }

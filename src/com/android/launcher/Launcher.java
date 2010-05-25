@@ -60,6 +60,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import static android.util.Log.*;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
 import android.view.Gravity;
@@ -489,6 +490,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         int orientation = getResources().getConfiguration().orientation;
 		if(orientation==Configuration.ORIENTATION_PORTRAIT){
 			if(newDrawer){
+				Log.d("LAUNCHER","SET COLUMNS");
 				((AllAppsSlidingView) mAllAppsGrid).setNumColumns(AlmostNexusSettingsHelper.getColumnsPortrait(Launcher.this));
 				((AllAppsSlidingView) mAllAppsGrid).setNumRows(AlmostNexusSettingsHelper.getRowsPortrait(Launcher.this));
 			}else{
