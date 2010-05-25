@@ -19,7 +19,6 @@ package com.android.launcher;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ISearchManager;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
 import android.app.WallpaperInfo;
@@ -516,11 +515,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             // itself again.
             mWorkspace.post(new Runnable() {
                 public void run() {
-                    ISearchManager searchManagerService = ISearchManager.Stub.asInterface(
-                            ServiceManager.getService(Context.SEARCH_SERVICE));
+                    //ADW: changed from using ISearchManager to use SearchManager (thanks to Launcher+ source code)
+                	SearchManager searchManagerService = (SearchManager) Launcher.this
+                    .getSystemService(Context.SEARCH_SERVICE);
                     try {
                         searchManagerService.stopSearch();
-                    } catch (RemoteException e) {
+                    } catch (Exception e) {
                         e(LOG_TAG, "error stopping search", e);
                     }    
                 }
