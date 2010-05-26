@@ -32,6 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import static android.util.Log.*;
 import android.os.Process;
+import android.os.SystemProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +49,7 @@ import java.net.URISyntaxException;
  * for the Launcher.
  */
 public class LauncherModel {
-    static final boolean DEBUG_LOADERS = false;
+    static final boolean DEBUG_LOADERS = true;
     static final String LOG_TAG = "HomeLoaders";
 
     private static final int UI_NOTIFICATION_RATE = 4;
@@ -613,14 +614,21 @@ public class LauncherModel {
      */
     void loadUserItems(boolean isLaunching, Launcher launcher, boolean localeChanged,
             boolean loadApplications) {
-        if (DEBUG_LOADERS) d(LOG_TAG, "loading user items");
+        if (DEBUG_LOADERS) d(LOG_TAG, "loading user items in " + Thread.currentThread().toString());
 
         if (isLaunching && isDesktopLoaded()) {
             if (DEBUG_LOADERS) d(LOG_TAG, "  --> items loaded, return");
             if (loadApplications) startApplicationsLoader(launcher, true);
-            // We have already loaded our data from the DB
-            launcher.onDesktopItemsLoaded(mDesktopItems, mDesktopAppWidgets);
-            return;
+            if (SystemProperties.get("debug.launcher.ignore-cache", "") == "") {
+                // We have already loaded our data from the DB
+                if (DEBUG_LOADERS) d(LOG_TAG, "  --> loading from cache: " + mDesktopItems.size() + ", " + mDesktopAppWidgets.size());
+                launcher.onDesktopItemsLoaded(mDesktopItems, mDesktopAppWidgets);
+                return;
+            }
+            else
+            {
+                d(LOG_TAG, "  ----> debug: forcing reload of workspace");
+            }
         }
 
         if (mDesktopItemsLoader != null && mDesktopItemsLoader.isRunning()) {
@@ -739,6 +747,7 @@ public class LauncherModel {
         }
 
         void stop() {
+            d(LOG_TAG, "  ----> workspace loader " + mId + " stopped from " + Thread.currentThread().toString());
             mStopped = true;
         }
 
@@ -952,13 +961,16 @@ public class LauncherModel {
             } finally {
                 c.close();
             }
+            if (DEBUG_LOADERS) {
+                d(LOG_TAG, "  ----> workspace loader " + mId + " finished loading data");
+                d(LOG_TAG, "  ----> worskpace items=" + desktopItems.size());
+                d(LOG_TAG, "  ----> worskpace widgets=" + desktopAppWidgets.size());
+            }
 
             synchronized(LauncherModel.this) {
                 if (!mStopped) {
                     if (DEBUG_LOADERS)  {
-                        d(LOG_TAG, "  --> done loading workspace");
-                        d(LOG_TAG, "  ----> worskpace items=" + desktopItems.size());
-                        d(LOG_TAG, "  ----> worskpace widgets=" + desktopAppWidgets.size());
+                        d(LOG_TAG, "  --> done loading workspace; not stopped");
                     }
 
                     // Create a copy of the lists in case the workspace loader is restarted
