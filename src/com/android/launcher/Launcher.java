@@ -260,6 +260,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	private boolean lwpSupport=true;
 	private boolean hideAppsBg=false;
 	private boolean hideABBg=false;
+	private float uiScaleAB=0.5f;
 	/**
 	 * ADW: Home binding constants
 	 */
@@ -2564,8 +2565,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private void updateAlmostNexusUI(){
     	updateAlmostNexusVars();
 		boolean tint=AlmostNexusSettingsHelper.getUITint(this);
-		if(tint!=tintActionIcons){
+		float scale=AlmostNexusSettingsHelper.getuiScaleAB(this);
+		if(tint!=tintActionIcons || scale!=uiScaleAB){
 			tintActionIcons=tint;
+			uiScaleAB=scale;
 			mRAB.updateIcon();
 			mLAB.updateIcon();
 		}
@@ -2676,7 +2679,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         	d = Utilities.createIconThumbnail(
             resources.getDrawable(R.drawable.ic_launcher_shortcut), this);
         }
-        d=Utilities.scaledDrawable(d, this,tintActionIcons);
+        d=Utilities.scaledDrawable(d, this,tintActionIcons,uiScaleAB);
     	
     	return d;
     }
