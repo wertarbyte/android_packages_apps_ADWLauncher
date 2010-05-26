@@ -1834,6 +1834,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	        mTextureHeight = mTexture.getHeight();
 		}
 		setVisibility(View.VISIBLE);
+		findCurrentHolder();
         final HolderLayout holder=(HolderLayout) getChildAt(mCurrentHolder);
         if(animate){
     		mBgAlpha=0;
@@ -1852,6 +1853,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	}
 	public void close(boolean animate){
     	if(animate){
+    		findCurrentHolder();
     		HolderLayout holder=(HolderLayout) getChildAt(mCurrentHolder);
 			holder.close(animate, mAnimationDuration);
     	}else{
