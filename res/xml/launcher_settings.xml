@@ -48,7 +48,7 @@
 			android:title="Zoom effect speed"
 			android:summary="Set the time in milliseconds for the zoom effect"
 			android:dialogMessage="Set the time in milliseconds for the zoom effect"
-			android:key="zoomSpeed" android:defaultValue="100"
+			android:key="zoomSpeed" android:defaultValue="200"
 			android:max="1700" />
 		<CheckBoxPreference android:title="New Drawer"
 			android:defaultValue="true"
@@ -141,7 +141,7 @@
 			android:title="AB scale factor"
 			android:summary="Set the scaling size for the ActionButton icons"
 			android:dialogMessage="Set the scaling size for the ActionButton icons"
-			android:key="uiScaleAB" android:defaultValue="4"
+			android:key="uiScaleAB" android:defaultValue="6"
 			android:max="7" />
 		<CheckBoxPreference android:title="Hide AllApps Bg"
 			android:defaultValue="false"
