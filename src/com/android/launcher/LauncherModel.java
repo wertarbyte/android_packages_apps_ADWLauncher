@@ -151,7 +151,7 @@ public class LauncherModel {
             try {
                 mApplicationsLoaderThread.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
             } catch (InterruptedException e) {
-                // Empty
+                e(LOG_TAG, "mApplicationsLoaderThread didn't exit in time");
             }
         }
     }
@@ -639,7 +639,7 @@ public class LauncherModel {
             try {
                 mDesktopLoaderThread.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
             } catch (InterruptedException e) {
-                // Empty
+                e(LOG_TAG, "mDesktopLoaderThread didn't exit in time");
             }
 
             // If the thread we are interrupting was tasked to load the list of
