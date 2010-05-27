@@ -756,9 +756,13 @@ public class LauncherModel {
         }
 
         public void run() {
-            if (DEBUG_LOADERS) d(LOG_TAG, "  ----> running workspace loader (" + mId + ")");
-
             mRunning = true;
+            load_workspace();
+            mRunning = false;
+        }
+
+        private void load_workspace() {
+            if (DEBUG_LOADERS) d(LOG_TAG, "  ----> running workspace loader (" + mId + ")");
 
             android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
 
@@ -1000,7 +1004,6 @@ public class LauncherModel {
                     if (DEBUG_LOADERS) d(LOG_TAG, "  ----> worskpace loader was stopped");
                 }
             }
-            mRunning = false;
         }
     }
 
