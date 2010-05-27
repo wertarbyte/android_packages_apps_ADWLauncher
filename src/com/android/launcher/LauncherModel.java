@@ -770,12 +770,9 @@ public class LauncherModel {
                 updateShortcutLabels(contentResolver, manager);
             }
 
-            mDesktopItems = new ArrayList<ItemInfo>();
-            mDesktopAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
-            mFolders = new HashMap<Long, FolderInfo>();
-
-            final ArrayList<ItemInfo> desktopItems = mDesktopItems;
-            final ArrayList<LauncherAppWidgetInfo> desktopAppWidgets = mDesktopAppWidgets;
+            final ArrayList<ItemInfo> desktopItems = new ArrayList<ItemInfo>();
+            final ArrayList<LauncherAppWidgetInfo> desktopAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
+            final HashMap<Long, FolderInfo> folders = new HashMap<Long, FolderInfo>();
 
             final Cursor c = contentResolver.query(
                     LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
@@ -806,8 +803,6 @@ public class LauncherModel {
                 int container;
                 long id;
                 Intent intent;
-
-                final HashMap<Long, FolderInfo> folders = mFolders;
 
                 while (!mStopped && c.moveToNext()) {
                     try {
@@ -997,6 +992,9 @@ public class LauncherModel {
                         startApplicationsLoader(launcher, mIsLaunching);
                     }
 
+                    mDesktopItems = desktopItems;
+                    mDesktopAppWidgets = desktopAppWidgets;
+                    mFolders = folders;
                     mDesktopItemsLoaded = true;
                 } else {
                     if (DEBUG_LOADERS) d(LOG_TAG, "  ----> worskpace loader was stopped");
