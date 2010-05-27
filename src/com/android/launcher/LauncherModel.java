@@ -54,7 +54,6 @@ public class LauncherModel {
 
     private static final int UI_NOTIFICATION_RATE = 4;
     private static final int DEFAULT_APPLICATIONS_NUMBER = 42;
-    private static final long APPLICATION_NOT_RESPONDING_TIMEOUT = 5000;
     private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
 
     private static final Collator sCollator = Collator.getInstance();
@@ -149,7 +148,7 @@ public class LauncherModel {
             // Wait for the currently running thread to finish, this can take a little
             // time but it should be well below the timeout limit
             try {
-                mApplicationsLoaderThread.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
+                mApplicationsLoaderThread.join();
             } catch (InterruptedException e) {
                 e(LOG_TAG, "mApplicationsLoaderThread didn't exit in time");
             }
@@ -637,7 +636,7 @@ public class LauncherModel {
             // Wait for the currently running thread to finish, this can take a little
             // time but it should be well below the timeout limit
             try {
-                mDesktopLoaderThread.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
+                mDesktopLoaderThread.join();
             } catch (InterruptedException e) {
                 e(LOG_TAG, "mDesktopLoaderThread didn't exit in time");
             }
