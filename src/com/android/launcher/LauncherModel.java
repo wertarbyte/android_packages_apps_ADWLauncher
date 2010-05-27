@@ -658,64 +658,6 @@ public class LauncherModel {
         mDesktopLoaderThread.start();
     }
 
-    private static void updateShortcutLabels(ContentResolver resolver, PackageManager manager) {
-        final Cursor c = resolver.query(LauncherSettings.Favorites.CONTENT_URI,
-                new String[] { LauncherSettings.Favorites._ID, LauncherSettings.Favorites.TITLE,
-                        LauncherSettings.Favorites.INTENT, LauncherSettings.Favorites.ITEM_TYPE },
-                null, null, null);
-
-        final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
-        final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
-        final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
-        final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
-
-        // boolean changed = false;
-
-        try {
-            while (c.moveToNext()) {
-                try {
-                    if (c.getInt(itemTypeIndex) !=
-                            LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                        continue;
-                    }
-
-                    final String intentUri = c.getString(intentIndex);
-                    if (intentUri != null) {
-                        final Intent shortcut = Intent.parseUri(intentUri, 0);
-                        if (Intent.ACTION_MAIN.equals(shortcut.getAction())) {
-                            final ComponentName name = shortcut.getComponent();
-                            if (name != null) {
-                                final ActivityInfo activityInfo = manager.getActivityInfo(name, 0);
-                                final String title = c.getString(titleIndex);
-                                String label = getLabel(manager, activityInfo);
-
-                                if (title == null || !title.equals(label)) {
-                                    final ContentValues values = new ContentValues();
-                                    values.put(LauncherSettings.Favorites.TITLE, label);
-
-                                    resolver.update(
-                                            LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
-                                            values, "_id=?",
-                                            new String[] { String.valueOf(c.getLong(idIndex)) });
-
-                                    // changed = true;
-                                }
-                            }
-                        }
-                    }
-                } catch (URISyntaxException e) {
-                    // Ignore
-                } catch (PackageManager.NameNotFoundException e) {
-                    // Ignore
-                }
-            }
-        } finally {
-            c.close();
-        }
-
-        // if (changed) resolver.notifyChange(Settings.Favorites.CONTENT_URI, null);
-    }
-
     private static String getLabel(PackageManager manager, ActivityInfo activityInfo) {
         String label = activityInfo.loadLabel(manager).toString();
         if (label == null) {
@@ -1005,6 +947,64 @@ public class LauncherModel {
                     if (DEBUG_LOADERS) d(LOG_TAG, "  ----> worskpace loader was stopped");
                 }
             }
+        }
+
+        private void updateShortcutLabels(ContentResolver resolver, PackageManager manager) {
+            final Cursor c = resolver.query(LauncherSettings.Favorites.CONTENT_URI,
+                    new String[] { LauncherSettings.Favorites._ID, LauncherSettings.Favorites.TITLE,
+                            LauncherSettings.Favorites.INTENT, LauncherSettings.Favorites.ITEM_TYPE },
+                    null, null, null);
+
+            final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
+            final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
+            final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
+            final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
+
+            // boolean changed = false;
+
+            try {
+                while (c.moveToNext()) {
+                    try {
+                        if (c.getInt(itemTypeIndex) !=
+                                LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                            continue;
+                        }
+
+                        final String intentUri = c.getString(intentIndex);
+                        if (intentUri != null) {
+                            final Intent shortcut = Intent.parseUri(intentUri, 0);
+                            if (Intent.ACTION_MAIN.equals(shortcut.getAction())) {
+                                final ComponentName name = shortcut.getComponent();
+                                if (name != null) {
+                                    final ActivityInfo activityInfo = manager.getActivityInfo(name, 0);
+                                    final String title = c.getString(titleIndex);
+                                    String label = getLabel(manager, activityInfo);
+
+                                    if (title == null || !title.equals(label)) {
+                                        final ContentValues values = new ContentValues();
+                                        values.put(LauncherSettings.Favorites.TITLE, label);
+
+                                        resolver.update(
+                                                LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
+                                                values, "_id=?",
+                                                new String[] { String.valueOf(c.getLong(idIndex)) });
+
+                                        // changed = true;
+                                    }
+                                }
+                            }
+                        }
+                    } catch (URISyntaxException e) {
+                        // Ignore
+                    } catch (PackageManager.NameNotFoundException e) {
+                        // Ignore
+                    }
+                }
+            } finally {
+                c.close();
+            }
+
+            // if (changed) resolver.notifyChange(Settings.Favorites.CONTENT_URI, null);
         }
     }
 
