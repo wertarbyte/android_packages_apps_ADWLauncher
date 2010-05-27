@@ -697,9 +697,15 @@ public class LauncherModel {
         }
 
         public void run() {
+<<<<<<< HEAD:src/com/android/launcher/LauncherModel.java
             assert(!mFinished); // can only run once
             load_workspace();
             mFinished = true;
+=======
+            mRunning = true;
+            load_workspace();
+            mRunning = false;
+>>>>>>> Separate mRunning handling from the DesktopItemsLoader logic.:src/com/android/launcher/LauncherModel.java
         }
 
         private void load_workspace() {
@@ -954,6 +960,7 @@ public class LauncherModel {
                     if (DEBUG_LOADERS) d(LOG_TAG, "  ----> worskpace loader was stopped");
                 }
             }
+<<<<<<< HEAD:src/com/android/launcher/LauncherModel.java
         }
 
         private void updateShortcutLabels(ContentResolver resolver, PackageManager manager) {
@@ -1012,6 +1019,8 @@ public class LauncherModel {
             }
 
             // if (changed) resolver.notifyChange(Settings.Favorites.CONTENT_URI, null);
+=======
+>>>>>>> Separate mRunning handling from the DesktopItemsLoader logic.:src/com/android/launcher/LauncherModel.java
         }
     }
 
