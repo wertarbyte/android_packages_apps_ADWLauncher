@@ -66,8 +66,12 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 			}
 		});
         Preference uiHideLabels = (Preference) findPreference("uiHideLabels");
+<<<<<<< HEAD:src/com/android/launcher/MyLauncherSettings.java
         lwpSupport.setOnPreferenceChangeListener(this);
 >>>>>>> Added the option to hide labels from desktop icons (thanks to ruqqq/helixLauncher):src/org/adw/launcher/MyLauncherSettings.java
+=======
+        uiHideLabels.setOnPreferenceChangeListener(this);
+>>>>>>> fixed stupid copy/paste :P:src/org/adw/launcher/MyLauncherSettings.java
     }
 	@Override
 	protected void onPause(){
