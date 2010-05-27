@@ -49,7 +49,7 @@
 		android:id="@+id/drawer_toolbar"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:gravity="center_horizontal"
+		android:gravity="center_horizontal|center_vertical"
 		android:layout_gravity="bottom|center_horizontal">
 	    <com.android.launcher.ActionButton
 			android:src="@drawable/lab_empty"
