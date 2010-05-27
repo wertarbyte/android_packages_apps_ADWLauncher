@@ -208,7 +208,7 @@ public class HolderLayout extends ViewGroup {
 			Drawable[] tmp=((TextView)child).getCompoundDrawables();
 			mIconSize=tmp[1].getIntrinsicHeight()+child.getPaddingTop();
 		}
-		child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_LOW);
+		child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_HIGH);
 		child.setDrawingCacheEnabled(true);
 		Bitmap cache=child.getDrawingCache();
 		if(isAnimating){

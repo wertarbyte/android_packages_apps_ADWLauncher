@@ -254,7 +254,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 			Drawable[] tmp=((TextView)child).getCompoundDrawables();
 			mIconSize=tmp[1].getIntrinsicHeight()+child.getPaddingTop();
 		}
-		child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_LOW);
+		child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_HIGH);
 		child.setDrawingCacheEnabled(true);
 		Bitmap cache=child.getDrawingCache();
 		if(isAnimating){
