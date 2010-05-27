@@ -963,7 +963,7 @@ public class LauncherModel {
             // boolean changed = false;
 
             try {
-                while (c.moveToNext()) {
+                while (!mStopped && c.moveToNext()) {
                     try {
                         if (c.getInt(itemTypeIndex) !=
                                 LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
