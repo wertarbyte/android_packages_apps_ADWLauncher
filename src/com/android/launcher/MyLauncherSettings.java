@@ -50,7 +50,24 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
         zoomSpeed.setMin(300);
         dlgSeekBarPreference uiScaleAB= (dlgSeekBarPreference) findPreference("uiScaleAB");
         uiScaleAB.setMin(1);
+<<<<<<< HEAD:src/com/android/launcher/MyLauncherSettings.java
         
+=======
+        Preference donateLink = (Preference) findPreference("donatePref");
+        donateLink.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				// TODO Auto-generated method stub
+				String url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9S8WKFETUYRHG";
+				Intent i = new Intent(Intent.ACTION_VIEW);
+				i.setData(Uri.parse(url));
+				startActivity(i);				
+				return true;
+			}
+		});
+        Preference uiHideLabels = (Preference) findPreference("uiHideLabels");
+        lwpSupport.setOnPreferenceChangeListener(this);
+>>>>>>> Added the option to hide labels from desktop icons (thanks to ruqqq/helixLauncher):src/org/adw/launcher/MyLauncherSettings.java
     }
 	@Override
 	protected void onPause(){
@@ -125,6 +142,17 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 		}else if(preference.getKey().equals("lwpSupport")){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("This setting will cause launcher to restart")
+			       .setCancelable(false)
+			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+							shouldRestart=true;
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			alert.show();
+		}else if(preference.getKey().equals("uiHideLabels")){
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(mMsg)
 			       .setCancelable(false)
 			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {

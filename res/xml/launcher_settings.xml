@@ -151,6 +151,11 @@
 			android:defaultValue="false"
 			android:summary="Hide the background for the Action Buttons"
 			android:key="uiABBg" />
+		<CheckBoxPreference android:key="uiHideLabels"
+			android:title="Hide icon labels"
+			android:summary="Hide desktop icon labels"
+			android:defaultValue="false" />
+
 	</PreferenceScreen>
 	<PreferenceCategory android:title="Build Information">
 		<Preference

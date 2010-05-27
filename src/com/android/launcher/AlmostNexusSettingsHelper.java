@@ -142,5 +142,13 @@ public final class AlmostNexusSettingsHelper {
 		float scale=(float)newD/10f;
 		return scale;
 	}
+<<<<<<< HEAD:src/com/android/launcher/AlmostNexusSettingsHelper.java
 	
+=======
+	public static boolean getUIHideLabels(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
+		boolean newD = sp.getBoolean("uiHideLabels", false);
+		return newD;
+	}
+>>>>>>> Added the option to hide labels from desktop icons (thanks to ruqqq/helixLauncher):src/org/adw/launcher/AlmostNexusSettingsHelper.java
 }

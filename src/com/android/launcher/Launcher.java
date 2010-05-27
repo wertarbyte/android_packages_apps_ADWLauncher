@@ -261,6 +261,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	private boolean hideAppsBg=false;
 	private boolean hideABBg=false;
 	private float uiScaleAB=0.5f;
+	private boolean uiHideLabels=false;
 	/**
 	 * ADW: Home binding constants
 	 */
@@ -765,7 +766,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
 
         favorite.setCompoundDrawablesWithIntrinsicBounds(null, info.icon, null, null);
-        favorite.setText(info.title);
+        if(!uiHideLabels)favorite.setText(info.title);
         favorite.setTag(info);
         favorite.setOnClickListener(this);
 
@@ -2546,6 +2547,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 		lwpSupport=AlmostNexusSettingsHelper.getLWPSupport(this);
 		hideAppsBg=AlmostNexusSettingsHelper.getUIAppsBg(this);
 		hideABBg=AlmostNexusSettingsHelper.getUIABBg(this);
+		uiHideLabels=AlmostNexusSettingsHelper.getUIHideLabels(this);
 		if(mWorkspace!=null){
 			mWorkspace.setSpeed(AlmostNexusSettingsHelper.getDesktopSpeed(this));
 			mWorkspace.setBounceAmount(AlmostNexusSettingsHelper.getDesktopBounce(this));
