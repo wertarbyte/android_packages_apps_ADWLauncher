@@ -729,7 +729,7 @@ public class LauncherModel {
 
     private class DesktopItemsLoader implements Runnable {
         private volatile boolean mStopped;
-        private volatile boolean mRunning;
+        private volatile boolean mFinished;
 
         private final WeakReference<Launcher> mLauncher;
         private final boolean mLocaleChanged;
@@ -744,6 +744,7 @@ public class LauncherModel {
             mLauncher = new WeakReference<Launcher>(launcher);
             mLocaleChanged = localeChanged;
             mId = sWorkspaceLoaderCount.getAndIncrement();
+            mFinished = false;
         }
 
         void stop() {
@@ -752,13 +753,13 @@ public class LauncherModel {
         }
 
         boolean isRunning() {
-            return mRunning;
+            return !mFinished;
         }
 
         public void run() {
-            mRunning = true;
+            assert(!mFinished); // can only run once
             load_workspace();
-            mRunning = false;
+            mFinished = true;
         }
 
         private void load_workspace() {
