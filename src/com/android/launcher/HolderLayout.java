@@ -187,8 +187,9 @@ public class HolderLayout extends ViewGroup {
 			if(porcentajeScale>=0.9f)porcentajeScale=1;
 			if(porcentajeScale<0)porcentajeScale=0;
 			alpha=(int)(porcentajeScale*255);
-			dispatchFadingAlphaEvent(alpha);
+			//dispatchFadingAlphaEvent(alpha);
 		}
+		dispatchFadingAlphaEvent(alpha);
 		mPaint.setAlpha(alpha);
 		if(mStatus!=CLOSED){
 			super.dispatchDraw(canvas);
