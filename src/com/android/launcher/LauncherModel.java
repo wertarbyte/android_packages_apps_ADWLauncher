@@ -698,6 +698,7 @@ public class LauncherModel {
 
         public void run() {
 <<<<<<< HEAD:src/com/android/launcher/LauncherModel.java
+<<<<<<< HEAD:src/com/android/launcher/LauncherModel.java
             assert(!mFinished); // can only run once
             load_workspace();
             mFinished = true;
@@ -706,6 +707,11 @@ public class LauncherModel {
             load_workspace();
             mRunning = false;
 >>>>>>> Separate mRunning handling from the DesktopItemsLoader logic.:src/com/android/launcher/LauncherModel.java
+=======
+            assert(!mFinished); // can only run once
+            load_workspace();
+            mFinished = true;
+>>>>>>> Fix possible race condition stopping mDesktopLoaderThread.:src/com/android/launcher/LauncherModel.java
         }
 
         private void load_workspace() {
