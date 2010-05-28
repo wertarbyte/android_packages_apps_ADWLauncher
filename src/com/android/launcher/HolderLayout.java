@@ -44,6 +44,7 @@ public class HolderLayout extends ViewGroup {
 		mPaint.setDither(false);
         mLabelPaint=new Paint();
         mLabelPaint.setDither(false);
+        setWillNotDraw(false);
 	}
 
 	public HolderLayout(Context context, AttributeSet attrs) {
@@ -53,6 +54,7 @@ public class HolderLayout extends ViewGroup {
 		mPaint.setDither(false);
         mLabelPaint=new Paint();
         mLabelPaint.setDither(false);
+        setWillNotDraw(false);
 	}
 
 	public HolderLayout(Context context, AttributeSet attrs, int defStyle) {
@@ -62,6 +64,7 @@ public class HolderLayout extends ViewGroup {
 		mPaint.setDither(false);
         mLabelPaint=new Paint();
         mLabelPaint.setDither(false);
+        setWillNotDraw(false);
 	}
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -154,7 +157,7 @@ public class HolderLayout extends ViewGroup {
 	 * ADW: Override drawing methods to do animation
 	 */
 	@Override
-	public void dispatchDraw(Canvas canvas) {
+	public void draw(Canvas canvas) {
 		long currentTime;
 		if(startTime==0){
 			startTime=SystemClock.uptimeMillis();
@@ -167,32 +170,29 @@ public class HolderLayout extends ViewGroup {
 		}else if (mStatus==CLOSING){
 			mScaleFactor=easeIn(currentTime, 1.0f, 3.0f, mAnimationDuration);
 		}
-		if(currentTime>=mAnimationDuration){
-			isAnimating=false;
-			if(mStatus==OPENING){
-				mStatus=OPEN;
-				dispatchFadingEvent(OnFadingListener.OPEN);
-				clearChildrenCache();
-				setChildrenDrawingCacheEnabled(true);
-			}else if(mStatus==CLOSING){
-				mStatus=CLOSED;
-				dispatchFadingEvent(OnFadingListener.CLOSE);
-				//setVisibility(View.GONE);
-			}
-		}
-		shouldDrawLabels=(currentTime>mAnimationDuration/2 && mStatus==OPENING)||(currentTime<mAnimationDuration/2 && mStatus==CLOSING);
 		int alpha=255;
 		if(isAnimating){
 			float porcentajeScale=1.0f-((mScaleFactor-1)/3.0f);
 			if(porcentajeScale>=0.9f)porcentajeScale=1;
 			if(porcentajeScale<0)porcentajeScale=0;
 			alpha=(int)(porcentajeScale*255);
-			//dispatchFadingAlphaEvent(alpha);
+			dispatchFadingAlphaEvent(alpha);
 		}
-		dispatchFadingAlphaEvent(alpha);
+		if(currentTime>=mAnimationDuration){
+			isAnimating=false;
+			if(mStatus==OPENING){
+				mStatus=OPEN;
+				dispatchFadingEvent(OnFadingListener.OPEN);
+				dispatchFadingAlphaEvent(alpha);
+			}else if(mStatus==CLOSING){
+				mStatus=CLOSED;
+				dispatchFadingEvent(OnFadingListener.CLOSE);
+			}
+		}
+		shouldDrawLabels=(currentTime>mAnimationDuration/2 && mStatus==OPENING)||(currentTime<mAnimationDuration/2 && mStatus==CLOSING);
 		mPaint.setAlpha(alpha);
 		if(mStatus!=CLOSED){
-			super.dispatchDraw(canvas);
+			super.draw(canvas);
 		}
 
 	}

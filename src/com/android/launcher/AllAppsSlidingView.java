@@ -236,6 +236,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 					setVisibility(View.GONE);
 				}else{
 					isAnimating=false;
+					mBgAlpha=255;
 				}
 			}
 			
@@ -344,6 +345,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     	super.onLayout(changed, left, top, right, bottom);
     	if(mFirstLayout){
             mPager.setTotalItems(mTotalScreens);
+            mPager.setAlwaysDrawnWithCacheEnabled(false);
             LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     		mPager.measure(mPageWidth, paginatorSpace);
     		mPager.layout(0, 0, mPageWidth, paginatorSpace);
