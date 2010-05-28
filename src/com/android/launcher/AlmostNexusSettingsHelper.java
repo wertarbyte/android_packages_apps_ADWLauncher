@@ -113,12 +113,12 @@ public final class AlmostNexusSettingsHelper {
 	}
 	public static int getDesktopSpeed(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
-		int newD = sp.getInt("desktopSpeed", 300);
+		int newD = sp.getInt("desktopSpeed", 750);
 		return newD;
 	}
 	public static int getDesktopBounce(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
-		int newD = sp.getInt("desktopBounce", 25);
+		int newD = sp.getInt("desktopBounce", 40);
 		return newD;
 	}
 	public static boolean getUIAppsBg(Context context) {
@@ -133,7 +133,7 @@ public final class AlmostNexusSettingsHelper {
 	}
 	public static int getZoomSpeed(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
-		int newD = sp.getInt("zoomSpeed", 200)+300;
+		int newD = sp.getInt("zoomSpeed", 400)+300;
 		return newD;
 	}
 	public static float getuiScaleAB(Context context) {
