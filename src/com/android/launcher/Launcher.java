@@ -1546,6 +1546,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     private void showNotifications() {
+<<<<<<< HEAD:src/com/android/launcher/Launcher.java
         final StatusBarManager statusBar = (StatusBarManager) getSystemService(STATUS_BAR_SERVICE);
         if (statusBar != null) {
         	if(hideStatusBar){
@@ -1553,6 +1554,19 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         		mShouldHideStatusbaronFocus=true;
         	}
             statusBar.expand();
+=======
+    	if(hideStatusBar){
+    		fullScreen(false);
+    		mShouldHideStatusbaronFocus=true;
+    	}
+    	try {
+            Object service = getSystemService("statusbar");
+            if (service != null) {
+                Method expand = service.getClass().getMethod("expand");
+                expand.invoke(service);
+            }
+        } catch (Exception e) {
+>>>>>>> Fixed the statusbar not appearing under some circumstances:src/org/adw/launcher/Launcher.java
         }
     }
 
