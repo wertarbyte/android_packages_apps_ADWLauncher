@@ -17,6 +17,6 @@
 
 <resources>
     <string-array name="wallpapers" translatable="false">
-        <item>wallpaper_nexuspattern</item>
+        <item>wallpaper_adw</item>
     </string-array>
 </resources>
