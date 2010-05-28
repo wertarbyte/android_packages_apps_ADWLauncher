@@ -81,7 +81,6 @@ public class LauncherModel {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
             if (DEBUG_LOADERS) d(LOG_TAG, "  --> aborting applications loader");
             mApplicationsLoader.stop();
-            mApplicationsLoaded = false;
         }
 
         if (mDesktopItemsLoader != null && mDesktopItemsLoader.isRunning()) {
@@ -541,12 +540,12 @@ public class LauncherModel {
                 launcher.runOnUiThread(action);
             }
 
-            synchronized(LauncherModel.this) {
-                if (!mStopped) {
-                    mApplicationsLoaded = true;
-                } else {
-                    if (DEBUG_LOADERS) d(LOG_TAG, "  ----> applications loader stopped (" + mId + ")");
-                }
+            /* If we've made it this far and mStopped isn't set, we've successfully loaded
+             * applications.  Otherwise, applications aren't loaded. */
+            mApplicationsLoaded = !mStopped;
+
+            if (mStopped) {
+                if (DEBUG_LOADERS) d(LOG_TAG, "  ----> applications loader stopped (" + mId + ")");
             }
             mRunning = false;
         }
