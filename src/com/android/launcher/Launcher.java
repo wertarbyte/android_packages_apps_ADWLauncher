@@ -45,6 +45,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -1919,6 +1920,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             final Intent intent = info.intent;
             int[] pos = new int[2];
             v.getLocationOnScreen(pos);
+            if(Build.VERSION.SDK_INT>=7)
             intent.setSourceBounds(
                     new Rect(pos[0], pos[1], pos[0]+v.getWidth(), pos[1]+v.getHeight()));
             startActivitySafely(intent);
