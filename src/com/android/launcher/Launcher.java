@@ -274,13 +274,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	private int mHomeBinding=BIND_PREVIEWS;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //ADW: Hack theme for no lwp support
-		lwpSupport=AlmostNexusSettingsHelper.getLWPSupport(this);
-		if(lwpSupport){
-			setTheme(android.R.style.Theme_Wallpaper_NoTitleBar);
-		}else{
-			setTheme(R.style.Theme);
-		}
     	super.onCreate(savedInstanceState);
         mInflater = getLayoutInflater();
 

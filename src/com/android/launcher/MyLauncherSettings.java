@@ -143,6 +143,7 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 				AlertDialog alert = builder.create();
 				alert.show();
 			}
+<<<<<<< HEAD:src/com/android/launcher/MyLauncherSettings.java
 		}else if(preference.getKey().equals("lwpSupport")){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("This setting will cause launcher to restart")
@@ -154,6 +155,8 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 			       });
 			AlertDialog alert = builder.create();
 			alert.show();
+=======
+>>>>>>> Tweaked the LWP support option.:src/org/adw/launcher/MyLauncherSettings.java
 		}else if(preference.getKey().equals("uiHideLabels")){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(mMsg)
