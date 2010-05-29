@@ -126,6 +126,7 @@
             <enum name="LAB" value="-300" />
             <enum name="RAB" value="-400" />
         </attr>
+        <attr name="background" format="reference"  />
     </declare-styleable>
 
 </resources>
