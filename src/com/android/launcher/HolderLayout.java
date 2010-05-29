@@ -236,7 +236,11 @@ public class HolderLayout extends ViewGroup {
 				child.draw(canvas);
 			}
 		}else{
-			canvas.drawBitmap(cache, child.getLeft(), child.getTop(), mPaint);
+			if(cache!=null){
+				canvas.drawBitmap(cache, child.getLeft(), child.getTop(), mPaint);
+			}else{
+				child.draw(canvas);
+			}
 		}
 		canvas.restoreToCount(saveCount);
 		return true;
