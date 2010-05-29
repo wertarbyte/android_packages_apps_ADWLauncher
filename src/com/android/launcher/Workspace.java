@@ -1401,9 +1401,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     	 * y=(mWallpaperHeight-height)/2;
     	 */
     	Drawable d = mWallpaperManager.getFastDrawable();
-
-    	Bitmap b = Bitmap.createBitmap((int) width, (int) height,
+    	Bitmap b;
+    	try{
+    		b= Bitmap.createBitmap((int) width, (int) height,
     			Bitmap.Config.RGB_565);
+    	}catch (Exception e) {
+			// TODO: handle exception
+    		return null;
+		}
     	Canvas canvas = new Canvas(b);
     	canvas.drawARGB(255, 0, 255, 0);
     	/*
