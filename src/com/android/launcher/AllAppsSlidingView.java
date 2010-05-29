@@ -1857,7 +1857,11 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     	if(animate){
     		findCurrentHolder();
     		HolderLayout holder=(HolderLayout) getChildAt(mCurrentHolder);
-			holder.close(animate, mAnimationDuration);
+    		if(holder!=null){
+    			holder.close(animate, mAnimationDuration);
+    		}else{
+    			setVisibility(View.GONE);
+    		}
     	}else{
     		setVisibility(View.GONE);
     	}
