@@ -173,7 +173,7 @@ public class HolderLayout extends ViewGroup {
 		int alpha=255;
 		if(isAnimating){
 			float porcentajeScale=1.0f-((mScaleFactor-1)/3.0f);
-			if(porcentajeScale>=0.9f)porcentajeScale=1;
+			if(porcentajeScale>=0.9f)porcentajeScale=1f;
 			if(porcentajeScale<0)porcentajeScale=0;
 			alpha=(int)(porcentajeScale*255);
 			dispatchFadingAlphaEvent(alpha);
@@ -208,8 +208,10 @@ public class HolderLayout extends ViewGroup {
 			Drawable[] tmp=((TextView)child).getCompoundDrawables();
 			mIconSize=tmp[1].getIntrinsicHeight()+child.getPaddingTop();
 		}
-		child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_HIGH);
-		child.setDrawingCacheEnabled(true);
+		if(child.getDrawingCache()==null){
+			child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_HIGH);
+			child.setDrawingCacheEnabled(true);
+		}
 		Bitmap cache=child.getDrawingCache();
 		if(isAnimating){
 			postInvalidate();

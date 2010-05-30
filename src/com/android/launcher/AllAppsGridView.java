@@ -206,8 +206,8 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 		}
 		shouldDrawLabels=(currentTime>mAnimationDuration/2 && mStatus==OPENING)||(currentTime<mAnimationDuration/2 && mStatus==CLOSING);
 		if(isAnimating){
-			float porcentajeScale=1.0f-((mScaleFactor-1)/2.0f);
-			if(porcentajeScale>0.9)porcentajeScale=1;
+			float porcentajeScale=1.0f-((mScaleFactor-1)/3.0f);
+			if(porcentajeScale>0.9f)porcentajeScale=1f;
 			if(porcentajeScale<0)porcentajeScale=0;
 			mBgAlpha=(int)(porcentajeScale*255);
 		}
@@ -254,8 +254,10 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 			Drawable[] tmp=((TextView)child).getCompoundDrawables();
 			mIconSize=tmp[1].getIntrinsicHeight()+child.getPaddingTop();
 		}
-		child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_HIGH);
-		child.setDrawingCacheEnabled(true);
+		if(child.getDrawingCache()==null){
+			child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_HIGH);
+			child.setDrawingCacheEnabled(true);
+		}
 		Bitmap cache=child.getDrawingCache();
 		if(isAnimating){
 			postInvalidate();
