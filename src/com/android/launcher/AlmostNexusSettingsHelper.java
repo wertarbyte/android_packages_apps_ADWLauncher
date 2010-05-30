@@ -108,7 +108,7 @@ public final class AlmostNexusSettingsHelper {
 	}
 	public static boolean getLWPSupport(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
-		boolean newD = sp.getBoolean("lwpSupport", true);
+		boolean newD = sp.getBoolean("lwpSupport", false);
 		return newD;
 	}
 	public static int getDesktopSpeed(Context context) {

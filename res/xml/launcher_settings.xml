@@ -8,7 +8,7 @@
 		android:title="Screen preferences"
 		android:summary="Screen count, default screen...">
 		<CheckBoxPreference android:title="LWP Support"
-			android:defaultValue="true"
+			android:defaultValue="false"
 			android:summary="Activate support for live wallpapers"
 			android:key="lwpSupport" />
 		<CheckBoxPreference android:title="Orientation sensor"
