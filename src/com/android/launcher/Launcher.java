@@ -19,7 +19,6 @@ package com.android.launcher;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ISearchManager;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
 import android.app.WallpaperInfo;
@@ -61,6 +60,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import static android.util.Log.*;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
 import android.view.Gravity;
@@ -260,6 +260,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	private boolean lwpSupport=true;
 	private boolean hideAppsBg=false;
 	private boolean hideABBg=false;
+	private float uiScaleAB=0.5f;
 	/**
 	 * ADW: Home binding constants
 	 */
@@ -490,6 +491,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         int orientation = getResources().getConfiguration().orientation;
 		if(orientation==Configuration.ORIENTATION_PORTRAIT){
 			if(newDrawer){
+				Log.d("LAUNCHER","SET COLUMNS");
 				((AllAppsSlidingView) mAllAppsGrid).setNumColumns(AlmostNexusSettingsHelper.getColumnsPortrait(Launcher.this));
 				((AllAppsSlidingView) mAllAppsGrid).setNumRows(AlmostNexusSettingsHelper.getRowsPortrait(Launcher.this));
 			}else{
@@ -516,11 +518,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             // itself again.
             mWorkspace.post(new Runnable() {
                 public void run() {
-                    ISearchManager searchManagerService = ISearchManager.Stub.asInterface(
-                            ServiceManager.getService(Context.SEARCH_SERVICE));
+                    //ADW: changed from using ISearchManager to use SearchManager (thanks to Launcher+ source code)
+                	SearchManager searchManagerService = (SearchManager) Launcher.this
+                    .getSystemService(Context.SEARCH_SERVICE);
                     try {
                         searchManagerService.stopSearch();
-                    } catch (RemoteException e) {
+                    } catch (Exception e) {
                         e(LOG_TAG, "error stopping search", e);
                     }    
                 }
@@ -2542,7 +2545,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 		showRAB=AlmostNexusSettingsHelper.getUIRAB(this);    	
 		lwpSupport=AlmostNexusSettingsHelper.getLWPSupport(this);
 		hideAppsBg=AlmostNexusSettingsHelper.getUIAppsBg(this);
-		hideABBg=AlmostNexusSettingsHelper.getUIAppsBg(this);
+		hideABBg=AlmostNexusSettingsHelper.getUIABBg(this);
 		if(mWorkspace!=null){
 			mWorkspace.setSpeed(AlmostNexusSettingsHelper.getDesktopSpeed(this));
 			mWorkspace.setBounceAmount(AlmostNexusSettingsHelper.getDesktopBounce(this));
@@ -2562,8 +2565,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private void updateAlmostNexusUI(){
     	updateAlmostNexusVars();
 		boolean tint=AlmostNexusSettingsHelper.getUITint(this);
-		if(tint!=tintActionIcons){
+		float scale=AlmostNexusSettingsHelper.getuiScaleAB(this);
+		if(tint!=tintActionIcons || scale!=uiScaleAB){
 			tintActionIcons=tint;
+			uiScaleAB=scale;
 			mRAB.updateIcon();
 			mLAB.updateIcon();
 		}
@@ -2674,7 +2679,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         	d = Utilities.createIconThumbnail(
             resources.getDrawable(R.drawable.ic_launcher_shortcut), this);
         }
-        d=Utilities.scaledDrawable(d, this,tintActionIcons);
+        d=Utilities.scaledDrawable(d, this,tintActionIcons,uiScaleAB);
     	
     	return d;
     }

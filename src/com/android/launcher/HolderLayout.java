@@ -187,8 +187,9 @@ public class HolderLayout extends ViewGroup {
 			if(porcentajeScale>=0.9f)porcentajeScale=1;
 			if(porcentajeScale<0)porcentajeScale=0;
 			alpha=(int)(porcentajeScale*255);
-			dispatchFadingAlphaEvent(alpha);
+			//dispatchFadingAlphaEvent(alpha);
 		}
+		dispatchFadingAlphaEvent(alpha);
 		mPaint.setAlpha(alpha);
 		if(mStatus!=CLOSED){
 			super.dispatchDraw(canvas);
@@ -207,7 +208,7 @@ public class HolderLayout extends ViewGroup {
 			Drawable[] tmp=((TextView)child).getCompoundDrawables();
 			mIconSize=tmp[1].getIntrinsicHeight()+child.getPaddingTop();
 		}
-		child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_LOW);
+		child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_HIGH);
 		child.setDrawingCacheEnabled(true);
 		Bitmap cache=child.getDrawingCache();
 		if(isAnimating){
@@ -245,39 +246,43 @@ public class HolderLayout extends ViewGroup {
 	 */
 	public void open(boolean animate, int speed){
         //setCacheColorHint(0);
-		mAnimationDuration=speed;
-        setDrawingCacheBackgroundColor(0);
-		clearChildrenCache();
-		setChildrenDrawingCacheEnabled(true);
-		if(animate){
-			isAnimating=true;
-			mStatus=OPENING;
-		}else{
-			isAnimating=false;
-			mStatus=OPEN;
-			dispatchFadingEvent(OnFadingListener.OPEN);
+		if(mStatus!=OPENING){
+			mAnimationDuration=speed;
+	        setDrawingCacheBackgroundColor(0);
+			clearChildrenCache();
+			setChildrenDrawingCacheEnabled(true);
+			if(animate){
+				isAnimating=true;
+				mStatus=OPENING;
+			}else{
+				isAnimating=false;
+				mStatus=OPEN;
+				dispatchFadingEvent(OnFadingListener.OPEN);
+			}
+			startTime=0;
+			//this.setVisibility(View.VISIBLE);
+			invalidate();
 		}
-		startTime=0;
-		//this.setVisibility(View.VISIBLE);
-		invalidate();
 	}
 	public void close(boolean animate, int speed){
         //setCacheColorHint(0);
-		mAnimationDuration=speed;
-        setDrawingCacheBackgroundColor(0);
-		clearChildrenCache();
-		setChildrenDrawingCacheEnabled(true);
-		if(animate){
-			mStatus=CLOSING;
-			isAnimating=true;
-		}else{
-			mStatus=CLOSED;
-			isAnimating=false;
-			//setVisibility(View.GONE);
-			dispatchFadingEvent(OnFadingListener.CLOSE);
+		if(mStatus!=CLOSING){
+			mAnimationDuration=speed;
+	        setDrawingCacheBackgroundColor(0);
+			clearChildrenCache();
+			setChildrenDrawingCacheEnabled(true);
+			if(animate){
+				mStatus=CLOSING;
+				isAnimating=true;
+			}else{
+				mStatus=CLOSED;
+				isAnimating=false;
+				//setVisibility(View.GONE);
+				dispatchFadingEvent(OnFadingListener.CLOSE);
+			}
+			startTime=0;
+			invalidate();
 		}
-		startTime=0;
-		invalidate();
 	}
     /**
      * Interface definition for a callback to be invoked when an open/close animation

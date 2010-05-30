@@ -1,7 +1,10 @@
 package com.android.launcher;
 
+import com.android.launcher.DragController.DragListener;
+
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -9,8 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.android.launcher.DragController.DragListener;
 
 public class ActionButton extends ImageView implements DropTarget, DragListener {
 	private Launcher mLauncher;
@@ -34,9 +35,7 @@ public class ActionButton extends ImageView implements DropTarget, DragListener 
 		setHapticFeedbackEnabled(true);
 		TypedArray a=context.obtainStyledAttributes(attrs,R.styleable.ActionButton,defStyle,0);
 		mIdent=a.getInt(R.styleable.ActionButton_ident, mIdent);
-		a.recycle();
-		a=context.obtainStyledAttributes(attrs, android.R.styleable.View, defStyle,0);
-		bgResource=a.getDrawable(android.R.styleable.View_background);
+		bgResource=a.getDrawable(R.styleable.ActionButton_background);
 		a.recycle();
 	}
 
@@ -196,6 +195,6 @@ public class ActionButton extends ImageView implements DropTarget, DragListener 
 		if(!hide)
 			this.setBackgroundDrawable(bgResource);
 		else
-			this.setBackgroundDrawable(null);
+			this.setBackgroundColor(Color.TRANSPARENT);
 	}
 }

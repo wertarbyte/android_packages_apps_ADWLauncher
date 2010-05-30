@@ -198,6 +198,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 				}
 				setChildrenDrawingCacheEnabled(true);
 				setDrawingCacheEnabled(true);
+				setChildrenDrawnWithCacheEnabled(true);
 			}else if(mStatus==CLOSING){
 				mStatus=CLOSED;
 				setVisibility(View.GONE);
@@ -253,7 +254,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 			Drawable[] tmp=((TextView)child).getCompoundDrawables();
 			mIconSize=tmp[1].getIntrinsicHeight()+child.getPaddingTop();
 		}
-		child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_LOW);
+		child.setDrawingCacheQuality(DRAWING_CACHE_QUALITY_HIGH);
 		child.setDrawingCacheEnabled(true);
 		Bitmap cache=child.getDrawingCache();
 		if(isAnimating){
@@ -297,11 +298,29 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
         setHorizontalFadingEdgeEnabled(false);
         setVerticalFadingEdgeEnabled(false);
 		if(animate){
+    		setCacheColorHint(Color.TRANSPARENT);
+			setDrawingCacheBackgroundColor(Color.TRANSPARENT);
+			setDrawingCacheEnabled(true);
+			setAlwaysDrawnWithCacheEnabled(true);
+			mBgAlpha=0;
 			isAnimating=true;
 			mStatus=OPENING;
 		}else{
+			mBgAlpha=255;
 			isAnimating=false;
 			mStatus=OPEN;
+	    	if(forceOpaque){
+	    		this.setCacheColorHint(0xFF000000);
+	    		this.setDrawingCacheBackgroundColor(0xFF000000);
+	    		setScrollingCacheEnabled(true);
+	    	}else{
+	    		this.setCacheColorHint(Color.TRANSPARENT);
+	    		this.setDrawingCacheBackgroundColor(Color.TRANSPARENT);
+	    		setScrollingCacheEnabled(true);
+	    	}
+			setChildrenDrawingCacheEnabled(true);
+			setDrawingCacheEnabled(true);
+			setChildrenDrawnWithCacheEnabled(true);
 		}
 		startTime=0;
 		this.setVisibility(View.VISIBLE);

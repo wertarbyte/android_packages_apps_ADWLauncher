@@ -268,10 +268,9 @@ final class Utilities {
      * @param tint
      * @return
      */
-    static Drawable scaledDrawable(Drawable icon,Context context, boolean tint){
+    static Drawable scaledDrawable(Drawable icon,Context context, boolean tint, float scale){
     	final Resources resources=context.getResources();
     	sIconWidth = sIconHeight = (int) resources.getDimension(android.R.dimen.app_icon_size);
-        final float scale=0.50f;
       
         int width = sIconWidth;
         int height = sIconHeight;

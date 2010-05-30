@@ -48,6 +48,8 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
         lwpSupport.setOnPreferenceChangeListener(this);
         dlgSeekBarPreference zoomSpeed= (dlgSeekBarPreference) findPreference("zoomSpeed");
         zoomSpeed.setMin(300);
+        dlgSeekBarPreference uiScaleAB= (dlgSeekBarPreference) findPreference("uiScaleAB");
+        uiScaleAB.setMin(1);
         
     }
 	@Override

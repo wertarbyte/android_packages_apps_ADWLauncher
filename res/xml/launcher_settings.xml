@@ -31,11 +31,11 @@
 			android:title="Desktop scrolling speed"
 			android:summary="Set the speed used to fling desktops screens"
 			android:dialogMessage="The lower the value, the faster you will fling"
-			android:key="desktopSpeed" android:defaultValue="600"
+			android:key="desktopSpeed" android:defaultValue="300"
 			android:max="2000" />
 		<com.android.launcher.dlgSeekBarPreference
 			android:title="Desktop overshoot"
-			android:summary="Allow to scroll past fisrt/last desktop screens"
+			android:summary="Allow to bounce past first/last desktop screens"
 			android:dialogMessage="Set it to 0 to disable overshooting"
 			android:key="desktopBounce" android:defaultValue="25"
 			android:max="100" />
@@ -48,8 +48,8 @@
 			android:title="Zoom effect speed"
 			android:summary="Set the time in milliseconds for the zoom effect"
 			android:dialogMessage="Set the time in milliseconds for the zoom effect"
-			android:key="zoomSpeed" android:defaultValue="800"
-			android:max="4700" />
+			android:key="zoomSpeed" android:defaultValue="100"
+			android:max="1700" />
 		<CheckBoxPreference android:title="New Drawer"
 			android:defaultValue="true"
 			android:summary="Use the Samsung Galaxy S implementation"
@@ -134,9 +134,15 @@
 			android:summary="Enable/disable the customizable Right Action Button"
 			android:key="uiRAB" />
 		<CheckBoxPreference android:title="Tint AB"
-			android:defaultValue="true"
+			android:defaultValue="false"
 			android:summary="Enable/disable icon tint effect on Action Buttons"
 			android:key="uiTint" />
+		<com.android.launcher.dlgSeekBarPreference
+			android:title="AB scale factor"
+			android:summary="Set the scaling size for the ActionButton icons"
+			android:dialogMessage="Set the scaling size for the ActionButton icons"
+			android:key="uiScaleAB" android:defaultValue="4"
+			android:max="7" />
 		<CheckBoxPreference android:title="Hide AllApps Bg"
 			android:defaultValue="false"
 			android:summary="Hide the background for the App-Drawer button"

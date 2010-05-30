@@ -16,12 +16,12 @@
 
 package com.android.launcher;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -35,7 +35,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.Transformation;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -181,26 +180,8 @@ public class Search extends LinearLayout
         mAppSearchData = appSearchData;
         mGlobalSearch = globalSearch;
         
-        if (isAtTop()) {
-            showSearchDialog();
-        } else {
-            // Call up the keyboard before we actually call the search dialog so that it
-            // (hopefully) animates in at about the same time as the widget animation, and
-            // so that it becomes available as soon as possible. Only do this if a hard
-            // keyboard is not currently available.
-            if (getContext().getResources().getConfiguration().hardKeyboardHidden ==
-                    Configuration.HARDKEYBOARDHIDDEN_YES) {
-                InputMethodManager inputManager = (InputMethodManager)
-                        getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.showSoftInputUnchecked(0, null);
-            }
-            
-            // Start the animation, unless it has already started.
-            if (getAnimation() != mMorphAnimation) {
-                mMorphAnimation.setDuration(getAnimationDuration());
-                startAnimation(mMorphAnimation);
-            }
-        }
+        showSearchDialog();
+       
     }
 
     /**
