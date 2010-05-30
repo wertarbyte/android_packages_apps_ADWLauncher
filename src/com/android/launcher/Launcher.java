@@ -2575,6 +2575,11 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      */
     private void updateAlmostNexusUI(){
     	updateAlmostNexusVars();
+    	if(!lwpSupport){
+    		getWindow().setBackgroundDrawable(new ColorDrawable(0xFF000000));
+    	}else{
+    		getWindow().setBackgroundDrawable(new ColorDrawable(0));
+    	}
 		boolean tint=AlmostNexusSettingsHelper.getUITint(this);
 		float scale=AlmostNexusSettingsHelper.getuiScaleAB(this);
 		if(tint!=tintActionIcons || scale!=uiScaleAB){
