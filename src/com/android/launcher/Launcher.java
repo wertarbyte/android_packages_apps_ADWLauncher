@@ -1913,9 +1913,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             final Intent intent = info.intent;
             int[] pos = new int[2];
             v.getLocationOnScreen(pos);
-            if(Build.VERSION.SDK_INT>=7)
+            try{
             intent.setSourceBounds(
                     new Rect(pos[0], pos[1], pos[0]+v.getWidth(), pos[1]+v.getHeight()));
+            }catch(NoSuchMethodError e){};
             startActivitySafely(intent);
             //Close dockbar if setting says so
             if(info.container==LauncherSettings.Favorites.CONTAINER_DOCKBAR && isDockBarOpen() && autoCloseDockbar){
