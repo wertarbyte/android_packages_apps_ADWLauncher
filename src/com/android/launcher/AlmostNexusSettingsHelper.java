@@ -106,11 +106,6 @@ public final class AlmostNexusSettingsHelper {
 		boolean newD = sp.getBoolean("uiTint", false);
 		return newD;
 	}
-	public static boolean getLWPSupport(Context context) {
-		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
-		boolean newD = sp.getBoolean("lwpSupport", false);
-		return newD;
-	}
 	public static int getDesktopSpeed(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
 		int newD = sp.getInt("desktopSpeed", 750);

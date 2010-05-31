@@ -44,8 +44,6 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
         columnsLandscape.setMin(1);
         dlgSeekBarPreference rowsLandscape= (dlgSeekBarPreference) findPreference("drawerRowsLandscape");
         rowsLandscape.setMin(1);
-        Preference lwpSupport = (Preference) findPreference("lwpSupport");
-        lwpSupport.setOnPreferenceChangeListener(this);
         dlgSeekBarPreference zoomSpeed= (dlgSeekBarPreference) findPreference("zoomSpeed");
         zoomSpeed.setMin(300);
         dlgSeekBarPreference uiScaleAB= (dlgSeekBarPreference) findPreference("uiScaleAB");
