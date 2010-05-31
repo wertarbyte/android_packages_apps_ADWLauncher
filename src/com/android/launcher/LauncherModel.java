@@ -32,7 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import static android.util.Log.*;
 import android.os.Process;
-import android.os.SystemProperties;
+//import android.os.SystemProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -617,16 +617,16 @@ public class LauncherModel {
         if (isLaunching && isDesktopLoaded()) {
             if (DEBUG_LOADERS) d(LOG_TAG, "  --> items loaded, return");
             if (loadApplications) startApplicationsLoader(launcher, true);
-            if (SystemProperties.get("debug.launcher.ignore-cache", "") == "") {
+            //if (SystemProperties.get("debug.launcher.ignore-cache", "") == "") {
                 // We have already loaded our data from the DB
                 if (DEBUG_LOADERS) d(LOG_TAG, "  --> loading from cache: " + mDesktopItems.size() + ", " + mDesktopAppWidgets.size());
                 launcher.onDesktopItemsLoaded(mDesktopItems, mDesktopAppWidgets);
                 return;
-            }
-            else
-            {
-                d(LOG_TAG, "  ----> debug: forcing reload of workspace");
-            }
+            //}
+            //else
+            //{
+                //d(LOG_TAG, "  ----> debug: forcing reload of workspace");
+            //}
         }
 
         if (mDesktopItemsLoader != null && mDesktopItemsLoader.isRunning()) {
