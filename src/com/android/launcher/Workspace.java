@@ -1441,16 +1441,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      * only when detected not being a Live Wallpaper
      */
 	public void setWallpaper(){
-		Log.d("WORKSPACE","Set wallpaper");
 		if(mWallpaperManager.getWallpaperInfo()!=null){
-			Log.d("WORKSPACE","Is a Live wallpaper");
 			if(mWallpaper!=null){
 				mWallpaper.recycle();
 				mWallpaperLoaded=false;
 			}
 			lwpSupport=true;
 		}else{
-			Log.d("WORKSPACE","Is a static");
 			final Drawable drawable = mWallpaperManager.getDrawable();
 			if (drawable instanceof BitmapDrawable) {
 				mWallpaper=Bitmap.createBitmap(((BitmapDrawable) drawable).getBitmap());

@@ -3063,10 +3063,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      * ADW: wallpaper intent receiver for proper trackicng of wallpaper changes 
      */
     private static class WallpaperIntentReceiver extends BroadcastReceiver {
-        private final Application mApplication;
         private WeakReference<Launcher> mLauncher;
         WallpaperIntentReceiver(Application application, Launcher launcher) {
-            mApplication = application;
             setLauncher(launcher);
         }
         void setLauncher(Launcher launcher) {
