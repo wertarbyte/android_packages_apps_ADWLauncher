@@ -229,7 +229,6 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
         mPager=new PreviewPager(getContext());
         //ADW: listener to handle holderlayouts animations
         mFadingListener=new OnFadingListener() {
-			@Override
 			public void onUpdate(int Status) {
 				// TODO Auto-generated method stub
 				if(Status==OnFadingListener.CLOSE){
@@ -239,8 +238,6 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 					mBgAlpha=255;
 				}
 			}
-			
-			@Override
 			public void onAlphaChange(int alpha) {
 				// TODO Auto-generated method stub
 				mBgAlpha=alpha;
@@ -901,7 +898,9 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     		position-=leftScreens*(mNumColumns*mNumRows);
     	}
     	final ViewGroup h=(ViewGroup)getChildAt(realScreen);
-    	v=h.getChildAt(position);
+    	if(h!=null){
+    		if(h instanceof HolderLayout)v=h.getChildAt(position);
+    	}
     	return v;
     }
     @Override

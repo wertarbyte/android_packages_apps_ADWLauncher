@@ -650,11 +650,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         mHandleIcon = (TransitionDrawable) mHandleView.getDrawable();
         mHandleIcon.setCrossFadeEnabled(true);
         mHandleView.setOnTriggerListener(new OnTriggerListener() {
-			//@Override
 			public void onTrigger(View v, int whichHandle) {
 				mDockBar.open();
 			}
-			//@Override
 			public void onGrabbedStateChange(View v, boolean grabbedState) {
 			}
 		});
@@ -2822,7 +2820,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
         
         Rect r = new Rect();
-        resources.getDrawable(R.drawable.preview_background).getPadding(r);
+        //ADW: seems sometimes this throws an out of memory error.... so...
+        try{
+        	resources.getDrawable(R.drawable.preview_background).getPadding(r);
+        }catch(OutOfMemoryError e){}
         int extraW = (int) ((r.left + r.right) * max);
         int extraH = r.top + r.bottom;
 
