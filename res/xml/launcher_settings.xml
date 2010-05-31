@@ -46,7 +46,7 @@
 			android:dialogMessage="Set the time in milliseconds for the zoom effect"
 			android:key="zoomSpeed" android:defaultValue="400"
 			android:max="1700" />
-		<CheckBoxPreference android:title="New Drawer"
+		<CheckBoxPreference android:title="Horizontal Drawer"
 			android:defaultValue="true"
 			android:summary="Use the Samsung Galaxy S implementation"
 			android:key="drawerNew" />
