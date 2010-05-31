@@ -18,6 +18,7 @@ package com.android.launcher;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.Dialog;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
@@ -258,7 +259,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	private boolean showLAB=true;
 	private boolean showRAB=true;
 	private boolean tintActionIcons=true;
-	private boolean lwpSupport=true;
 	private boolean hideAppsBg=false;
 	private boolean hideABBg=false;
 	private float uiScaleAB=0.5f;
@@ -272,6 +272,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	private static final int BIND_APPS=4;
 	private static final int BIND_STATUSBAR=5;
 	private int mHomeBinding=BIND_PREVIEWS;
+	/**
+	 * ADW:Wallpaper intent receiver
+	 */
+	private static WallpaperIntentReceiver sWallpaperReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
@@ -500,7 +504,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 				((AllAppsGridView) mAllAppsGrid).setNumColumns(AlmostNexusSettingsHelper.getColumnsLandscape(Launcher.this));
 			}
 		}
-		mWorkspace.setLWP(lwpSupport);
+		mWorkspace.setWallpaper();
         if (mRestoring) {
             startLoaders();
         }
@@ -1584,6 +1588,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      * wallpaper.
      */
     private void registerIntentReceivers() {
+        if (sWallpaperReceiver == null) {
+            final Application application = getApplication();
+
+            sWallpaperReceiver = new WallpaperIntentReceiver(application, this);
+
+            IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
+            application.registerReceiver(sWallpaperReceiver, filter);
+        } else {
+            sWallpaperReceiver.setLauncher(this);
+        }
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
@@ -2552,7 +2566,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 		autoCloseDockbar=AlmostNexusSettingsHelper.getUICloseDockbar(this);
 		showLAB=AlmostNexusSettingsHelper.getUILAB(this);
 		showRAB=AlmostNexusSettingsHelper.getUIRAB(this);    	
-		lwpSupport=AlmostNexusSettingsHelper.getLWPSupport(this);
 		hideAppsBg=AlmostNexusSettingsHelper.getUIAppsBg(this);
 		hideABBg=AlmostNexusSettingsHelper.getUIABBg(this);
 		uiHideLabels=AlmostNexusSettingsHelper.getUIHideLabels(this);
@@ -2574,11 +2587,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      */
     private void updateAlmostNexusUI(){
     	updateAlmostNexusVars();
-    	if(!lwpSupport){
-    		getWindow().setBackgroundDrawable(new ColorDrawable(0xFF000000));
-    	}else{
-    		getWindow().setBackgroundDrawable(new ColorDrawable(0));
-    	}
 		boolean tint=AlmostNexusSettingsHelper.getUITint(this);
 		float scale=AlmostNexusSettingsHelper.getuiScaleAB(this);
 		if(tint!=tintActionIcons || scale!=uiScaleAB){
@@ -3051,4 +3059,38 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         Workspace workspace = mWorkspace;
     	return workspace.getWallpaperSection();
     }
+    /**
+     * ADW: wallpaper intent receiver for proper trackicng of wallpaper changes 
+     */
+    private static class WallpaperIntentReceiver extends BroadcastReceiver {
+        private final Application mApplication;
+        private WeakReference<Launcher> mLauncher;
+        WallpaperIntentReceiver(Application application, Launcher launcher) {
+            mApplication = application;
+            setLauncher(launcher);
+        }
+        void setLauncher(Launcher launcher) {
+            mLauncher = new WeakReference<Launcher>(launcher);
+        }
+        public void onReceive(Context context, Intent intent) {
+            if (mLauncher != null) {
+                final Launcher launcher = mLauncher.get();
+                if (launcher != null) {
+                	final Workspace workspace=launcher.getWorkspace();
+                    if(workspace!=null){
+                    	workspace.setWallpaper();
+                    }
+                }
+            }
+        }
+    }
+    public void setWindowBackground(boolean lwp){
+    	if(!lwp){
+    		getWindow().setBackgroundDrawable(new ColorDrawable(0xFF000000));
+    	}else{
+    		getWindow().setBackgroundDrawable(new ColorDrawable(0));
+    	}
+    	
+    }
+
 }
