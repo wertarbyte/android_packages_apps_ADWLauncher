@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.adw.launcher;
+package com.android.launcher;
 
 import android.content.Context;
 import android.hardware.SensorManager;

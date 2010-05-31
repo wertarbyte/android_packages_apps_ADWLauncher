@@ -53,7 +53,7 @@
 		android:layout_gravity="bottom|center_horizontal">
 	    <com.android.launcher.ActionButton
 			android:src="@drawable/lab_empty"
-			android:background="@drawable/lab_bg"
+			launcher:background="@drawable/lab_bg"
 			android:scaleType="center"
 			android:layout_height="wrap_content"
 			android:id="@+id/btn_lab"
@@ -68,7 +68,7 @@
 			/>
 	    <com.android.launcher.ActionButton
 			android:src="@drawable/rab_empty"
-			android:background="@drawable/rab_bg"
+			launcher:background="@drawable/rab_bg"
 			android:scaleType="center"
 			android:layout_height="wrap_content"
 			android:id="@+id/btn_rab"

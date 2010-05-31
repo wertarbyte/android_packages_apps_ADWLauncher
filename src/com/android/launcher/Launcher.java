@@ -91,6 +91,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.io.DataOutputStream;
@@ -1542,15 +1543,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     private void showNotifications() {
-<<<<<<< HEAD:src/com/android/launcher/Launcher.java
-        final StatusBarManager statusBar = (StatusBarManager) getSystemService(STATUS_BAR_SERVICE);
-        if (statusBar != null) {
-        	if(hideStatusBar){
-        		fullScreen(false);
-        		mShouldHideStatusbaronFocus=true;
-        	}
-            statusBar.expand();
-=======
     	if(hideStatusBar){
     		fullScreen(false);
     		mShouldHideStatusbaronFocus=true;
@@ -1562,7 +1554,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 expand.invoke(service);
             }
         } catch (Exception e) {
->>>>>>> Fixed the statusbar not appearing under some circumstances:src/org/adw/launcher/Launcher.java
         }
     }
 

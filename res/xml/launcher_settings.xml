@@ -155,6 +155,9 @@
 	</PreferenceScreen>
 	<PreferenceCategory android:title="Build Information">
 		<Preference
+			android:key="donatePref"
+			android:layout="@layout/donate_link"/>
+		<Preference
 			android:title="ADW Version"
 			android:summary="@string/adw_version"/>
 	</PreferenceCategory>

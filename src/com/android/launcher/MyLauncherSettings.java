@@ -9,19 +9,26 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.util.Log;
 
 public class MyLauncherSettings extends PreferenceActivity implements OnPreferenceChangeListener {
     private static final String ALMOSTNEXUS_PREFERENCES = "launcher.preferences.almostnexus";
     private boolean shouldRestart=false;
+    private static final String FROYOMSG="YOU NEED TO GO ANDROID SETTINGS/APPLICATIONS/MANAGE APPLICATIONS AND RESTART ADW.LAUNCHER AS SOON AS POSSIBLE OR IT WILL FORCECLOSE!!!";
+    private static final String NORMALMSG="Changing this setting will make the Launcher restart itself";
+    private String mMsg;
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
 		//TODO: ADW should i read stored values after addPreferencesFromResource?
+		mMsg=(Build.VERSION.SDK_INT>=8)?FROYOMSG:NORMALMSG;
         super.onCreate(savedInstanceState);
         getPreferenceManager().setSharedPreferencesName(ALMOSTNEXUS_PREFERENCES);
         addPreferencesFromResource(R.xml.launcher_settings);
@@ -48,9 +55,6 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
         zoomSpeed.setMin(300);
         dlgSeekBarPreference uiScaleAB= (dlgSeekBarPreference) findPreference("uiScaleAB");
         uiScaleAB.setMin(1);
-<<<<<<< HEAD:src/com/android/launcher/MyLauncherSettings.java
-        
-=======
         Preference donateLink = (Preference) findPreference("donatePref");
         donateLink.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
@@ -64,12 +68,7 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 			}
 		});
         Preference uiHideLabels = (Preference) findPreference("uiHideLabels");
-<<<<<<< HEAD:src/com/android/launcher/MyLauncherSettings.java
-        lwpSupport.setOnPreferenceChangeListener(this);
->>>>>>> Added the option to hide labels from desktop icons (thanks to ruqqq/helixLauncher):src/org/adw/launcher/MyLauncherSettings.java
-=======
         uiHideLabels.setOnPreferenceChangeListener(this);
->>>>>>> fixed stupid copy/paste :P:src/org/adw/launcher/MyLauncherSettings.java
     }
 	@Override
 	protected void onPause(){
@@ -95,7 +94,7 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 			dlgSeekBarPreference pref = (dlgSeekBarPreference) findPreference("defaultScreen");
 			pref.setMax((Integer) newValue+1);
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("This setting will cause launcher to restart")
+			builder.setMessage(mMsg)
 			       .setCancelable(false)
 			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
@@ -106,7 +105,7 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 			alert.show();
 		}else if (preference.getKey().equals("defaultScreen")){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("This setting will cause launcher to restart")
+			builder.setMessage(mMsg)
 			       .setCancelable(false)
 			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
@@ -117,7 +116,7 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 			alert.show();		
 		}else if(preference.getKey().equals("drawerNew")){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("This setting will cause launcher to restart")
+			builder.setMessage(mMsg)
 			       .setCancelable(false)
 			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
@@ -131,7 +130,7 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 			boolean newDrawer=AlmostNexusSettingsHelper.getDrawerNew(getApplicationContext());
 			if(!val && !newDrawer){
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setMessage("Setting this to OFF will cause launcher to restart")
+				builder.setMessage(mMsg)
 				       .setCancelable(false)
 				       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				           public void onClick(DialogInterface dialog, int id) {
@@ -141,20 +140,6 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 				AlertDialog alert = builder.create();
 				alert.show();
 			}
-<<<<<<< HEAD:src/com/android/launcher/MyLauncherSettings.java
-		}else if(preference.getKey().equals("lwpSupport")){
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("This setting will cause launcher to restart")
-			       .setCancelable(false)
-			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-							shouldRestart=true;
-			           }
-			       });
-			AlertDialog alert = builder.create();
-			alert.show();
-=======
->>>>>>> Tweaked the LWP support option.:src/org/adw/launcher/MyLauncherSettings.java
 		}else if(preference.getKey().equals("uiHideLabels")){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(mMsg)

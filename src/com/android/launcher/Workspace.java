@@ -420,14 +420,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
-<<<<<<< HEAD:src/com/android/launcher/Workspace.java
-            mScrollX = mScroller.getCurrX();
-            mScrollY = mScroller.getCurrY();
-            updateWallpaperOffset();
-=======
             scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             if(lwpSupport)updateWallpaperOffset();
->>>>>>> Tweaked the LWP support option.:src/org/adw/launcher/Workspace.java
             postInvalidate();
         } else if (mNextScreen != INVALID_SCREEN) {
             mCurrentScreen = Math.max(0, Math.min(mNextScreen, getChildCount() - 1));
@@ -453,17 +447,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     protected void dispatchDraw(Canvas canvas) {
         boolean restore = false;
         //ADW: If using old wallpaper rendering method...
-<<<<<<< HEAD:src/com/android/launcher/Workspace.java
-        if(!lwpSupport){
-        	float x = mScrollX * mWallpaperOffset;
-    		if (x + mWallpaperWidth < mRight - mLeft) {
-    			x = mRight - mLeft - mWallpaperWidth;
-=======
         if(!lwpSupport && mWallpaper!=null){
         	float x = getScrollX() * mWallpaperOffset;
     		if (x + mWallpaperWidth < getRight() - getLeft()) {
     			x = getRight() - getLeft() - mWallpaperWidth;
->>>>>>> Tweaked the LWP support option.:src/org/adw/launcher/Workspace.java
     		}
         	//ADW: added tweaks for when scrolling "beyond bounce limits" :P
     		if (mScrollX<0)x=mScrollX;
