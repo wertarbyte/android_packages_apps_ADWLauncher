@@ -32,6 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import static android.util.Log.*;
 import android.os.Process;
+import android.os.SystemProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,12 +49,11 @@ import java.net.URISyntaxException;
  * for the Launcher.
  */
 public class LauncherModel {
-    static final boolean DEBUG_LOADERS = false;
+    static final boolean DEBUG_LOADERS = true;
     static final String LOG_TAG = "HomeLoaders";
 
     private static final int UI_NOTIFICATION_RATE = 4;
     private static final int DEFAULT_APPLICATIONS_NUMBER = 42;
-    private static final long APPLICATION_NOT_RESPONDING_TIMEOUT = 5000;
     private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
 
     private static final Collator sCollator = Collator.getInstance();
@@ -81,7 +81,6 @@ public class LauncherModel {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
             if (DEBUG_LOADERS) d(LOG_TAG, "  --> aborting applications loader");
             mApplicationsLoader.stop();
-            mApplicationsLoaded = false;
         }
 
         if (mDesktopItemsLoader != null && mDesktopItemsLoader.isRunning()) {
@@ -148,9 +147,9 @@ public class LauncherModel {
             // Wait for the currently running thread to finish, this can take a little
             // time but it should be well below the timeout limit
             try {
-                mApplicationsLoaderThread.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
+                mApplicationsLoaderThread.join();
             } catch (InterruptedException e) {
-                // Empty
+                e(LOG_TAG, "mApplicationsLoaderThread didn't exit in time");
             }
         }
     }
@@ -541,12 +540,12 @@ public class LauncherModel {
                 launcher.runOnUiThread(action);
             }
 
-            synchronized(LauncherModel.this) {
-                if (!mStopped) {
-                    mApplicationsLoaded = true;
-                } else {
-                    if (DEBUG_LOADERS) d(LOG_TAG, "  ----> applications loader stopped (" + mId + ")");
-                }
+            /* If we've made it this far and mStopped isn't set, we've successfully loaded
+             * applications.  Otherwise, applications aren't loaded. */
+            mApplicationsLoaded = !mStopped;
+
+            if (mStopped) {
+                if (DEBUG_LOADERS) d(LOG_TAG, "  ----> applications loader stopped (" + mId + ")");
             }
             mRunning = false;
         }
@@ -613,14 +612,21 @@ public class LauncherModel {
      */
     void loadUserItems(boolean isLaunching, Launcher launcher, boolean localeChanged,
             boolean loadApplications) {
-        if (DEBUG_LOADERS) d(LOG_TAG, "loading user items");
+        if (DEBUG_LOADERS) d(LOG_TAG, "loading user items in " + Thread.currentThread().toString());
 
         if (isLaunching && isDesktopLoaded()) {
             if (DEBUG_LOADERS) d(LOG_TAG, "  --> items loaded, return");
             if (loadApplications) startApplicationsLoader(launcher, true);
-            // We have already loaded our data from the DB
-            launcher.onDesktopItemsLoaded(mDesktopItems, mDesktopAppWidgets);
-            return;
+            if (SystemProperties.get("debug.launcher.ignore-cache", "") == "") {
+                // We have already loaded our data from the DB
+                if (DEBUG_LOADERS) d(LOG_TAG, "  --> loading from cache: " + mDesktopItems.size() + ", " + mDesktopAppWidgets.size());
+                launcher.onDesktopItemsLoaded(mDesktopItems, mDesktopAppWidgets);
+                return;
+            }
+            else
+            {
+                d(LOG_TAG, "  ----> debug: forcing reload of workspace");
+            }
         }
 
         if (mDesktopItemsLoader != null && mDesktopItemsLoader.isRunning()) {
@@ -629,9 +635,9 @@ public class LauncherModel {
             // Wait for the currently running thread to finish, this can take a little
             // time but it should be well below the timeout limit
             try {
-                mDesktopLoaderThread.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
+                mDesktopLoaderThread.join();
             } catch (InterruptedException e) {
-                // Empty
+                e(LOG_TAG, "mDesktopLoaderThread didn't exit in time");
             }
 
             // If the thread we are interrupting was tasked to load the list of
@@ -650,64 +656,6 @@ public class LauncherModel {
         mDesktopLoaderThread.start();
     }
 
-    private static void updateShortcutLabels(ContentResolver resolver, PackageManager manager) {
-        final Cursor c = resolver.query(LauncherSettings.Favorites.CONTENT_URI,
-                new String[] { LauncherSettings.Favorites._ID, LauncherSettings.Favorites.TITLE,
-                        LauncherSettings.Favorites.INTENT, LauncherSettings.Favorites.ITEM_TYPE },
-                null, null, null);
-
-        final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
-        final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
-        final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
-        final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
-
-        // boolean changed = false;
-
-        try {
-            while (c.moveToNext()) {
-                try {
-                    if (c.getInt(itemTypeIndex) !=
-                            LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                        continue;
-                    }
-
-                    final String intentUri = c.getString(intentIndex);
-                    if (intentUri != null) {
-                        final Intent shortcut = Intent.parseUri(intentUri, 0);
-                        if (Intent.ACTION_MAIN.equals(shortcut.getAction())) {
-                            final ComponentName name = shortcut.getComponent();
-                            if (name != null) {
-                                final ActivityInfo activityInfo = manager.getActivityInfo(name, 0);
-                                final String title = c.getString(titleIndex);
-                                String label = getLabel(manager, activityInfo);
-
-                                if (title == null || !title.equals(label)) {
-                                    final ContentValues values = new ContentValues();
-                                    values.put(LauncherSettings.Favorites.TITLE, label);
-
-                                    resolver.update(
-                                            LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
-                                            values, "_id=?",
-                                            new String[] { String.valueOf(c.getLong(idIndex)) });
-
-                                    // changed = true;
-                                }
-                            }
-                        }
-                    }
-                } catch (URISyntaxException e) {
-                    // Ignore
-                } catch (PackageManager.NameNotFoundException e) {
-                    // Ignore
-                }
-            }
-        } finally {
-            c.close();
-        }
-
-        // if (changed) resolver.notifyChange(Settings.Favorites.CONTENT_URI, null);
-    }
-
     private static String getLabel(PackageManager manager, ActivityInfo activityInfo) {
         String label = activityInfo.loadLabel(manager).toString();
         if (label == null) {
@@ -721,7 +669,7 @@ public class LauncherModel {
 
     private class DesktopItemsLoader implements Runnable {
         private volatile boolean mStopped;
-        private volatile boolean mRunning;
+        private volatile boolean mFinished;
 
         private final WeakReference<Launcher> mLauncher;
         private final boolean mLocaleChanged;
@@ -736,20 +684,26 @@ public class LauncherModel {
             mLauncher = new WeakReference<Launcher>(launcher);
             mLocaleChanged = localeChanged;
             mId = sWorkspaceLoaderCount.getAndIncrement();
+            mFinished = false;
         }
 
         void stop() {
+            d(LOG_TAG, "  ----> workspace loader " + mId + " stopped from " + Thread.currentThread().toString());
             mStopped = true;
         }
 
         boolean isRunning() {
-            return mRunning;
+            return !mFinished;
         }
 
         public void run() {
-            if (DEBUG_LOADERS) d(LOG_TAG, "  ----> running workspace loader (" + mId + ")");
+            assert(!mFinished); // can only run once
+            load_workspace();
+            mFinished = true;
+        }
 
-            mRunning = true;
+        private void load_workspace() {
+            if (DEBUG_LOADERS) d(LOG_TAG, "  ----> running workspace loader (" + mId + ")");
 
             android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
 
@@ -761,12 +715,9 @@ public class LauncherModel {
                 updateShortcutLabels(contentResolver, manager);
             }
 
-            mDesktopItems = new ArrayList<ItemInfo>();
-            mDesktopAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
-            mFolders = new HashMap<Long, FolderInfo>();
-
-            final ArrayList<ItemInfo> desktopItems = mDesktopItems;
-            final ArrayList<LauncherAppWidgetInfo> desktopAppWidgets = mDesktopAppWidgets;
+            final ArrayList<ItemInfo> desktopItems = new ArrayList<ItemInfo>();
+            final ArrayList<LauncherAppWidgetInfo> desktopAppWidgets = new ArrayList<LauncherAppWidgetInfo>();
+            final HashMap<Long, FolderInfo> folders = new HashMap<Long, FolderInfo>();
 
             final Cursor c = contentResolver.query(
                     LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
@@ -797,8 +748,6 @@ public class LauncherModel {
                 int container;
                 long id;
                 Intent intent;
-
-                final HashMap<Long, FolderInfo> folders = mFolders;
 
                 while (!mStopped && c.moveToNext()) {
                     try {
@@ -961,13 +910,16 @@ public class LauncherModel {
             } finally {
                 c.close();
             }
+            if (DEBUG_LOADERS) {
+                d(LOG_TAG, "  ----> workspace loader " + mId + " finished loading data");
+                d(LOG_TAG, "  ----> worskpace items=" + desktopItems.size());
+                d(LOG_TAG, "  ----> worskpace widgets=" + desktopAppWidgets.size());
+            }
 
             synchronized(LauncherModel.this) {
                 if (!mStopped) {
                     if (DEBUG_LOADERS)  {
-                        d(LOG_TAG, "  --> done loading workspace");
-                        d(LOG_TAG, "  ----> worskpace items=" + desktopItems.size());
-                        d(LOG_TAG, "  ----> worskpace widgets=" + desktopAppWidgets.size());
+                        d(LOG_TAG, "  --> done loading workspace; not stopped");
                     }
 
                     // Create a copy of the lists in case the workspace loader is restarted
@@ -994,12 +946,72 @@ public class LauncherModel {
                         startApplicationsLoader(launcher, mIsLaunching);
                     }
 
+                    mDesktopItems = desktopItems;
+                    mDesktopAppWidgets = desktopAppWidgets;
+                    mFolders = folders;
                     mDesktopItemsLoaded = true;
                 } else {
                     if (DEBUG_LOADERS) d(LOG_TAG, "  ----> worskpace loader was stopped");
                 }
             }
-            mRunning = false;
+        }
+
+        private void updateShortcutLabels(ContentResolver resolver, PackageManager manager) {
+            final Cursor c = resolver.query(LauncherSettings.Favorites.CONTENT_URI,
+                    new String[] { LauncherSettings.Favorites._ID, LauncherSettings.Favorites.TITLE,
+                            LauncherSettings.Favorites.INTENT, LauncherSettings.Favorites.ITEM_TYPE },
+                    null, null, null);
+
+            final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
+            final int intentIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
+            final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
+            final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
+
+            // boolean changed = false;
+
+            try {
+                while (!mStopped && c.moveToNext()) {
+                    try {
+                        if (c.getInt(itemTypeIndex) !=
+                                LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                            continue;
+                        }
+
+                        final String intentUri = c.getString(intentIndex);
+                        if (intentUri != null) {
+                            final Intent shortcut = Intent.parseUri(intentUri, 0);
+                            if (Intent.ACTION_MAIN.equals(shortcut.getAction())) {
+                                final ComponentName name = shortcut.getComponent();
+                                if (name != null) {
+                                    final ActivityInfo activityInfo = manager.getActivityInfo(name, 0);
+                                    final String title = c.getString(titleIndex);
+                                    String label = getLabel(manager, activityInfo);
+
+                                    if (title == null || !title.equals(label)) {
+                                        final ContentValues values = new ContentValues();
+                                        values.put(LauncherSettings.Favorites.TITLE, label);
+
+                                        resolver.update(
+                                                LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION,
+                                                values, "_id=?",
+                                                new String[] { String.valueOf(c.getLong(idIndex)) });
+
+                                        // changed = true;
+                                    }
+                                }
+                            }
+                        }
+                    } catch (URISyntaxException e) {
+                        // Ignore
+                    } catch (PackageManager.NameNotFoundException e) {
+                        // Ignore
+                    }
+                }
+            } finally {
+                c.close();
+            }
+
+            // if (changed) resolver.notifyChange(Settings.Favorites.CONTENT_URI, null);
         }
     }
 

@@ -104,7 +104,7 @@ import com.android.launcher.SliderView.OnTriggerListener;
  */
 public final class Launcher extends Activity implements View.OnClickListener, OnLongClickListener {
     static final String LOG_TAG = "Launcher";
-    static final boolean LOGD = false;
+    static final boolean LOGD = true;
 
     private static final boolean PROFILE_STARTUP = false;
     private static final boolean PROFILE_DRAWER = false;
