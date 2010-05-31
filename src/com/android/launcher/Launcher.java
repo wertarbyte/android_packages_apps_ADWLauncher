@@ -2835,76 +2835,77 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         int y = cell.getTopPadding();
         //width -= (x + cell.getRightPadding());
         //height -= (y + cell.getBottomPadding());
-
-        float scale = w / width;
-
-        int count = end - start;
-
-        final float sWidth = width * scale;
-        float sHeight = height * scale;
-
-
-        PreviewTouchHandler handler = new PreviewTouchHandler(anchor);
-        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>(count);
-
-        for (int i = start; i < end; i++) {
-            ImageView image = new ImageView(this);
-            cell = (CellLayout) workspace.getChildAt(i);
-
-            Bitmap bitmap = Bitmap.createBitmap((int) sWidth, (int) sHeight,
-                    Bitmap.Config.ARGB_8888);
-            
-            Canvas c = new Canvas(bitmap);
-            c.scale(scale, scale);
-            c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
-            cell.dispatchDraw(c);
-
-            image.setBackgroundDrawable(resources.getDrawable(R.drawable.preview_background));
-            image.setImageBitmap(bitmap);
-            image.setTag(i);
-            image.setOnClickListener(handler);
-            image.setOnFocusChangeListener(handler);
-            image.setFocusable(true);
-            if (i == mWorkspace.getCurrentScreen()) image.requestFocus();
-
-            preview.addView(image,
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-            bitmaps.add(bitmap);            
-        }
-       
-        PopupWindow p = new PopupWindow(this);
-        p.setContentView(preview);
-        if(newPreviews){
-	        p.setWidth(width);
-	        p.setHeight(height);
-	        p.setAnimationStyle(R.style.AnimationPreview);
-        }else{
-        	p.setWidth((int) (sWidth * count + extraW));
-        	p.setHeight((int) (sHeight + extraH));
-            p.setAnimationStyle(R.style.AnimationPreview);
-        }
-        p.setOutsideTouchable(true);
-        p.setFocusable(true);
-        p.setBackgroundDrawable(new ColorDrawable(0));
-        if(newPreviews){
-        	p.showAtLocation(anchor, Gravity.BOTTOM, 0, 0);
-        }else{
-        	p.showAsDropDown(anchor, 0, 0);
-        }
-        p.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            public void onDismiss() {
-                dismissPreview(anchor);
-            }
-        });
-        anchor.setTag(p);
-        anchor.setTag(R.id.workspace, preview);
-        anchor.setTag(R.id.icon, bitmaps);
-        if(fullScreenPreviews){
-	        hideDesktop(true);
-	        mWorkspace.lock();
-	        mDesktopLocked=true;
-	        mWorkspace.invalidate();
+        if(width!=0 && height!=0){
+	        float scale = w / width;
+	
+	        int count = end - start;
+	
+	        final float sWidth = width * scale;
+	        float sHeight = height * scale;
+	
+	
+	        PreviewTouchHandler handler = new PreviewTouchHandler(anchor);
+	        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>(count);
+	
+	        for (int i = start; i < end; i++) {
+	            ImageView image = new ImageView(this);
+	            cell = (CellLayout) workspace.getChildAt(i);
+	
+	            Bitmap bitmap = Bitmap.createBitmap((int) sWidth, (int) sHeight,
+	                    Bitmap.Config.ARGB_8888);
+	            
+	            Canvas c = new Canvas(bitmap);
+	            c.scale(scale, scale);
+	            c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
+	            cell.dispatchDraw(c);
+	
+	            image.setBackgroundDrawable(resources.getDrawable(R.drawable.preview_background));
+	            image.setImageBitmap(bitmap);
+	            image.setTag(i);
+	            image.setOnClickListener(handler);
+	            image.setOnFocusChangeListener(handler);
+	            image.setFocusable(true);
+	            if (i == mWorkspace.getCurrentScreen()) image.requestFocus();
+	
+	            preview.addView(image,
+	                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+	
+	            bitmaps.add(bitmap);            
+	        }
+	       
+	        PopupWindow p = new PopupWindow(this);
+	        p.setContentView(preview);
+	        if(newPreviews){
+		        p.setWidth(width);
+		        p.setHeight(height);
+		        p.setAnimationStyle(R.style.AnimationPreview);
+	        }else{
+	        	p.setWidth((int) (sWidth * count + extraW));
+	        	p.setHeight((int) (sHeight + extraH));
+	            p.setAnimationStyle(R.style.AnimationPreview);
+	        }
+	        p.setOutsideTouchable(true);
+	        p.setFocusable(true);
+	        p.setBackgroundDrawable(new ColorDrawable(0));
+	        if(newPreviews){
+	        	p.showAtLocation(anchor, Gravity.BOTTOM, 0, 0);
+	        }else{
+	        	p.showAsDropDown(anchor, 0, 0);
+	        }
+	        p.setOnDismissListener(new PopupWindow.OnDismissListener() {
+	            public void onDismiss() {
+	                dismissPreview(anchor);
+	            }
+	        });
+	        anchor.setTag(p);
+	        anchor.setTag(R.id.workspace, preview);
+	        anchor.setTag(R.id.icon, bitmaps);
+	        if(fullScreenPreviews){
+		        hideDesktop(true);
+		        mWorkspace.lock();
+		        mDesktopLocked=true;
+		        mWorkspace.invalidate();
+	        }
         }
     }
     class PreviewTouchHandler implements View.OnClickListener, Runnable, View.OnFocusChangeListener {
