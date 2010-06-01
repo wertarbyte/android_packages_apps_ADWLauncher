@@ -264,6 +264,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	private boolean hideABBg=false;
 	private float uiScaleAB=0.5f;
 	private boolean uiHideLabels=false;
+	private boolean wallpaperHack=true;
 	/**
 	 * ADW: Home binding constants
 	 */
@@ -2572,6 +2573,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 		        ((AllAppsGridView) mAllAppsGrid).setAnimationSpeed(animationSpeed);
 	        }
         }
+        wallpaperHack=AlmostNexusSettingsHelper.getWallpaperHack(this);
     }
     /**
      * ADW: Refresh UI status variables and elements after changing settings.
@@ -2603,6 +2605,9 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	    	appsBg.setVisibility(hideAppsBg?View.INVISIBLE:View.VISIBLE);
 	    	mRAB.hideBg(hideABBg);
 	    	mLAB.hideBg(hideABBg);
+    	}
+    	if(mWorkspace!=null){
+    		mWorkspace.setWallpaperHack(wallpaperHack);
     	}
     }
     /**

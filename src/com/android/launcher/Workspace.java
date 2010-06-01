@@ -124,6 +124,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private float mWallpaperOffset;
     private boolean mWallpaperLoaded;
     private boolean lwpSupport=true;
+    private boolean wallpaperHack=true;
     //ADW: speed for desktop transitions
     private int mScrollingSpeed=600;
     //ADW: bounce scroll
@@ -1431,7 +1432,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      * only when detected not being a Live Wallpaper
      */
 	public void setWallpaper(){
-		if(mWallpaperManager.getWallpaperInfo()!=null){
+		if(mWallpaperManager.getWallpaperInfo()!=null || !wallpaperHack){
 			if(mWallpaper!=null){
 				mWallpaper.recycle();
 				mWallpaperLoaded=false;
@@ -1448,6 +1449,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 		mLauncher.setWindowBackground(lwpSupport);
 		invalidate();
 		requestLayout();
+	}
+	public void setWallpaperHack(boolean hack){
+		wallpaperHack=hack;
+		if(wallpaperHack && mWallpaperManager.getWallpaperInfo()==null){
+			lwpSupport=false;
+		}else{
+			lwpSupport=true;	
+		}
+		mLauncher.setWindowBackground(lwpSupport);
 	}
 	/**
 	 * ADW: Set the desktop scrolling speed (default scrolling duration)

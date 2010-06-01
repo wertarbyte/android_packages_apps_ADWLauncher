@@ -7,6 +7,10 @@
 		android:key="screenPreferences"
 		android:title="Screen preferences"
 		android:summary="Screen count, default screen...">
+		<CheckBoxPreference android:title="Wallpaper Hack"
+			android:defaultValue="true"
+			android:summary="Disable thisif you get FCs using LARGE wallpapers.Leaving it enabled inproves the scrolling speed."
+			android:key="wallpaperHack" />
 		<CheckBoxPreference android:title="Orientation sensor"
 			android:defaultValue="true"
 			android:summary="Rotate desktop on sensor rotation"

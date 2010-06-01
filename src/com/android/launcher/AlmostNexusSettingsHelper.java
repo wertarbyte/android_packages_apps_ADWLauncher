@@ -142,4 +142,9 @@ public final class AlmostNexusSettingsHelper {
 		boolean newD = sp.getBoolean("uiHideLabels", false);
 		return newD;
 	}
+	public static boolean getWallpaperHack(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
+		boolean newD = sp.getBoolean("wallpaperHack", true);
+		return newD;
+	}
 }
