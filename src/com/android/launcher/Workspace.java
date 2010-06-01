@@ -737,9 +737,12 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     void enableChildrenCache() {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
-            final CellLayout layout = (CellLayout) getChildAt(i);
-            layout.setChildrenDrawnWithCacheEnabled(true);
-            layout.setChildrenDrawingCacheEnabled(true);
+        	//ADW: create cache only for current screen/previous/next.
+        	if(i>=mCurrentScreen-1 || i<=mCurrentScreen+1){
+        		final CellLayout layout = (CellLayout) getChildAt(i);
+        		layout.setChildrenDrawnWithCacheEnabled(true);
+        		layout.setChildrenDrawingCacheEnabled(true);
+        	}
         }
     }
 
