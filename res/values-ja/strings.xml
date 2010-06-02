@@ -61,4 +61,121 @@
     <string name="permdesc_write_settings" msgid="1098648778383349818">"ホームの設定とショートカットの変更をアプリケーションに許可します。"</string>
     <string name="search_hint" msgid="6974176141372467453">"Google検索"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"ウィジェットを表示できません"</string>
+
+    <!-- ADW Settings -->
+    <!-- Screen preferences -->
+    <string name="pref_title_screen_preferences">スクリーン設定</string>
+    <string name="pref_summary_screen_preferences">スクリーンの数やデフォルト等</string>
+
+    <string name="pref_title_wallpaper_hack">壁紙ハック</string>
+    <string name="pref_summary_wallpaper_hack">大きい壁紙を使っていて強制終了してしまう場合は無効にする.スクロール速度を快適に保つには有効にする.</string>
+
+    <string name="pref_title_lwp_support">LWPサポート</string>
+    <string name="pref_summary_lwp_support">ライブ壁紙のサポートを有効にする</string>
+
+    <string name="pref_title_orientation_sensor">回転センサ</string>
+    <string name="pref_summary_orientation_sensor">回転センサによりデスクトップを回転する</string>
+
+    <string name="pref_title_hide_statusbar">ステータスバーを隠す</string>
+    <string name="pref_summary_hide_statusbar">ステータスバーを隠す</string>
+
+    <string name="pref_title_desktop_screens">デスクトップスクリーン</string>
+    <string name="pref_summary_desktop_screens">使用するデスクトップスクリーンの数を選択する</string>
+    <string name="pref_dialog_desktop_screen">使用するデスクトップスクリーンの数を選択</string>
+
+    <string name="pref_title_default_screen">デフォルトスクリーン</string>
+    <string name="pref_summary_default_screen">デフォルトとして設定するスクリーンを選択する</string>
+    <string name="pref_dialog_default_screen">デフォルトとして設定するスクリーンを選択</string>
+
+    <string name="pref_title_desktop_scrolling_speed">デスクトップスクロール速度</string>
+    <string name="pref_summary_desktop_scrolling_speed">デスクトップスクリーンを飛ばすときのスピードを設定する</string>
+    <string name="pref_dialog_desktop_scrolling_speed">低い値を設定するとより速くスクリーンを飛ばします</string>
+
+    <string name="pref_title_desktop_overshoot">デスクトップオーバーシュート</string>
+    <string name="pref_summary_desktop_overshoot">最初と最後のデスクトップで行き過ぎた場合にスクリーンを弾ませる</string>
+    <string name="pref_dialog_desktop_overshoot">0を設定するとオーバーシュートを無効にします</string>
+
+    <!-- Drawer Settings -->
+    <string name="pref_title_drawer_settings">ドロワー設定</string>
+    <string name="pref_summary_drawer_settings">アプリケーションドロワーのグリッド設定</string>
+
+    <string name="pref_title_zoom_effect_speed">ズームエフェクト速度</string>
+    <string name="pref_summary_zoom_effect_speed">ミリ秒でズームエフェクトの時間を設定</string>
+    <string name="pref_dialog_zoom_effect_speed">ミリ秒でズームエフェクトの時間を設定</string>
+
+    <string name="pref_title_new_drawer">新しいドロワー</string>
+    <string name="pref_summary_new_drawer">Samsung Galaxy Sで実装されているようなドロワー</string>
+
+    <string name="pref_title_animated_drawer">アニメーションドロワー</string>
+    <string name="pref_summary_animated_drawer">アプリケーションドロワーをアニメーション表示するかどうか</string>
+
+    <string name="pref_title_fast_drawer">速いドロワー</string>
+    <string name="pref_summary_fast_drawer">スクロール速度を維持するために、不透明無色の背景を使用する</string>
+
+    <string name="pref_title_drawer_columns_portrait">縦画面のドロワー列数</string>
+    <string name="pref_summary_drawer_columns_portrait">縦画面時のドロワー列数を選択する</string>
+    <string name="pref_dialog_drawer_columns_portrait">縦画面時のドロワー列数を選択する</string>
+
+    <string name="pref_title_drawer_rows_portrait">縦画面のドロワー行数</string>
+    <string name="pref_summary_drawer_rows_portrait">縦画面時のドロワー行数を選択する</string>
+    <string name="pref_dialog_drawer_rows_portrait">縦画面時のドロワー行数を選択する</string>
+
+    <string name="pref_title_drawer_columns_landscape">横画面のドロワー列数</string>
+    <string name="pref_summary_drawer_columns_landscape">横画面時のドロワー列数を選択する</string>
+    <string name="pref_dialog_drawer_columns_landscape">横画面のドロワー列数を選択する</string>
+
+    <string name="pref_title_drawer_rows_landscape">横画面のドロワー行数</string>
+    <string name="pref_summary_drawer_rows_landscape">横画面時のドロワー行数を選択する</string>
+    <string name="pref_dialog_drawer_rows_landscape">横画面時のドロワー行数を選択する</string>
+
+    <!-- Previews preferences -->
+    <string name="pref_title_previews_preferences">プレビュー設定</string>
+    <string name="pref_summary_previews_preferences">デスクトッププレビューの設定</string>
+
+    <string name="pref_title_sense_previews">Senseプレビュー</string>
+    <string name="pref_summary_sense_previews">Sense UIのようなデスクトッププレビューを使用する</string>
+
+    <string name="pref_title_clean_screen_mode">クリーンスクリーンモード</string>
+    <string name="pref_summary_clean_screen_mode">プレビューを表示しているときはホームのアイコンやウィジェットを隠す</string>
+
+    <!-- Button preferences -->
+    <string name="pref_title_ui_settings">UI設定</string>
+    <string name="pref_summary_ui_settings">ユーザインタフェースの設定</string>
+
+    <string name="pref_title_home_button_binding">ホームボタン</string>
+    <string name="pref_summary_home_button_binding">ホームボタンを押したときの挙動を設定する</string>
+
+    <string name="pref_title_desktop_dots">デスクトップドット</string>
+    <string name="pref_summary_desktop_dots">Nexusのようなページめくりのドットを表示する</string>
+
+    <string name="pref_title_dockbar">ドックバー</string>
+    <string name="pref_summary_dockbar">ショートカットを設置するための新しいドックバーを有効にする</string>
+
+    <string name="pref_title_closing_dockbar">ドックバーを閉じる</string>
+    <string name="pref_summary_closing_dockbar">アプリケーションを起動したら自動的にドックバーを閉じる</string>
+
+    <string name="pref_title_lab">LAB(左ボタン)</string>
+    <string name="pref_summary_lab">カスタマイズ可能な左ボタンを有効にする</string>
+
+    <string name="pref_title_rab">RAB(右ボタン)</string>
+    <string name="pref_summary_rab">カスタマイズ可能な右ボタンを有効にする</string>
+
+    <string name="pref_title_tint_ab">薄いボタン</string>
+    <string name="pref_summary_tint_ab">アクションボタンを薄くぼんやりと表示する</string>
+
+    <string name="pref_title_ab_scale_factor">アクションボタンの縮尺</string>
+    <string name="pref_summary_ab_scale_factor">アクションボタンアイコンの縮尺を設定する</string>
+    <string name="pref_dialog_ab_scale_factor">アクションボタンアイコンの縮尺を設定する</string>
+
+    <string name="pref_title_hide_allapps_ab">ドロワーボタンの背景を隠す</string>
+    <string name="pref_summary_hide_allapps_ab">ドロワーボタン(すべてのアプリボタン)の背景を表示しない</string>
+
+    <string name="pref_title_hide_ab_bg">アクションボタンの背景を隠す</string>
+    <string name="pref_summary_hide_ab_bg">アクションボタン(LAB,RAB)の背景を表示しない</string>
+
+    <string name="pref_title_hide_icon_labels">アイコンラベルを隠す</string>
+    <string name="pref_summary_hide_icon_labels">デスクトップアイコンのラベルを表示しない</string>
+
+    <string name="pref_title_build_info">ビルド情報</string>
+    <string name="pref_title_adw_version">ADW バージョン</string>
 </resources>
