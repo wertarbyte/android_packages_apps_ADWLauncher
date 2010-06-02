@@ -466,7 +466,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         // If the all apps drawer is open and the drawing region for the workspace
         // is contained within the drawer's bounds, we skip the drawing. This requires
         // the drawer to be fully opaque.
-        if((mLauncher.isAllAppsVisible() && mLauncher.isAllAppsOpaque()) || mLauncher.isFullScreenPreviewing()){
+        if((mLauncher.isAllAppsVisible()) || mLauncher.isFullScreenPreviewing()){
         	return;
         }
         // ViewGroup.dispatchDraw() supports many features we don't need:
