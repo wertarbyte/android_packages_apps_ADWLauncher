@@ -254,9 +254,9 @@ public class HolderLayout extends ViewGroup {
         //setCacheColorHint(0);
 		if(mStatus!=OPENING){
 			mAnimationDuration=speed;
-	        setDrawingCacheBackgroundColor(0);
-			clearChildrenCache();
-			setChildrenDrawingCacheEnabled(true);
+	        //setDrawingCacheBackgroundColor(0);
+			//clearChildrenCache();
+			//setChildrenDrawingCacheEnabled(true);
 			if(animate){
 				isAnimating=true;
 				mStatus=OPENING;
@@ -274,9 +274,9 @@ public class HolderLayout extends ViewGroup {
         //setCacheColorHint(0);
 		if(mStatus!=CLOSING){
 			mAnimationDuration=speed;
-	        setDrawingCacheBackgroundColor(0);
-			clearChildrenCache();
-			setChildrenDrawingCacheEnabled(true);
+	        //setDrawingCacheBackgroundColor(0);
+			//clearChildrenCache();
+			//setChildrenDrawingCacheEnabled(true);
 			if(animate){
 				mStatus=CLOSING;
 				isAnimating=true;
