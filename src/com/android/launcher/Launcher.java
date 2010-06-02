@@ -2755,6 +2755,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     	dismissPreview(mNextView);
     	dismissPreview(mPreviousView);
     	dismissPreview(mHandleView);
+        for (int i = 0; i < mWorkspace.getChildCount(); i++) {
+            View cell = mWorkspace.getChildAt(i);
+            cell.setDrawingCacheEnabled(false);
+        }
     }
     private void dismissPreview(final View v) {
     	final PopupWindow window = (PopupWindow) v.getTag();
@@ -2767,8 +2771,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     for (int i = 0; i < count; i++) {
                         ((ImageView) group.getChildAt(i)).setImageDrawable(null);
                     }
-                    ArrayList<Bitmap> bitmaps = (ArrayList<Bitmap>) v.getTag(R.id.icon);
-                    for (Bitmap bitmap : bitmaps) bitmap.recycle();
+                    //ArrayList<Bitmap> bitmaps = (ArrayList<Bitmap>) v.getTag(R.id.icon);
+                    //for (Bitmap bitmap : bitmaps) bitmap.recycle();
 
                     v.setTag(R.id.workspace, null);
                     v.setTag(R.id.icon, null);
@@ -2855,14 +2859,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	        for (int i = start; i < end; i++) {
 	            ImageView image = new ImageView(this);
 	            cell = (CellLayout) workspace.getChildAt(i);
-	
-	            Bitmap bitmap = Bitmap.createBitmap((int) sWidth, (int) sHeight,
-	                    Bitmap.Config.ARGB_8888);
+	            cell.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+	            cell.setDrawingCacheEnabled(true);
+	            Bitmap bitmap = Bitmap.createScaledBitmap(cell.getDrawingCache(), (int)sWidth, (int)sHeight, false);// Bitmap.createBitmap((int) sWidth, (int) sHeight,
+	                    //Bitmap.Config.ARGB_8888);
 	            
 	            Canvas c = new Canvas(bitmap);
 	            c.scale(scale, scale);
 	            c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
-	            cell.dispatchDraw(c);
+	            //cell.dispatchDraw(c);
 	
 	            image.setBackgroundDrawable(resources.getDrawable(R.drawable.preview_background));
 	            image.setImageBitmap(bitmap);
@@ -2950,30 +2955,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private void showAllApps(boolean animated){
 		if(!allAppsOpen){
 			allAppsOpen=true;
+			mWorkspace.enableChildrenCache();
 	        mWorkspace.lock();
 	        mDesktopLocked=true;
 	        mWorkspace.invalidate();			
-			//allApps.setVisibility(View.VISIBLE);
-			/*mAllAppsGrid.setVisibility(View.VISIBLE);
-			if(animated && allowDrawerAnimations){
-				Animation animation = AnimationUtils.loadAnimation(this,R.anim.apps_fade_in);
-				animation.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
-					public void onAnimationStart(Animation animation) {
-						// TODO Auto-generated method stub
-					}
-					public void onAnimationRepeat(Animation animation) {
-						// TODO Auto-generated method stub
-					}
-					public void onAnimationEnd(Animation animation) {
-						// TODO Auto-generated method stub
-						allAppsAnimating=false;
-					}
-				});
-				allAppsAnimating=true;
-				mAllAppsGrid.startAnimation(animation);
-			}else{
-
-			}*/
             if(newDrawer){
     	        ((AllAppsSlidingView) mAllAppsGrid).open(animated && allowDrawerAnimations);
             }else{
@@ -2991,32 +2976,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	        mWorkspace.unlock();
 	        mDesktopLocked=false;
 	        mWorkspace.invalidate();			
-			/*if(animated && allowDrawerAnimations){
-				Animation animation = AnimationUtils.loadAnimation(this,R.anim.apps_fade_out);
-				animation.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
-					public void onAnimationStart(Animation animation) {
-						// TODO Auto-generated method stub
-					}
-					public void onAnimationRepeat(Animation animation) {
-						// TODO Auto-generated method stub
-					}
-					public void onAnimationEnd(Animation animation) {
-						// TODO Auto-generated method stub
-						mAllAppsGrid.setVisibility(View.GONE);
-						allAppsAnimating=false;
-			            if(newDrawer){
-			            	((AllAppsSlidingView)mAllAppsGrid).setSelection(0);
-			            }else{
-			            	((AllAppsGridView)mAllAppsGrid).setSelection(0);
-			            	((AllAppsGridView)mAllAppsGrid).clearTextFilter();
-			            }
-					}
-				});
-				allAppsAnimating=true;
-				mAllAppsGrid.startAnimation(animation);
-			}else{
-				mAllAppsGrid.setVisibility(View.GONE);
-			}*/
 			mHandleIcon.resetTransition();
 			if(!isDockBarOpen() && showDots){
 				mPreviousView.setVisibility(View.VISIBLE);
@@ -3027,10 +2986,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 			}
             if(newDrawer){
     	        ((AllAppsSlidingView) mAllAppsGrid).close(animated && allowDrawerAnimations);
-            	//((AllAppsSlidingView)mAllAppsGrid).setSelection(0);
             }else{
     	        ((AllAppsGridView) mAllAppsGrid).close(animated && allowDrawerAnimations);
-            	//((AllAppsGridView)mAllAppsGrid).setSelection(0);
             	((AllAppsGridView)mAllAppsGrid).clearTextFilter();
             }
 
