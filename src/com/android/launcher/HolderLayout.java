@@ -176,14 +176,14 @@ public class HolderLayout extends ViewGroup {
 			if(porcentajeScale>=0.9f)porcentajeScale=1f;
 			if(porcentajeScale<0)porcentajeScale=0;
 			alpha=(int)(porcentajeScale*255);
-			dispatchFadingAlphaEvent(alpha);
+			dispatchFadingAlphaEvent(porcentajeScale);
 		}
 		if(currentTime>=mAnimationDuration){
 			isAnimating=false;
 			if(mStatus==OPENING){
 				mStatus=OPEN;
 				dispatchFadingEvent(OnFadingListener.OPEN);
-				dispatchFadingAlphaEvent(alpha);
+				dispatchFadingAlphaEvent(1.0f);
 			}else if(mStatus==CLOSING){
 				mStatus=CLOSED;
 				dispatchFadingEvent(OnFadingListener.CLOSE);
@@ -298,7 +298,7 @@ public class HolderLayout extends ViewGroup {
         public static final int OPEN=1;
         public static final int CLOSE=2;
         void onUpdate(int Status);
-        void onAlphaChange(int alpha);
+        void onAlphaChange(float alphaPercent);
     }
     public void setOnFadingListener(OnFadingListener listener) {
         mOnFadingListener = listener;
@@ -316,9 +316,9 @@ public class HolderLayout extends ViewGroup {
      * Dispatches a trigger event to listener. Ignored if a listener is not set.
      * @param whichHandle the handle that triggered the event.
      */
-    private void dispatchFadingAlphaEvent(int alpha) {
+    private void dispatchFadingAlphaEvent(float alphaPercent) {
         if (mOnFadingListener != null) {
-            mOnFadingListener.onAlphaChange(alpha);
+            mOnFadingListener.onAlphaChange(alphaPercent);
         }
     }
 }

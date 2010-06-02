@@ -1382,57 +1382,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     	mNextIndicator.setLevel(numScreens-mCurrentScreen-1);    	
     }
     /**
-     * Make a blurred bitmap copy of current wallpaper plus the current screen items
-     * @return
-     */
-    public Bitmap getWallpaperSection() {
-    	CellLayout cell = ((CellLayout) getChildAt(mCurrentScreen));
-    	LightingColorFilter cf = new LightingColorFilter(0xFF555555, 0);
-    	Paint paint = new Paint();
-    	paint.setDither(false);
-    	paint.setColorFilter(cf);
-    	int width = (cell.getMeasuredWidth() > 0) ? cell.getMeasuredWidth() : 0;
-    	int height = (cell.getMeasuredHeight() > 0) ? cell.getMeasuredHeight(): 0;
-    	// TODO:ADW check screen width&height when cell layout not rendered, so
-    	// measured w&h are 0
-    	if (width == 0 || height == 0) {
-    		Display display = mLauncher.getWindowManager().getDefaultDisplay();
-    		int w = display.getWidth();
-    		int h = display.getHeight();
-    		this.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
-    				MeasureSpec.makeMeasureSpec(h, MeasureSpec.EXACTLY));
-    		width = getMeasuredWidth();
-    		height = getMeasuredHeight();
-    	}
-    	/*
-    	 * float percent=(float)mCurrentScreen/(float)(mHomeScreens-1); float
-    	 * x=(float)(mWallpaperWidth/2)*percent; float
-    	 * y=(mWallpaperHeight-height)/2;
-    	 */
-    	Drawable d = mWallpaperManager.getFastDrawable();
-    	Bitmap b;
-    	try{
-    		b= Bitmap.createBitmap((int) width, (int) height,
-    			Bitmap.Config.RGB_565);
-    	}catch (Exception e) {
-			// TODO: handle exception
-    		return null;
-		}
-    	Canvas canvas = new Canvas(b);
-    	canvas.drawARGB(255, 0, 255, 0);
-    	/*
-    	 * Rect src=new Rect((int)x, (int)y, (int)x+width, (int)y+height); Rect
-    	 * dst=new Rect(0,0,width,height); canvas.drawBitmap(mWallpaper, src,
-    	 * dst, mPaint);
-    	 */
-    	d.draw(canvas);
-    	cell.dispatchDraw(canvas);
-    	canvas.drawBitmap(b, 0, 0, paint);
-    	b = Bitmap.createScaledBitmap(b, width / 2, height / 2, true);
-    	b = Bitmap.createScaledBitmap(b, width, height, true);
-    	return b;
-    }
-    /**
      * ADW: Make a local copy of wallpaper bitmap to use instead wallpapermanager
      * only when detected not being a Live Wallpaper
      */
