@@ -39,8 +39,6 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
         defaultScreen.setMin(1);
         defaultScreen.setMax(AlmostNexusSettingsHelper.getDesktopScreens(this)-1);
         defaultScreen.setOnPreferenceChangeListener(this);
-        Preference drawerFast = (Preference) findPreference("drawerFast");
-        drawerFast.setOnPreferenceChangeListener(this);
         Preference drawerNew = (Preference) findPreference("drawerNew");
         drawerNew.setOnPreferenceChangeListener(this);
         dlgSeekBarPreference columnsPortrait= (dlgSeekBarPreference) findPreference("drawerColumnsPortrait");
@@ -125,21 +123,6 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 			       });
 			AlertDialog alert = builder.create();
 			alert.show();
-		}else if(preference.getKey().equals("drawerFast")){
-			boolean val=Boolean.parseBoolean(newValue.toString());
-			boolean newDrawer=AlmostNexusSettingsHelper.getDrawerNew(getApplicationContext());
-			if(!val && !newDrawer){
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setMessage(mMsg)
-				       .setCancelable(false)
-				       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				           public void onClick(DialogInterface dialog, int id) {
-								shouldRestart=true;
-				           }
-				       });
-				AlertDialog alert = builder.create();
-				alert.show();
-			}
 		}else if(preference.getKey().equals("uiHideLabels")){
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(mMsg)
