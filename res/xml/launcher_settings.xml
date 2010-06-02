@@ -59,10 +59,12 @@
 			android:defaultValue="true"
 			android:summary="@string/pref_summary_animated_drawer"
 			android:key="drawerAnimated" />
-		<CheckBoxPreference android:title="@string/pref_title_fast_drawer"
-			android:defaultValue="true"
-			android:summary="@string/pref_summary_fast_drawer"
-			android:key="drawerFast" />
+		<com.android.launcher.dlgSeekBarPreference
+			android:title="@string/pref_title_drawer_background_alpha"
+			android:summary="@string/pref_summary_drawer_background_alpha"
+			android:dialogMessage="@string/pref_dialog_drawer_background_alpha"
+			android:key="drawerAlpha" android:defaultValue="255"
+			android:max="255" />
 		<com.android.launcher.dlgSeekBarPreference
 			android:title="@string/pref_title_drawer_columns_portrait"
 			android:summary="@string/pref_summary_drawer_columns_portrait"
