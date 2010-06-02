@@ -70,9 +70,6 @@
     <string name="pref_title_wallpaper_hack">壁紙ハック</string>
     <string name="pref_summary_wallpaper_hack">大きい壁紙を使っていて強制終了してしまう場合は無効にする.スクロール速度を快適に保つには有効にする.</string>
 
-    <string name="pref_title_lwp_support">LWPサポート</string>
-    <string name="pref_summary_lwp_support">ライブ壁紙のサポートを有効にする</string>
-
     <string name="pref_title_orientation_sensor">回転センサ</string>
     <string name="pref_summary_orientation_sensor">回転センサによりデスクトップを回転する</string>
 
