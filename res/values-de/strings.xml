@@ -61,4 +61,119 @@
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Ermöglicht einer Anwendung, die Einstellungen und Shortcuts auf der Startseite zu ändern."</string>
     <string name="search_hint" msgid="6974176141372467453">"Google-Suche"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problem beim Laden des Widgets"</string>
+
+    <!-- ADW Settings -->
+    <!-- Screen preferences -->
+    <string name="pref_title_screen_preferences">Anzeigen</string>
+    <string name="pref_summary_screen_preferences">Einstellungen für Anzahl, Standardbildschirm...</string>
+
+    <string name="pref_title_wallpaper_hack">Wallpaper Hack</string>
+    <string name="pref_summary_wallpaper_hack">Für schnelleres Scrollen. Bei Fehlermeldungen und Nutzung großer Hintergrundbilder ausschalten.</string>
+
+    <string name="pref_title_orientation_sensor">Orientierungssensor</string>
+    <string name="pref_summary_orientation_sensor">Rotiere Bildschirm bei Drehung des Gerätes</string>
+
+    <string name="pref_title_hide_statusbar">Statuszeile verstecken</string>
+    <string name="pref_summary_hide_statusbar">Statuszeile wird ausgeblendet</string>
+
+    <string name="pref_title_desktop_screens">Anzahl Bildschirme</string>
+    <string name="pref_summary_desktop_screens">Wähle die Anzahl zu verwendener Bildschirme</string>
+    <string name="pref_dialog_desktop_screen">Wähle die Anzahl zu verwendener Bildschirme</string>
+
+    <string name="pref_title_default_screen">Standardbildschirm</string>
+    <string name="pref_summary_default_screen">Wähle den Standardbildschirm</string>
+    <string name="pref_dialog_default_screen">Standardbildschirm</string>
+
+    <string name="pref_title_desktop_scrolling_speed">Scrollgeschwindigkeit</string>
+    <string name="pref_summary_desktop_scrolling_speed">Stelle Geschwindigkeit für Bildschirmwechsel ein</string>
+    <string name="pref_dialog_desktop_scrolling_speed">Kleine Werte für schnellere Wechsel</string>
+
+    <string name="pref_title_desktop_overshoot">Überschwingen</string>
+    <string name="pref_summary_desktop_overshoot">Erlaube das Überschwingen der Anzeigen beim Wechsel des Bildschirms</string>
+    <string name="pref_dialog_desktop_overshoot">Zum Ausschalten auf Null setzen.</string>
+
+    <!-- Drawer Settings -->
+    <string name="pref_title_drawer_settings">AppDrawer</string>
+    <string name="pref_summary_drawer_settings">Konfiguration für den AppDrawer (Launcher)</string>
+
+    <string name="pref_title_zoom_effect_speed">Zoom-Effekt Geschwindigkeit</string>
+    <string name="pref_summary_zoom_effect_speed">Setze Zeit in Millisekunden für den Zoom-Effekt</string>
+    <string name="pref_dialog_zoom_effect_speed">Setze Zeit in Millisekunden für den Zoom-Effekt</string>
+
+    <string name="pref_title_new_drawer">Neuer AppDrawer</string>
+    <string name="pref_summary_new_drawer">Verwende die Samsung Galaxy S Implementierung (horizontal)</string>
+
+    <string name="pref_title_animated_drawer">Animierter AppDrawer</string>
+    <string name="pref_summary_animated_drawer">Auswählen ob Animationen im AppDrawer angezeigt werden sollen</string>
+
+    <string name="pref_title_fast_drawer">Schneller AppDrawer</string>
+    <string name="pref_summary_fast_drawer">Kein durchscheinendes Hintergrundbild für schnellere Scrollgeschwindigkeit</string>
+
+    <string name="pref_title_drawer_columns_portrait">Spalten Aufrecht-Modus</string>
+    <string name="pref_summary_drawer_columns_portrait">Wähle Anzahl der Spalten im Appdrawer im Portrait-Modus</string>
+    <string name="pref_dialog_drawer_columns_portrait">Anzahl der Spalten im Appdrawer im Portrait-Modus</string>
+
+    <string name="pref_title_drawer_rows_portrait">Reihen Aufrecht-Modus</string>
+    <string name="pref_summary_drawer_rows_portrait">Wähle Anzahl der Reihen im Appdrawer im Portrait-Modus</string>
+    <string name="pref_dialog_drawer_rows_portrait">Anzahl der Reihen im Appdrawer im Portrait-Modus</string>
+
+    <string name="pref_title_drawer_columns_landscape">Spalten Quer-Modus</string>
+    <string name="pref_summary_drawer_columns_landscape">Wähle Anzahl der Spalten im Appdrawer im Landschafts-Modus</string>
+    <string name="pref_dialog_drawer_columns_landscape">Anzahl der Spalten im Appdrawer im Landschafts-Modus</string>
+
+    <string name="pref_title_drawer_rows_landscape">Reihen Quer-Modus</string>
+    <string name="pref_summary_drawer_rows_landscape">Wähle Anzahl der Reihen im Appdrawer im Landschafts-Modus</string>
+    <string name="pref_dialog_drawer_rows_landscape">Anzahl der Reihen im Appdrawer im Landschafts-Modus</string>
+
+    <!-- Previews preferences -->
+    <string name="pref_title_previews_preferences">Vorschauen</string>
+    <string name="pref_summary_previews_preferences">Einstellungen für die Vorschauen der Bildschirme</string>
+
+    <string name="pref_title_sense_previews">Sense Vorschauen</string>
+    <string name="pref_summary_sense_previews">Verwende Vorschauen im Aussehen von Sense-Oberflächen</string>
+
+    <string name="pref_title_clean_screen_mode">Aufgeräumt-Modus</string>
+    <string name="pref_summary_clean_screen_mode">Verstecke Home-Icons/Widgets, wenn Vorschauen geöffnet werden</string>
+
+    <!-- Button preferences -->
+    <string name="pref_title_ui_settings">Benutzeroberfläche</string>
+    <string name="pref_summary_ui_settings">Elemente der Benutzeroberfläche konfigurieren</string>
+
+    <string name="pref_title_home_button_binding">HOME-Taste</string>
+    <string name="pref_summary_home_button_binding">Wähle Aktion für HOME-Taste</string>
+
+    <string name="pref_title_desktop_dots">Desktop Punkte</string>
+    <string name="pref_summary_desktop_dots">Zeige/Verstecke Punkte für Anzeigewechsel (wie Nexus One)</string>
+
+    <string name="pref_title_dockbar">Dockzeile</string>
+    <string name="pref_summary_dockbar">Ein/Ausschalten der neuen Dockzeile für Schnellzugriffe</string>
+
+    <string name="pref_title_closing_dockbar">Automatisch schliessen</string>
+    <string name="pref_summary_closing_dockbar">Dockzeile nach Anwendungsstart automatisch schliessen</string>
+
+    <string name="pref_title_lab">LAB</string>
+    <string name="pref_summary_lab">Ein/Ausschalten der konfigurierbaren Linken Aktionstaste (LAB)</string>
+
+    <string name="pref_title_rab">RAB</string>
+    <string name="pref_summary_rab">Ein/Ausschalten der konfigurierbaren Rechten Aktionstaste (RAB)</string>
+
+    <string name="pref_title_tint_ab">Gefärbte Aktionstasten</string>
+    <string name="pref_summary_tint_ab">Ein/Ausschalten des Einfärbeeffekts für die Aktionstasten</string>
+
+    <string name="pref_title_ab_scale_factor">Größe der Aktionstasten</string>
+    <string name="pref_summary_ab_scale_factor">Skaliere die Größe der Aktionstasten-Icons</string>
+    <string name="pref_dialog_ab_scale_factor">Größenfaktor der Aktionstasten-Icons</string>
+
+    <string name="pref_title_hide_allapps_ab">Hintergrund AppDrawer-Taste ausblenden</string>
+    <string name="pref_summary_hide_allapps_ab">Hintergrund für die AppDrawer-Taste ausblenden</string>
+
+    <string name="pref_title_hide_ab_bg">Hintergrund Aktionstasten ausblenden</string>
+    <string name="pref_summary_hide_ab_bg">Hintergrund für die AppDrawer-Taste ausblenden</string>
+
+    <string name="pref_title_hide_icon_labels">Keine Icon-Beschriftung</string>
+    <string name="pref_summary_hide_icon_labels">Blende die Beschriftung der Desktopsymbole aus</string>
+
+    <string name="pref_title_build_info">Informationen</string>
+    <string name="pref_title_adw_version">ADW.Launcher Version</string>
+
 </resources>
