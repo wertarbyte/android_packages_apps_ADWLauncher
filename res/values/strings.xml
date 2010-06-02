@@ -140,9 +140,6 @@
     <string name="pref_title_wallpaper_hack">Wallpaper Hack</string>
     <string name="pref_summary_wallpaper_hack">Disable thisif you get FCs using LARGE wallpapers.Leaving it enabled inproves the scrolling speed.</string>
 
-    <string name="pref_title_lwp_support">LWP Support</string>
-    <string name="pref_summary_lwp_support">Activate support for live wallpapers</string>
-
     <string name="pref_title_orientation_sensor">Orientation sensor</string>
     <string name="pref_summary_orientation_sensor">Rotate desktop on sensor rotation</string>
 
@@ -173,7 +170,7 @@
     <string name="pref_summary_zoom_effect_speed">Set the time in milliseconds for the zoom effect</string>
     <string name="pref_dialog_zoom_effect_speed">Set the time in milliseconds for the zoom effect</string>
 
-    <string name="pref_title_new_drawer">New Drawer</string>
+    <string name="pref_title_new_drawer">Horizontal Drawer</string>
     <string name="pref_summary_new_drawer">Use the Samsung Galaxy S implementation</string>
 
     <string name="pref_title_animated_drawer">Animated Drawer</string>
