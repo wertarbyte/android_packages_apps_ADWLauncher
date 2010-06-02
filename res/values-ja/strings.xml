@@ -51,6 +51,7 @@
     <string name="menu_notifications" msgid="6424587053194766192">"通知"</string>
     <string name="menu_gestures" msgid="514678675575912237">"ジェスチャー"</string>
     <string name="menu_settings" msgid="6233960148378443661">"設定"</string>
+    <string name="menu_adw_settings">ADW設定</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"ショートカットのインストール"</string>
     <string name="permdesc_install_shortcut" msgid="7429365847558984148">"ユーザー操作なしでショートカットの追加をアプリケーションに許可します。"</string>
     <string name="permlab_uninstall_shortcut" msgid="7696645932555926449">"ショートカットのアンインストール"</string>
@@ -69,9 +70,6 @@
 
     <string name="pref_title_wallpaper_hack">壁紙ハック</string>
     <string name="pref_summary_wallpaper_hack">大きい壁紙を使っていて強制終了してしまう場合は無効にする.スクロール速度を快適に保つには有効にする.</string>
-
-    <string name="pref_title_lwp_support">LWPサポート</string>
-    <string name="pref_summary_lwp_support">ライブ壁紙のサポートを有効にする</string>
 
     <string name="pref_title_orientation_sensor">回転センサ</string>
     <string name="pref_summary_orientation_sensor">回転センサによりデスクトップを回転する</string>
@@ -178,4 +176,6 @@
 
     <string name="pref_title_build_info">ビルド情報</string>
     <string name="pref_title_adw_version">ADW バージョン</string>
+
+<string name="pref_label_settings">AlmostNexus設定</string>
 </resources>
