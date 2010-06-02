@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+       <string-array name="menu_binding_entries">
+                <item>デフォルトスクリーンに移動</item>
+                <item>デフォルトスクリーンに移動/プレビュー表示</item>
+                <item>プレビュー表示</item>
+                <item>アプリケーションドロワーの表示/クローズ</item>
+                <item>ステータスバーの表示/非表示</item>
+       </string-array>
+</resources>

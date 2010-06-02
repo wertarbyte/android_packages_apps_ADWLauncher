@@ -23,7 +23,7 @@ public class dlgSeekBarPreference extends DialogPreference implements SeekBar.On
     setPersistent(true);
     mContext = context;
 
-    mDialogMessage = attrs.getAttributeValue(androidns,"dialogMessage");
+    mDialogMessage = context.getString(attrs.getAttributeResourceValue(androidns,"dialogMessage", 0));
     mSuffix = attrs.getAttributeValue(androidns,"text");
     mDefault = attrs.getAttributeIntValue(androidns,"defaultValue", 0);
     mMax = attrs.getAttributeIntValue(androidns,"max", 100);
