@@ -1436,22 +1436,17 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
      * ADW: Make a local copy of wallpaper bitmap to use instead wallpapermanager
      * only when detected not being a Live Wallpaper
      */
-	public void setWallpaper(){
+	public void setWallpaper(boolean fromIntentReceiver){
 		if(mWallpaperManager.getWallpaperInfo()!=null || !wallpaperHack){
-			//if(mWallpaperDrawable!=null){
 				mWallpaperDrawable=null;
 				mWallpaperLoaded=false;
-			//}
 			lwpSupport=true;
 		}else{
-			final Drawable drawable = mWallpaperManager.getDrawable();
-			Log.d("WORKSPACE","drawable gotten");
-			//if (drawable instanceof BitmapDrawable) {
-				Log.d("WORKSPACE","drawable is a BITMAP drawable");
-				//mWallpaper=Bitmap.createBitmap(((BitmapDrawable) drawable).getBitmap());
+			if(fromIntentReceiver || mWallpaperDrawable==null){
+				final Drawable drawable = mWallpaperManager.getDrawable();
 				mWallpaperDrawable=(BitmapDrawable) drawable;
 				mWallpaperLoaded=true;
-			//}
+			}
 			lwpSupport=false;
 		}
 		mLauncher.setWindowBackground(lwpSupport);
