@@ -131,4 +131,122 @@
     <!-- ADW Version Information -->
     <string name="adw_version">Version 0.7.5 system</string>
     <string name="adw_donate">Please, donate if you like my work :-)</string>
+
+    <!-- ADW Settings -->
+    <!-- Screen preferences -->
+    <string name="pref_title_screen_preferences">Screen preferences</string>
+    <string name="pref_summary_screen_preferences">Screen count, default screen...</string>
+
+    <string name="pref_title_wallpaper_hack">Wallpaper Hack</string>
+    <string name="pref_summary_wallpaper_hack">Disable thisif you get FCs using LARGE wallpapers.Leaving it enabled inproves the scrolling speed.</string>
+
+    <string name="pref_title_lwp_support">LWP Support</string>
+    <string name="pref_summary_lwp_support">Activate support for live wallpapers</string>
+
+    <string name="pref_title_orientation_sensor">Orientation sensor</string>
+    <string name="pref_summary_orientation_sensor">Rotate desktop on sensor rotation</string>
+
+    <string name="pref_title_hide_statusbar">Hide StatusBar</string>
+    <string name="pref_summary_hide_statusbar">Hides your statusbar</string>
+
+    <string name="pref_title_desktop_screens">Desktop Screens</string>
+    <string name="pref_summary_desktop_screens">Select the number of desktop screens to use</string>
+    <string name="pref_dialog_desktop_screen">Select the number of desktop screens to use</string>
+    
+    <string name="pref_title_default_screen">Default Screen</string>
+    <string name="pref_summary_default_screen">Select the screen to set as default</string>
+    <string name="pref_dialog_default_screen">Select the screen to set as default</string>
+
+    <string name="pref_title_desktop_scrolling_speed">Desktop scrolling speed</string>
+    <string name="pref_summary_desktop_scrolling_speed">Set the speed used to fling desktops screens</string>
+    <string name="pref_dialog_desktop_scrolling_speed">The lower the value, the faster you will fling</string>
+
+    <string name="pref_title_desktop_overshoot">Desktop overshoot</string>
+    <string name="pref_summary_desktop_overshoot">Allow to bounce past first/last desktop screens</string>
+    <string name="pref_dialog_desktop_overshoot">Set it to 0 to disable overshooting</string>
+
+    <!-- Drawer Settings -->
+    <string name="pref_title_drawer_settings">Drawer Settings</string>
+    <string name="pref_summary_drawer_settings">App drawer grid preferences</string>
+
+    <string name="pref_title_zoom_effect_speed">Zoom effect speed</string>
+    <string name="pref_summary_zoom_effect_speed">Set the time in milliseconds for the zoom effect</string>
+    <string name="pref_dialog_zoom_effect_speed">Set the time in milliseconds for the zoom effect</string>
+
+    <string name="pref_title_new_drawer">New Drawer</string>
+    <string name="pref_summary_new_drawer">Use the Samsung Galaxy S implementation</string>
+
+    <string name="pref_title_animated_drawer">Animated Drawer</string>
+    <string name="pref_summary_animated_drawer">Turns whether App Drawer should display animations</string>
+
+    <string name="pref_title_fast_drawer">Fast Drawer</string>
+    <string name="pref_summary_fast_drawer">Turns the use of opaque solid bg to increment scrolling speed</string>
+
+    <string name="pref_title_drawer_columns_portrait">Drawer Columns Portrait</string>
+    <string name="pref_summary_drawer_columns_portrait">Select the number of drawer columns to use on portrait layout</string>
+    <string name="pref_dialog_drawer_columns_portrait">Select the number of drawer columns to use on portrait layout</string>
+
+    <string name="pref_title_drawer_rows_portrait">Drawer Rows Portrait</string>
+    <string name="pref_summary_drawer_rows_portrait">Select the number of drawer rows to use on portrait layout</string>
+    <string name="pref_dialog_drawer_rows_portrait">Select the number of drawer rows to use on portrait layout</string>
+
+    <string name="pref_title_drawer_columns_landscape">Drawer Columns Landscape</string>
+    <string name="pref_summary_drawer_columns_landscape">Select the number of drawer columns to use on landscape layout</string>
+    <string name="pref_dialog_drawer_columns_landscape">Select the number of drawer columns to use on landscape layout</string>
+
+    <string name="pref_title_drawer_rows_landscape">Drawer Rows Landscape</string>
+    <string name="pref_summary_drawer_rows_landscape">Select the number of drawer rows to use on landscape layout</string>
+    <string name="pref_dialog_drawer_rows_landscape">Select the number of drawer rows to use on landscape layout</string>
+
+    <!-- Previews preferences -->
+    <string name="pref_title_previews_preferences">Previews Settings</string>
+    <string name="pref_summary_previews_preferences">Desktop previews preferences</string>
+
+    <string name="pref_title_sense_previews">Sense previews</string>
+    <string name="pref_summary_sense_previews">Use the new sense-like implementation</string>
+
+    <string name="pref_title_clean_screen_mode">Clean Screen Mode</string>
+    <string name="pref_summary_clean_screen_mode">Hide home icons/widgets when opening previews</string>
+
+    <!-- Button preferences -->
+    <string name="pref_title_ui_settings">UI Settings</string>
+    <string name="pref_summary_ui_settings">Enable/disable ui elements</string>
+
+    <string name="pref_title_home_button_binding">Home button binding</string>
+    <string name="pref_summary_home_button_binding">Select action for home button binding</string>
+
+    <string name="pref_title_desktop_dots">Desktop dots</string>
+    <string name="pref_summary_desktop_dots">Show/hide the nexus style pagination dots</string>
+
+    <string name="pref_title_dockbar">Dockbar</string>
+    <string name="pref_summary_dockbar">Enable/disable the new dockbar for your shortcuts</string>
+
+    <string name="pref_title_closing_dockbar">Closing dockbar</string>
+    <string name="pref_summary_closing_dockbar">Auto-close dockbar after app-launch</string>
+
+    <string name="pref_title_lab">LAB</string>
+    <string name="pref_summary_lab">Enable/disable the customizable Left Action Button</string>
+
+    <string name="pref_title_rab">RAB</string>
+    <string name="pref_summary_rab">Enable/disable the customizable Right Action Button</string>
+
+    <string name="pref_title_tint_ab">Tint AB</string>
+    <string name="pref_summary_tint_ab">Enable/disable icon tint effect on Action Buttons</string>
+
+    <string name="pref_title_ab_scale_factor">AB scale factor</string>
+    <string name="pref_summary_ab_scale_factor">Set the scaling size for the ActionButton icons</string>
+    <string name="pref_dialog_ab_scale_factor">Set the scaling size for the ActionButton icons</string>
+
+    <string name="pref_title_hide_allapps_ab">Hide AllApps Bg</string>
+    <string name="pref_summary_hide_allapps_ab">Hide the background for the App-Drawer button</string>
+
+    <string name="pref_title_hide_ab_bg">Hide AB Bg</string>
+    <string name="pref_summary_hide_ab_bg">Hide the background for the Action Buttons</string>
+
+    <string name="pref_title_hide_icon_labels">Hide icon labels</string>
+    <string name="pref_summary_hide_icon_labels">Hide desktop icon labels</string>
+
+    <string name="pref_title_build_info">Build Information</string>
+    <string name="pref_title_adw_version">ADW Version</string>
+
 </resources>
