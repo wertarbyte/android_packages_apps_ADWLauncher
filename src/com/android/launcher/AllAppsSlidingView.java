@@ -150,11 +150,9 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
      */
     final RecycleBin mRecycler = new RecycleBin();
     //ADW:Hack the texture thing to make scrolling faster
-    private boolean forceOpaque=false;
-    private Bitmap mTexture;
+    //private boolean forceOpaque=false;
+    //private Bitmap mTexture;
     private Paint mPaint;
-    private int mTextureWidth;
-    private int mTextureHeight;
 	private int mCacheColorHint=0;
 	private boolean scrollCacheCreated;
 	private boolean mBlockLayouts;
@@ -164,6 +162,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	private boolean isAnimating=false;
 	private OnFadingListener mFadingListener;
 	private int mBgAlpha=255;
+	private int mTargetAlpha=255;
 	private int mAnimationDuration=800;
     //ADW: speed for new scrolling transitions
     private int mScrollingSpeed=600;
@@ -179,34 +178,22 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	}
 	public AllAppsSlidingView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-        TypedArray a = context.obtainStyledAttributes(attrs,
-                com.android.internal.R.styleable.AbsListView, defStyle, 0);
-        //TODO: ADW-Check if it's necessary
-        boolean bootOpaque=AlmostNexusSettingsHelper.getDrawerFast(context);
-        //ADW force the hack
-        forceOpaque=!bootOpaque;
-        setForceOpaque(bootOpaque);
-        a.recycle();
+		TypedArray a = context.obtainStyledAttributes(attrs,
+		        R.styleable.AllAppsSlidingView, defStyle, 0);
 
-        Drawable d = a.getDrawable(com.android.internal.R.styleable.AbsListView_listSelector);
-        if (d != null) {
-            setSelector(d);
-        }
+		Drawable d = a.getDrawable(R.styleable.AllAppsSlidingView_listSelector);
+		if (d != null) {
+		    setSelector(d);
+		}
 
-        mDrawSelectorOnTop = a.getBoolean(
-                com.android.internal.R.styleable.AbsListView_drawSelectorOnTop, false);
-
-        int color = a.getColor(com.android.internal.R.styleable.AbsListView_cacheColorHint, 0x00000000);
-        setCacheColorHint(color);
-        a.recycle();
-        a=context.obtainStyledAttributes(attrs, R.styleable.AllAppsSlidingView, defStyle,0);
-        paginatorSpace=a.getDimensionPixelSize(R.styleable.AllAppsSlidingView_pager_height, paginatorSpace);
-        a.recycle();
-        initWorkspace();
+		mDrawSelectorOnTop = true;
+		paginatorSpace=a.getDimensionPixelSize(R.styleable.AllAppsSlidingView_pager_height, paginatorSpace);
+		a.recycle();
+		initWorkspace();
 	}
     @Override
     public boolean isOpaque() {
-    	if(mBgAlpha>=250)return true;
+    	if(mBgAlpha>=255)return true;
     	else return false;
     }
 	
@@ -235,13 +222,14 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 					setVisibility(View.GONE);
 					mLauncher.getWorkspace().clearChildrenCache();
 				}else{
+					Log.d("AllApps","Who tracks this?");
 					isAnimating=false;
-					mBgAlpha=255;
+					mBgAlpha=mTargetAlpha;
 				}
 			}
-			public void onAlphaChange(int alpha) {
+			public void onAlphaChange(float alphaPercent) {
 				// TODO Auto-generated method stub
-				mBgAlpha=alpha;
+				mBgAlpha=(int)(mTargetAlpha*alphaPercent);
 				//ADW: hack to redraw pager background..... :-(
 				invalidate(mPager.getLeft(), mPager.getTop(), mPager.getRight(), mPager.getBottom());
 			}
@@ -288,17 +276,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     @Override
     protected void dispatchDraw(Canvas canvas) {
         int saveCount = 0;
-        if(mTexture!=null && !forceOpaque){
-	    	final Bitmap texture = mTexture;
-	        final Paint paint = mPaint;
-	
-	        int x = getScrollX();//0;
-	        int y=0;
-	        mPaint.setAlpha(mBgAlpha);
-	        canvas.drawBitmap(texture, x, y, mPaint);
-    	}else{
-    		canvas.drawARGB(mBgAlpha, 0, 0, 0);
-    	}
+		canvas.drawARGB(mBgAlpha, 0, 0, 0);
 
         final boolean clipToPadding = (mGroupFlags & CLIP_TO_PADDING_MASK) == CLIP_TO_PADDING_MASK;
         if (clipToPadding) {
@@ -1783,12 +1761,6 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 		mDragger=dragger;
 		
 	}
-    public void setForceOpaque(boolean value){
-    	if(value!=forceOpaque){
-	    	forceOpaque=value;
-	    	postInvalidate();
-    	}
-    }
 	public int getNumColumns() {
 		return mNumColumns;
 	}
@@ -1830,22 +1802,15 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 		}
 	}
 	public void open(boolean animate) {
-		// TODO add animation control for current holderlayout children
+		mTargetAlpha=AlmostNexusSettingsHelper.getDrawerAlpha(mLauncher);
 		mScroller.forceFinished(true);
-		if(!forceOpaque){
-			mTexture=mLauncher.getBlurredBg();
-			if(mTexture!=null){
-				mTextureWidth = mTexture.getWidth();
-				mTextureHeight = mTexture.getHeight();
-			}
-		}
 		setVisibility(View.VISIBLE);
 		findCurrentHolder();
         final HolderLayout holder=(HolderLayout) getChildAt(mCurrentHolder);
         if(animate){
     		mBgAlpha=0;
     	}else{
-    		mBgAlpha=255;
+    		mBgAlpha=mTargetAlpha;
     	}
 		if(holder==null){
 			isAnimating=animate;

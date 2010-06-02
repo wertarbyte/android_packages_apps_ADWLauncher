@@ -39,12 +39,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 
     private DragController mDragger;
     private Launcher mLauncher;
-    private Bitmap mTexture;
     private Paint mPaint;
-    private int mTextureWidth;
-    private int mTextureHeight;
-    //ADW:Hack the texture thing to make scrolling faster
-    private boolean forceOpaque=false;
     //ADW: Animation vars
 	private final static int CLOSED=1;
 	private final static int OPEN=2;
@@ -56,6 +51,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	private float mScaleFactor;
 	private int mIconSize=0;
 	private int mBgAlpha=255;
+	private int mTargetAlpha=255;
 	private Paint mLabelPaint;
 	private boolean shouldDrawLabels=false;
 	private int mAnimationDuration=800;
@@ -70,29 +66,15 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
     public AllAppsGridView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AllAppsGridView, defStyle, 0);
-        //TODO: ADW-Check if it's necessary
-        boolean bootOpaque=AlmostNexusSettingsHelper.getDrawerFast(context);
-        final int textureId = a.getResourceId(R.styleable.AllAppsGridView_texture, 0);
-        setForceOpaque(bootOpaque);
-        if(!forceOpaque){
-	        if (textureId != 0) {
-	            mTexture = BitmapFactory.decodeResource(getResources(), textureId);
-	            mTextureWidth = mTexture.getWidth();
-	            mTextureHeight = mTexture.getHeight();
-	        }
-        }
-        a.recycle();
         mPaint = new Paint();
         mPaint.setDither(false); 
         mLabelPaint=new Paint();
         mLabelPaint.setDither(false);
     }
 
-    @Override
     public boolean isOpaque() {
-        if(forceOpaque) return mBgAlpha>=250;
-        else return !mTexture.hasAlpha();
+    	if(mBgAlpha>=255)return true;
+    	else return false;
     }
 
     @Override
@@ -131,28 +113,6 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
         mLauncher = launcher;
     }
     /**
-     * ADW: modify the cachecolorhint and the drawing cache
-     * when we're not using a background ("fast drawer settings")
-     * @param value
-     */
-    public void setForceOpaque(boolean value){
-    	if(value!=forceOpaque){
-	    	forceOpaque=value;
-	    	if(value){
-	    		//this.setBackgroundColor(0xFF000000);
-	    		//this.setCacheColorHint(0xFF000000);
-	    		//this.setDrawingCacheBackgroundColor(0xFF000000);
-	    		//setScrollingCacheEnabled(true);
-	    	}else{
-	    		//this.setBackgroundDrawable(null);
-	    		//this.setCacheColorHint(Color.TRANSPARENT);
-	    		//super.setCacheColorHint(Color.TRANSPARENT);
-	    		//this.setDrawingCacheBackgroundColor(Color.TRANSPARENT);
-	    		//setScrollingCacheEnabled(true);
-	    	}
-    	}
-    }
-    /**
      * ADW: easing functions for animation
      */
 	static float easeOut (float time, float begin, float end, float duration) {
@@ -189,16 +149,6 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 			isAnimating=false;
 			if(mStatus==OPENING){
 				mStatus=OPEN;
-				//clearChildrenCache();
-				if(forceOpaque){
-					//setCacheColorHint(0xFF000000);
-					//setDrawingCacheBackgroundColor(0xFF000000);
-			        //setHorizontalFadingEdgeEnabled(true);
-			        //setVerticalFadingEdgeEnabled(true);
-				}
-				//setChildrenDrawingCacheEnabled(true);
-				//setDrawingCacheEnabled(true);
-				//setChildrenDrawnWithCacheEnabled(true);
 			}else if(mStatus==CLOSING){
 				mStatus=CLOSED;
 				mLauncher.getWorkspace().clearChildrenCache();
@@ -206,39 +156,16 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 			}
 		}
 		shouldDrawLabels=(currentTime>mAnimationDuration/2 && mStatus==OPENING)||(currentTime<mAnimationDuration/2 && mStatus==CLOSING);
+		float porcentajeScale=1.0f;
 		if(isAnimating){
-			float porcentajeScale=1.0f-((mScaleFactor-1)/3.0f);
+			porcentajeScale=1.0f-((mScaleFactor-1)/3.0f);
 			if(porcentajeScale>0.9f)porcentajeScale=1f;
 			if(porcentajeScale<0)porcentajeScale=0;
 			mBgAlpha=(int)(porcentajeScale*255);
 		}
 		mPaint.setAlpha(mBgAlpha);
 		if(getVisibility()==View.VISIBLE){
-			//canvas.drawARGB(alpha,0, 0, 0);
-	    	if(!forceOpaque){
-		        final Bitmap texture = mTexture;
-		        final Paint paint = mPaint;
-		
-		        final int width = getWidth();
-		        final int height = getHeight();
-		
-		        final int textureWidth = mTextureWidth;
-		        final int textureHeight = mTextureHeight;
-		
-		        int x = 0;
-		        int y;
-		
-		        while (x < width) {
-		            y = 0;
-		            while (y < height) {
-		                canvas.drawBitmap(texture, x, y, paint);
-		                y += textureHeight;
-		            }
-		            x += textureWidth;
-		        }
-	    	}else{
-	    		canvas.drawARGB(mBgAlpha,0, 0, 0);
-	    	}
+    		canvas.drawARGB((int)(porcentajeScale*mTargetAlpha),0, 0, 0);
 			super.draw(canvas);
 		}
 
@@ -298,48 +225,21 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	 * Open/close public methods
 	 */
 	public void open(boolean animate){
-		//setCacheColorHint(0);
-        //setDrawingCacheBackgroundColor(0);
-		//clearChildrenCache();
-		//setChildrenDrawingCacheEnabled(true);
-        //setHorizontalFadingEdgeEnabled(false);
-        //setVerticalFadingEdgeEnabled(false);
+		mTargetAlpha=AlmostNexusSettingsHelper.getDrawerAlpha(mLauncher);
 		if(animate){
-    		//setCacheColorHint(Color.TRANSPARENT);
-			//setDrawingCacheBackgroundColor(Color.TRANSPARENT);
-			//setDrawingCacheEnabled(true);
-			//setAlwaysDrawnWithCacheEnabled(true);
 			mBgAlpha=0;
 			isAnimating=true;
 			mStatus=OPENING;
 		}else{
-			mBgAlpha=255;
+			mBgAlpha=mTargetAlpha;
 			isAnimating=false;
 			mStatus=OPEN;
-	    	if(forceOpaque){
-	    		//this.setCacheColorHint(0xFF000000);
-	    		//this.setDrawingCacheBackgroundColor(0xFF000000);
-	    		//setScrollingCacheEnabled(true);
-	    	}else{
-	    		//this.setCacheColorHint(Color.TRANSPARENT);
-	    		//this.setDrawingCacheBackgroundColor(Color.TRANSPARENT);
-	    		//setScrollingCacheEnabled(true);
-	    	}
-			//setChildrenDrawingCacheEnabled(true);
-			//setDrawingCacheEnabled(true);
-			//setChildrenDrawnWithCacheEnabled(true);
 		}
 		startTime=0;
 		this.setVisibility(View.VISIBLE);
 		invalidate();
 	}
 	public void close(boolean animate){
-        //setCacheColorHint(0);
-        //setDrawingCacheBackgroundColor(0);
-        //setHorizontalFadingEdgeEnabled(false);
-        //setVerticalFadingEdgeEnabled(false);
-		//clearChildrenCache();
-		//setChildrenDrawingCacheEnabled(true);
 		if(animate){
 			mStatus=CLOSING;
 			isAnimating=true;
