@@ -108,9 +108,6 @@
     <string name="pref_title_animated_drawer">Animierter AppDrawer</string>
     <string name="pref_summary_animated_drawer">Auswählen ob Animationen im AppDrawer angezeigt werden sollen</string>
 
-    <string name="pref_title_fast_drawer">Schneller AppDrawer</string>
-    <string name="pref_summary_fast_drawer">Kein durchscheinendes Hintergrundbild für schnellere Scrollgeschwindigkeit</string>
-
     <string name="pref_title_drawer_columns_portrait">Spalten Aufrecht-Modus</string>
     <string name="pref_summary_drawer_columns_portrait">Wähle Anzahl der Spalten im Appdrawer im Portrait-Modus</string>
     <string name="pref_dialog_drawer_columns_portrait">Anzahl der Spalten im Appdrawer im Portrait-Modus</string>
