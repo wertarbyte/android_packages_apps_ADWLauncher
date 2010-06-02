@@ -1289,7 +1289,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 .setIcon(android.R.drawable.ic_menu_preferences).setAlphabeticShortcut('P')
                 .setIntent(settings);
 		//ADW: add custom settings
-		menu.add(0, MENU_ALMOSTNEXUS, 0, "ADWSettings")
+                menu.add(0, MENU_ALMOSTNEXUS, 0, R.string.menu_adw_settings)
 		.setIcon(com.android.internal.R.drawable.ic_menu_preferences)
 		.setAlphabeticShortcut('X');
         
