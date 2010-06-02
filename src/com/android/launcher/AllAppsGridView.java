@@ -64,7 +64,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
     }
 
     public AllAppsGridView(Context context, AttributeSet attrs) {
-        this(context, attrs, com.android.internal.R.attr.gridViewStyle);
+        this(context, attrs, android.R.attr.gridViewStyle);
     }
 
     public AllAppsGridView(Context context, AttributeSet attrs, int defStyle) {
@@ -140,15 +140,15 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	    	forceOpaque=value;
 	    	if(value){
 	    		//this.setBackgroundColor(0xFF000000);
-	    		this.setCacheColorHint(0xFF000000);
-	    		this.setDrawingCacheBackgroundColor(0xFF000000);
-	    		setScrollingCacheEnabled(true);
+	    		//this.setCacheColorHint(0xFF000000);
+	    		//this.setDrawingCacheBackgroundColor(0xFF000000);
+	    		//setScrollingCacheEnabled(true);
 	    	}else{
 	    		//this.setBackgroundDrawable(null);
-	    		this.setCacheColorHint(Color.TRANSPARENT);
-	    		super.setCacheColorHint(Color.TRANSPARENT);
-	    		this.setDrawingCacheBackgroundColor(Color.TRANSPARENT);
-	    		setScrollingCacheEnabled(true);
+	    		//this.setCacheColorHint(Color.TRANSPARENT);
+	    		//super.setCacheColorHint(Color.TRANSPARENT);
+	    		//this.setDrawingCacheBackgroundColor(Color.TRANSPARENT);
+	    		//setScrollingCacheEnabled(true);
 	    	}
     	}
     }
@@ -189,18 +189,19 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 			isAnimating=false;
 			if(mStatus==OPENING){
 				mStatus=OPEN;
-				clearChildrenCache();
+				//clearChildrenCache();
 				if(forceOpaque){
-					setCacheColorHint(0xFF000000);
-					setDrawingCacheBackgroundColor(0xFF000000);
-			        setHorizontalFadingEdgeEnabled(true);
-			        setVerticalFadingEdgeEnabled(true);
+					//setCacheColorHint(0xFF000000);
+					//setDrawingCacheBackgroundColor(0xFF000000);
+			        //setHorizontalFadingEdgeEnabled(true);
+			        //setVerticalFadingEdgeEnabled(true);
 				}
-				setChildrenDrawingCacheEnabled(true);
-				setDrawingCacheEnabled(true);
-				setChildrenDrawnWithCacheEnabled(true);
+				//setChildrenDrawingCacheEnabled(true);
+				//setDrawingCacheEnabled(true);
+				//setChildrenDrawnWithCacheEnabled(true);
 			}else if(mStatus==CLOSING){
 				mStatus=CLOSED;
+				mLauncher.getWorkspace().clearChildrenCache();
 				setVisibility(View.GONE);
 			}
 		}
@@ -243,9 +244,9 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 
 	}
 	private void clearChildrenCache(){
-		for(int i=0;i<getChildCount();i++){
+		/*for(int i=0;i<getChildCount();i++){
 			getChildAt(i).destroyDrawingCache();
-		}
+		}*/
 	}
 	@Override
 	protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
@@ -297,17 +298,17 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	 * Open/close public methods
 	 */
 	public void open(boolean animate){
-		setCacheColorHint(0);
-        setDrawingCacheBackgroundColor(0);
-		clearChildrenCache();
-		setChildrenDrawingCacheEnabled(true);
-        setHorizontalFadingEdgeEnabled(false);
-        setVerticalFadingEdgeEnabled(false);
+		//setCacheColorHint(0);
+        //setDrawingCacheBackgroundColor(0);
+		//clearChildrenCache();
+		//setChildrenDrawingCacheEnabled(true);
+        //setHorizontalFadingEdgeEnabled(false);
+        //setVerticalFadingEdgeEnabled(false);
 		if(animate){
-    		setCacheColorHint(Color.TRANSPARENT);
-			setDrawingCacheBackgroundColor(Color.TRANSPARENT);
-			setDrawingCacheEnabled(true);
-			setAlwaysDrawnWithCacheEnabled(true);
+    		//setCacheColorHint(Color.TRANSPARENT);
+			//setDrawingCacheBackgroundColor(Color.TRANSPARENT);
+			//setDrawingCacheEnabled(true);
+			//setAlwaysDrawnWithCacheEnabled(true);
 			mBgAlpha=0;
 			isAnimating=true;
 			mStatus=OPENING;
@@ -316,35 +317,36 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 			isAnimating=false;
 			mStatus=OPEN;
 	    	if(forceOpaque){
-	    		this.setCacheColorHint(0xFF000000);
-	    		this.setDrawingCacheBackgroundColor(0xFF000000);
-	    		setScrollingCacheEnabled(true);
+	    		//this.setCacheColorHint(0xFF000000);
+	    		//this.setDrawingCacheBackgroundColor(0xFF000000);
+	    		//setScrollingCacheEnabled(true);
 	    	}else{
-	    		this.setCacheColorHint(Color.TRANSPARENT);
-	    		this.setDrawingCacheBackgroundColor(Color.TRANSPARENT);
-	    		setScrollingCacheEnabled(true);
+	    		//this.setCacheColorHint(Color.TRANSPARENT);
+	    		//this.setDrawingCacheBackgroundColor(Color.TRANSPARENT);
+	    		//setScrollingCacheEnabled(true);
 	    	}
-			setChildrenDrawingCacheEnabled(true);
-			setDrawingCacheEnabled(true);
-			setChildrenDrawnWithCacheEnabled(true);
+			//setChildrenDrawingCacheEnabled(true);
+			//setDrawingCacheEnabled(true);
+			//setChildrenDrawnWithCacheEnabled(true);
 		}
 		startTime=0;
 		this.setVisibility(View.VISIBLE);
 		invalidate();
 	}
 	public void close(boolean animate){
-        setCacheColorHint(0);
-        setDrawingCacheBackgroundColor(0);
-        setHorizontalFadingEdgeEnabled(false);
-        setVerticalFadingEdgeEnabled(false);
-		clearChildrenCache();
-		setChildrenDrawingCacheEnabled(true);
+        //setCacheColorHint(0);
+        //setDrawingCacheBackgroundColor(0);
+        //setHorizontalFadingEdgeEnabled(false);
+        //setVerticalFadingEdgeEnabled(false);
+		//clearChildrenCache();
+		//setChildrenDrawingCacheEnabled(true);
 		if(animate){
 			mStatus=CLOSING;
 			isAnimating=true;
 		}else{
 			mStatus=CLOSED;
 			isAnimating=false;
+			mLauncher.getWorkspace().clearChildrenCache();
 			setVisibility(View.GONE);
 		}
 		startTime=0;
@@ -352,5 +354,4 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 	}
 	public void setAnimationSpeed(int speed){
 		mAnimationDuration=speed;
-	}
-}
+	}}
