@@ -88,7 +88,7 @@
     <string name="pref_dialog_default_screen">デフォルトとして設定するスクリーンを選択</string>
 
     <string name="pref_title_desktop_scrolling_speed">デスクトップスクロール速度</string>
-    <string name="pref_summary_desktop_scrolling_speed">デスクトップスクリーンを飛ばすときのスピードを設定する</string>
+    <string name="pref_summary_desktop_scrolling_speed">デスクトップスクリーンを飛ばすときの速度を設定する</string>
     <string name="pref_dialog_desktop_scrolling_speed">低い値を設定するとより速くスクリーンを飛ばします</string>
 
     <string name="pref_title_desktop_overshoot">デスクトップオーバーシュート</string>
