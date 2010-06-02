@@ -82,7 +82,7 @@
                 <category android:name="android.intent.category.MONKEY" />
             </intent-filter>
         </activity>
-		<activity android:name="MyLauncherSettings" android:label="AlmostNexus Settings" />
+		<activity android:name="MyLauncherSettings" android:label="@string/pref_label_settings" />
         <activity
             android:name="WallpaperChooser"
             android:label="@string/pick_wallpaper"
