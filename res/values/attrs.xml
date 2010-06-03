@@ -92,6 +92,7 @@
     <declare-styleable name="AllAppsSlidingView">
         <attr name="texture" />
         <attr name="pager_height" format="dimension" />
+	<attr name="listSelector" format="reference"  />
     </declare-styleable>
     <declare-styleable name="DockBar">
         <attr name="handle" format="reference"  />
