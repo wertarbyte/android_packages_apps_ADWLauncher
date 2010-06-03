@@ -61,4 +61,129 @@
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Consente a un\'applicazione di modificare le impostazioni e le scorciatoie in Home."</string>
     <string name="search_hint" msgid="6974176141372467453">"Ricerca Google"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Errore durante il caricamento del widget"</string>
+
+    <!-- ADW Version Information -->
+    <string name="adw_version">0.7.5 Standalone</string>
+    <string name="adw_donate">Per favore donate se vi piace il mio lavoro :-)</string>
+
+    <!-- ADW Settings -->
+    <string name="pref_label_settings">Impostazioni AlmostNexus</string>
+    <!-- Screen preferences -->
+    <string name="pref_title_screen_preferences">Preferenze Schermate</string>
+    <string name="pref_summary_screen_preferences">Numero schermate, schermata principale...</string>
+
+    <string name="pref_title_wallpaper_hack">Hack Sfondo</string>
+    <string name="pref_summary_wallpaper_hack">Disabilita se hai dei FC usando sfondi PESANTI. Lasciandolo abilitato la velocità di scrolling è migliore.</string>
+
+    <string name="pref_title_orientation_sensor">Sensore Orientamento</string>
+    <string name="pref_summary_orientation_sensor">Ruota il desktop ruotando il telefono</string>
+
+    <string name="pref_title_hide_statusbar">Nascondi Barra di Stato</string>
+    <string name="pref_summary_hide_statusbar">Nasconde la barra di stato</string>
+
+    <string name="pref_title_desktop_screens">Schermate</string>
+    <string name="pref_summary_desktop_screens">Seleziona il numero di schermate da usare</string>
+    <string name="pref_dialog_desktop_screen">Seleziona il numero di schermate da usare</string>
+    
+    <string name="pref_title_default_screen">Schermata di Default</string>
+    <string name="pref_summary_default_screen">Seleziona la schermata di default</string>
+    <string name="pref_dialog_default_screen">Seleziona la schermata di default</string>
+
+    <string name="pref_title_desktop_scrolling_speed">Velocità di Scrolling del Desktop</string>
+    <string name="pref_summary_desktop_scrolling_speed">Setta la velocità usata per cambiare schermata</string>
+    <string name="pref_dialog_desktop_scrolling_speed">Più basso è il valore, più sarà veloce</string>
+
+    <string name="pref_title_desktop_overshoot">Overshoot del Desktop</string>
+    <string name="pref_summary_desktop_overshoot">Consente di balzare dalla prima all'ultima schermata</string>
+    <string name="pref_dialog_desktop_overshoot">Impostato a 0 disabilita l'overshooting</string>
+
+    <!-- Drawer Settings -->
+    <string name="pref_title_drawer_settings">Impostazioni del Drawer</string>
+    <string name="pref_summary_drawer_settings">Preferenze della griglia delle applicazioni</string>
+
+    <string name="pref_title_zoom_effect_speed">Velocità dell'Effetto Zoom</string>
+    <string name="pref_summary_zoom_effect_speed">Imposta il tempo in millisecondi per l'effetto zoom</string>
+    <string name="pref_dialog_zoom_effect_speed">Imposta il tempo in millisecondi per l'effetto zoom</string>
+
+    <string name="pref_title_new_drawer">Drawer Orizzontale</string>
+    <string name="pref_summary_new_drawer">Usa l'implementazione del Samsung Galaxy S</string>
+
+    <string name="pref_title_animated_drawer">Drawer Animato</string>
+    <string name="pref_summary_animated_drawer">Abilita la visualizzazione delle animazioni dell'App Drawer</string>
+
+    <string name="pref_title_drawer_background_alpha">Background alpha</string>
+    <string name="pref_summary_drawer_background_alpha">Set the transparency level for the drawer background</string>
+    <string name="pref_dialog_drawer_background_alpha">Set the transparency level for the drawer background</string>
+
+    <string name="pref_title_drawer_columns_portrait">Colonne del Drawer in modalità Verticale (Portrait)</string>
+    <string name="pref_summary_drawer_columns_portrait">Seleziona il numero di colonne da usare in modalità Portrait</string>
+    <string name="pref_dialog_drawer_columns_portrait">Seleziona il numero di colonne da usare in modalità Portrait</string>
+
+    <string name="pref_title_drawer_rows_portrait">Righe del Drawer in modalità Verticale (Portrait)</string>
+    <string name="pref_summary_drawer_rows_portrait">Seleziona il numero di righe da usare in modalità Portrait</string>
+    <string name="pref_dialog_drawer_rows_portrait">Seleziona il numero di righe da usare in modalità Portrait</string>
+
+    <string name="pref_title_drawer_columns_landscape">Colonne del Drawer in modalità Orizzontale (Landscape)</string>
+    <string name="pref_summary_drawer_columns_landscape">Seleziona il numero di colonne da usare in modalità Landscape</string>
+    <string name="pref_dialog_drawer_columns_landscape">Seleziona il numero di colonne da usare in modalità Landscape</string>
+
+    <string name="pref_title_drawer_rows_landscape">Righe del Drawer in modalità Orizzontale (Landscape)</string>
+    <string name="pref_summary_drawer_rows_landscape">Seleziona il numero di righe da usare in modalità Landscape</string>
+    <string name="pref_dialog_drawer_rows_landscape">Seleziona il numero di righe da usare in modalità Landscape</string>
+
+    <!-- Previews preferences -->
+    <string name="pref_title_previews_preferences">Impostazioni Anteprima</string>
+    <string name="pref_summary_previews_preferences">Impostazioni dell'anteprima dei desktop</string>
+
+    <string name="pref_title_sense_previews">Anteprima Sense</string>
+    <string name="pref_summary_sense_previews">Usa la nuova implementazione Sense-like</string>
+
+    <string name="pref_title_clean_screen_mode">Modalità Schermo Pulito</string>
+    <string name="pref_summary_clean_screen_mode">Nasconde icone/widgets aprendo le anteprime</string>
+
+    <!-- Button preferences -->
+    <string name="pref_title_ui_settings">Impostazioni UI</string>
+    <string name="pref_summary_ui_settings">Abilita/disabilita gli elementi dell'Interfaccia Utente</string>
+
+    <string name="pref_title_home_button_binding">Pressione Tasto Home</string>
+    <string name="pref_summary_home_button_binding">Seleziona l'azione alla pressione del tasto Home</string>
+
+    <string name="pref_title_desktop_dots">Punti sul desktop</string>
+    <string name="pref_summary_desktop_dots">Visualizza/Nasconde i punti indicanti le schermate in stile nexus</string>
+
+    <string name="pref_title_dockbar">Dockbar</string>
+    <string name="pref_summary_dockbar">Abilita/Disabilita la nuova dockbar per le scorciatoie</string>
+
+    <string name="pref_title_closing_dockbar">Chiusura Dockbar</string>
+    <string name="pref_summary_closing_dockbar">Chiudi automaticamente la dockbar dopo il lancio di un'applicazione</string>
+
+    <string name="pref_title_lab">LAB</string>
+    <string name="pref_summary_lab">Abilita/Disabilita il Bottone Sinistro (LAB) personalizzabile</string>
+
+    <string name="pref_title_rab">RAB</string>
+    <string name="pref_summary_rab">Abilita/Disabilita il Bottone Destro (RAB) personalizzabile</string>
+
+    <string name="pref_title_tint_ab">Sfumatura AB</string>
+    <string name="pref_summary_tint_ab">Abilita/Disabilita l'effetto sfumatura sugli Action Buttons</string>
+
+    <string name="pref_title_ab_scale_factor">Fattore di scala AB</string>
+    <string name="pref_summary_ab_scale_factor">Imposta il fattore di scala per le icone AB</string>
+    <string name="pref_dialog_ab_scale_factor">Imposta il fattore di scala per le icone AB</string>
+
+    <string name="pref_title_hide_allapps_ab">Nascondi Sfondo AllApps</string>
+    <string name="pref_summary_hide_allapps_ab">Nasconde lo sfondo del bottone del Drawer</string>
+
+    <string name="pref_title_hide_ab_bg">Nascondi sfondo AB</string>
+    <string name="pref_summary_hide_ab_bg">Nascondo lo sfondo degli Action Buttons</string>
+
+    <string name="pref_title_hide_icon_labels">Nascondi etichette icone</string>
+    <string name="pref_summary_hide_icon_labels">Nasconde le etichette delle icone sul desktop</string>
+
+    <string name="pref_title_build_info">Informazioni Build</string>
+    <string name="pref_title_adw_version">Versione ADW</string>
+
+    <string name="pref_title_drawer_background_alpha">Sfondo alpha</string>
+    <string name="pref_summary_drawer_background_alpha">Imposta il livello di trasparenza dello sfondo del Drawer</string>
+    <string name="pref_dialog_drawer_background_alpha">Imposta il livello di trasparenza dello sfondo del Drawer</string>
+
 </resources>
