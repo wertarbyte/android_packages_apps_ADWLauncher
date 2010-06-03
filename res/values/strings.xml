@@ -178,9 +178,6 @@
     <string name="pref_title_animated_drawer">Animated Drawer</string>
     <string name="pref_summary_animated_drawer">Turns whether App Drawer should display animations</string>
 
-    <string name="pref_title_fast_drawer">Fast Drawer</string>
-    <string name="pref_summary_fast_drawer">Turns the use of opaque solid bg to increment scrolling speed</string>
-
     <string name="pref_title_drawer_columns_portrait">Drawer Columns Portrait</string>
     <string name="pref_summary_drawer_columns_portrait">Select the number of drawer columns to use on portrait layout</string>
     <string name="pref_dialog_drawer_columns_portrait">Select the number of drawer columns to use on portrait layout</string>

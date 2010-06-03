@@ -108,9 +108,6 @@
     <string name="pref_title_animated_drawer">アニメーションドロワー</string>
     <string name="pref_summary_animated_drawer">アプリケーションドロワーをアニメーション表示するかどうか</string>
 
-    <string name="pref_title_fast_drawer">速いドロワー</string>
-    <string name="pref_summary_fast_drawer">スクロール速度を維持するために、不透明無色の背景を使用する</string>
-
     <string name="pref_title_drawer_columns_portrait">縦画面のドロワー列数</string>
     <string name="pref_summary_drawer_columns_portrait">縦画面時のドロワー列数を選択する</string>
     <string name="pref_dialog_drawer_columns_portrait">縦画面時のドロワー列数を選択する</string>
