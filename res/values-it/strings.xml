@@ -63,7 +63,6 @@
     <string name="gadget_error_text" msgid="8359351016167075858">"Errore durante il caricamento del widget"</string>
 
     <!-- ADW Version Information -->
-    <string name="adw_version">0.7.5 Standalone</string>
     <string name="adw_donate">Per favore donate se vi piace il mio lavoro :-)</string>
 
     <!-- ADW Settings -->
