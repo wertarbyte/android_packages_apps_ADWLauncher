@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <resources>
-       <string-array name="Μenu_binding_entries">
+       <string-array name="menu_binding_entries">
                 <item>Μετακινηση στην κυρια οθονη</item>
                 <item>μετακινηση στην κυρια οθονη/εμφανιση προεπισκοπησης</item>
                 <item>εμφανιση προεπισκοπησης</item>
