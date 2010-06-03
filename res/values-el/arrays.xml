@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+       <string-array name="Μenu_binding_entries">
+                <item>Μετακινηση στην κυρια οθονη</item>
+                <item>μετακινηση στην κυρια οθονη/εμφανιση προεπισκοπησης</item>
+                <item>εμφανιση προεπισκοπησης</item>
+                <item>ανοιγμα κλυσιμο συρταριου εφαρμογων</item>
+                <item>εμφανιση/κρυψιμο status bar</item>
+        </string-array>
+        <string-array name="menu_binding_values">
+                <item>1</item>
+                <item>2</item>
+                <item>3</item>
+                <item>4</item>
+                <item>5</item>
+        </string-array>
+</resources>
