@@ -908,12 +908,19 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        SavedState savedState = (SavedState) state;
-        super.onRestoreInstanceState(savedState.getSuperState());
-        if (savedState.currentScreen != -1) {
-            mCurrentScreen = savedState.currentScreen;
-            Launcher.setScreen(mCurrentScreen);
-        }
+        try{
+	    	SavedState savedState = (SavedState) state;
+	        super.onRestoreInstanceState(savedState.getSuperState());
+	        if (savedState.currentScreen != -1) {
+	            mCurrentScreen = savedState.currentScreen;
+	            Launcher.setScreen(mCurrentScreen);
+	        }
+        }catch (Exception e) {
+			// TODO ADW: Weird bug http://code.google.com/p/android/issues/detail?id=3981
+			//Should be completely fixed on eclair
+			super.onRestoreInstanceState(null);
+			Log.d("WORKSPACE","Google bug http://code.google.com/p/android/issues/detail?id=3981 found, bypassing...");
+		}
     }
 
     void addApplicationShortcut(ApplicationInfo info, CellLayout.CellInfo cellInfo,
