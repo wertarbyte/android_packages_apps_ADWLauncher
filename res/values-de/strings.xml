@@ -174,6 +174,7 @@
 
     <string name="pref_title_build_info">Informationen</string>
     <string name="pref_title_adw_version">ADW.Launcher Version</string>
+    <string name="adw_donate">Bitte spende, wenn dir meine Arbeit gefällt :-)</string>
 
     <string name="pref_title_drawer_background_alpha">Hintergrund-Transparenz</string>
     <string name="pref_summary_drawer_background_alpha">Einstellen der Transparenz für den Hintergrund des AppDrawers</string>
