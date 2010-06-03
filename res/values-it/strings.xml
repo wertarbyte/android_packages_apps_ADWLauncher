@@ -83,7 +83,7 @@
     <string name="pref_title_desktop_screens">Schermate</string>
     <string name="pref_summary_desktop_screens">Seleziona il numero di schermate da usare</string>
     <string name="pref_dialog_desktop_screen">Seleziona il numero di schermate da usare</string>
-    
+
     <string name="pref_title_default_screen">Schermata di Default</string>
     <string name="pref_summary_default_screen">Seleziona la schermata di default</string>
     <string name="pref_dialog_default_screen">Seleziona la schermata di default</string>
