@@ -2858,7 +2858,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	            cell.setDrawingCacheEnabled(true);
 	            Bitmap bitmap = Bitmap.createScaledBitmap(cell.getDrawingCache(), (int)sWidth, (int)sHeight, false);// Bitmap.createBitmap((int) sWidth, (int) sHeight,
 	                    //Bitmap.Config.ARGB_8888);
-	            
+	            cell.setDrawingCacheEnabled(false);
 	            Canvas c = new Canvas(bitmap);
 	            c.scale(scale, scale);
 	            c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
