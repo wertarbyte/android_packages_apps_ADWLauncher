@@ -61,4 +61,122 @@
     <string name="permdesc_write_settings" msgid="1098648778383349818">"Permite que una aplicación modifique la configuración y los accesos directos de la página principal."</string>
     <string name="search_hint" msgid="6974176141372467453">"Búsqueda de Google"</string>
     <string name="gadget_error_text" msgid="8359351016167075858">"Problema al cargar el widget"</string>
+    <!-- ADW Version Information -->
+	<string name="adw_donate">Porfa, dona si te gusta mi trabajo :-)</string>
+    <!-- ADW Settings -->
+    <string name="pref_label_settings">ADW Settings</string>
+    <!-- Screen preferences -->
+    <string name="pref_title_screen_preferences">Pantalla</string>
+    <string name="pref_summary_screen_preferences">Numero de escritorios, escritorio por defecto, etc...</string>
+
+    <string name="pref_title_wallpaper_hack">Wallpaper Hack</string>
+    <string name="pref_summary_wallpaper_hack">Mejora el desplazamiento entre escritorios. Desactívalo si tienes FCs con wallpapers grandes.</string>
+
+    <string name="pref_title_orientation_sensor">Sensor de rotación</string>
+    <string name="pref_summary_orientation_sensor">Habilita el sensor de rotación</string>
+
+    <string name="pref_title_hide_statusbar">Ocultar barra de estado</string>
+    <string name="pref_summary_hide_statusbar">Oculta la barra de estado</string>
+
+    <string name="pref_title_desktop_screens">Número de escritorios</string>
+    <string name="pref_summary_desktop_screens">Selecciona el número de escritorios que deseas</string>
+    <string name="pref_dialog_desktop_screen">Selecciona el número de escritorios que deseas</string>
+
+    <string name="pref_title_default_screen">Escritorio por defecto</string>
+    <string name="pref_summary_default_screen">Selecciona el escritorio por defecto</string>
+    <string name="pref_dialog_default_screen">Selecciona el escritorio por defecto</string>
+
+    <string name="pref_title_desktop_scrolling_speed">Velocidad de desplazamiento</string>
+    <string name="pref_summary_desktop_scrolling_speed">Selecciona la velocidad de desplazamiento entre escritorios</string>
+    <string name="pref_dialog_desktop_scrolling_speed">Cuanto más bajo sea el número, más rápido te desplazarás</string>
+
+    <string name="pref_title_desktop_overshoot">Rebote</string>
+    <string name="pref_summary_desktop_overshoot">Efecto de rebote al desplazarte entre escritorios</string>
+    <string name="pref_dialog_desktop_overshoot">Si lo dejas a 0, no habrá rebote</string>
+
+    <!-- Drawer Settings -->
+    <string name="pref_title_drawer_settings">Lista de apps</string>
+    <string name="pref_summary_drawer_settings">Configuración de la lista de aplicaciones</string>
+
+    <string name="pref_title_zoom_effect_speed">Velocidad de animación</string>
+    <string name="pref_summary_zoom_effect_speed">Elige el tiempo de la animación (en milisegundos)</string>
+    <string name="pref_dialog_zoom_effect_speed">Elige el tiempo de la animación (en milisegundos)</string>
+
+    <string name="pref_title_new_drawer">Lista en horizontal</string>
+    <string name="pref_summary_new_drawer">Usar la implementación del Samsung Galaxy S</string>
+
+    <string name="pref_title_animated_drawer">Usar animación</string>
+    <string name="pref_summary_animated_drawer">Abrir la lista con una animación</string>
+
+    <string name="pref_title_drawer_columns_portrait">Columnas vertical</string>
+    <string name="pref_summary_drawer_columns_portrait">Número de columnas con el tlf en vertical</string>
+    <string name="pref_dialog_drawer_columns_portrait">Número de columnas con el tlf en vertical</string>
+
+    <string name="pref_title_drawer_rows_portrait">Filas vertical</string>
+    <string name="pref_summary_drawer_rows_portrait">Número de filas con el tlf en vertical</string>
+    <string name="pref_dialog_drawer_rows_portrait">Número de filas con el tlf en vertical</string>
+
+    <string name="pref_title_drawer_columns_landscape">Columnas horizontal</string>
+    <string name="pref_summary_drawer_columns_landscape">Número de columnas con el tlf en hotizontal</string>
+    <string name="pref_dialog_drawer_columns_landscape">Número de columnas con el tlf en horizontal</string>
+
+    <string name="pref_title_drawer_rows_landscape">Filas horizontal</string>
+    <string name="pref_summary_drawer_rows_landscape">Número de filas con el tlf en horizontal</string>
+    <string name="pref_dialog_drawer_rows_landscape">Número de filas con el tlf en horizontal</string>
+
+    <!-- Previews preferences -->
+    <string name="pref_title_previews_preferences">Previsialización</string>
+    <string name="pref_summary_previews_preferences">Configuración de la previsualización de escritorios</string>
+
+    <string name="pref_title_sense_previews">Estilo Sense</string>
+    <string name="pref_summary_sense_previews">Usa la previsualización tipo Sense</string>
+
+    <string name="pref_title_clean_screen_mode">Limpiar pantalla</string>
+    <string name="pref_summary_clean_screen_mode">Oculta los iconos/widgets al mostrar la previsualización</string>
+
+    <!-- Button preferences -->
+    <string name="pref_title_ui_settings">Interfaz</string>
+    <string name="pref_summary_ui_settings">Activa/Desactiva elementos</string>
+
+    <string name="pref_title_home_button_binding">Botón Home</string>
+    <string name="pref_summary_home_button_binding">Selecciona una acción para el botón HOME</string>
+
+    <string name="pref_title_desktop_dots">Paginador</string>
+    <string name="pref_summary_desktop_dots">Muestra/oculta los puntitos estilo nexus</string>
+
+    <string name="pref_title_dockbar">Dockbar</string>
+    <string name="pref_summary_dockbar">Activa/desactiva el dockbar</string>
+
+    <string name="pref_title_closing_dockbar">Auto cerrar dockbar</string>
+    <string name="pref_summary_closing_dockbar">Cierra el dockbar automáticamente al abrir una aplicación</string>
+
+    <string name="pref_title_lab">LAB</string>
+    <string name="pref_summary_lab">Activa/desactiva el botón "Left Action Button"</string>
+
+    <string name="pref_title_rab">RAB</string>
+    <string name="pref_summary_rab">Activa/desactiva el botón "Right Action Button"</string>
+
+    <string name="pref_title_tint_ab">Pintar Botones</string>
+    <string name="pref_summary_tint_ab">Activa/desactiva el "efecto tinte" en los Action Buttons</string>
+
+    <string name="pref_title_ab_scale_factor">Tamaño AB</string>
+    <string name="pref_summary_ab_scale_factor">Selecciona la escala de los iconos de los ActionButton</string>
+    <string name="pref_dialog_ab_scale_factor">Selecciona la escala de los iconos de los ActionButton</string>
+
+    <string name="pref_title_hide_allapps_ab">Ocultar Fondo botón</string>
+    <string name="pref_summary_hide_allapps_ab">Oculta el fondo del botón que abre la lista de apps</string>
+
+    <string name="pref_title_hide_ab_bg">Ocultar el fondo de AB</string>
+    <string name="pref_summary_hide_ab_bg">Oculta el fondo de los Action Buttons</string>
+
+    <string name="pref_title_hide_icon_labels">Ocultar nombres</string>
+    <string name="pref_summary_hide_icon_labels">Oculta los nombres de los iconos del escritorio</string>
+
+    <string name="pref_title_build_info">Información de compilación</string>
+    <string name="pref_title_adw_version">ADW Version</string>
+    
+    <string name="pref_title_drawer_background_alpha">Transparencia del fondo</string>
+    <string name="pref_summary_drawer_background_alpha">Cambia la transparencia de la lista de apps</string>
+    <string name="pref_dialog_drawer_background_alpha">Cambia la transparencia de la lista de apps</string>
+
 </resources>

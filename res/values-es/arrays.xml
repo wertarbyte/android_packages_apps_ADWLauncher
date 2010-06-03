@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+       <string-array name="menu_binding_entries">
+                <item>Ir al escritorio por defecto</item>
+                <item>Ir al escritorio por defecto/mostrar previsualización</item>
+                <item>Mostrar previsualización</item>
+                <item>Abre/cierra la lista de apps</item>
+                <item>Muestra/oculta la barra de estado</item>
+       </string-array>
+
+       <!-- Do not translate. -->
+       <string-array name="menu_binding_values">
+                <item>1</item>
+                <item>2</item>
+                <item>3</item>
+                <item>4</item>
+                <item>5</item>
+       </string-array>
+</resources>
