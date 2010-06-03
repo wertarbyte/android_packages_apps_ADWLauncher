@@ -139,7 +139,7 @@
     <string name="pref_summary_screen_preferences">αριθμος οθονων,κυρια οθονη ...</string>
 
     <string name="pref_title_wallpaper_hack">hack ταπετσαριας</string>
-    <string name="pref_summary_wallpaper_hack">απενεργοποιηστε το αν εχετε fc's χρησιμοποιωντας μεγαλες ταπετσαριες</string>
+    <string name="pref_summary_wallpaper_hack">απενεργοποιηστε το αν εχετε fc\'s χρησιμοποιωντας μεγαλες ταπετσαριες</string>
 
     <string name="pref_title_orientation_sensor">αισθητηρας προσανατολισμου</string>
     <string name="pref_summary_orientation_sensor">περιστροφη οθονης μετα απο περιστροφη αισθητηρα</string>
