@@ -64,6 +64,7 @@
     <string name="gadget_error_text" msgid="8359351016167075858">"ウィジェットを表示できません"</string>
 
     <!-- ADW Settings -->
+    <string name="pref_label_settings">AlmostNexus設定</string>
     <!-- Screen preferences -->
     <string name="pref_title_screen_preferences">スクリーン設定</string>
     <string name="pref_summary_screen_preferences">スクリーンの数やデフォルト等</string>
@@ -106,9 +107,6 @@
 
     <string name="pref_title_animated_drawer">アニメーションドロワー</string>
     <string name="pref_summary_animated_drawer">アプリケーションドロワーをアニメーション表示するかどうか</string>
-
-    <string name="pref_title_fast_drawer">速いドロワー</string>
-    <string name="pref_summary_fast_drawer">スクロール速度を維持するために、不透明無色の背景を使用する</string>
 
     <string name="pref_title_drawer_columns_portrait">縦画面のドロワー列数</string>
     <string name="pref_summary_drawer_columns_portrait">縦画面時のドロワー列数を選択する</string>
@@ -177,5 +175,9 @@
     <string name="pref_title_build_info">ビルド情報</string>
     <string name="pref_title_adw_version">ADW バージョン</string>
 
-<string name="pref_label_settings">AlmostNexus設定</string>
+    <string name="pref_title_drawer_background_alpha">背景の透明度</string>
+    <string name="pref_summary_drawer_background_alpha">ドロワー背景の透明度レベルを設定</string>
+    <string name="pref_dialog_drawer_background_alpha">ドロワー背景の透明度レベルを設定</string>
+
 </resources>
+
