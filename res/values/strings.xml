@@ -151,7 +151,7 @@
     <string name="pref_title_desktop_screens">Desktop Screens</string>
     <string name="pref_summary_desktop_screens">Select the number of desktop screens to use</string>
     <string name="pref_dialog_desktop_screen">Select the number of desktop screens to use</string>
-    
+
     <string name="pref_title_default_screen">Default Screen</string>
     <string name="pref_summary_default_screen">Select the screen to set as default</string>
     <string name="pref_dialog_default_screen">Select the screen to set as default</string>
