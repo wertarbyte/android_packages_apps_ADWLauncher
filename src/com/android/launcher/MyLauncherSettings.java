@@ -161,7 +161,7 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
         return false;
 	}
     private int readHighlightsColor() {
-    	return getPreferenceManager().getSharedPreferences().getInt("highlights_color",-16777216);
+    	return AlmostNexusSettingsHelper.getHighlightsColor(this);
     }
 
     ColorPickerDialog.OnColorChangedListener mHighlightsColorListener =

@@ -154,7 +154,7 @@ public final class AlmostNexusSettingsHelper {
 	}
 	public static int getHighlightsColor(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
-		int newD = sp.getInt("highlights_color", -16777216);
+		int newD = sp.getInt("highlights_color", 0xffff6600);
 		return newD;
 	}
 }
