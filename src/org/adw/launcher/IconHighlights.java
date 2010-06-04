@@ -21,12 +21,12 @@ public class IconHighlights extends StateListDrawable {
 		int stateWindowFocused = android.R.attr.state_window_focused;
 		 
 		mDrawSelected = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-		        new int[] { 0x77FFFFFF, selectedColor, 0x77000000 });
+		        new int[] { 0x77FFFFFF, selectedColor,selectedColor,selectedColor,selectedColor, 0x77000000 });
 		mDrawSelected.setShape(GradientDrawable.RECTANGLE);
 		mDrawSelected.setGradientRadius((float)(Math.sqrt(2) * 60));
 		mDrawSelected.setCornerRadius(8);
 		mDrawPressed = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-				new int[] { 0x77FFFFFF, pressedColor,	0x77000000 });
+				new int[] { 0x77FFFFFF, pressedColor,pressedColor,pressedColor,pressedColor, 0x77000000 });
 		mDrawPressed.setShape(GradientDrawable.RECTANGLE);
 		mDrawPressed.setGradientRadius((float)(Math.sqrt(2) * 60));
 		mDrawPressed.setCornerRadius(8);
