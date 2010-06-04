@@ -158,6 +158,11 @@
 			android:title="@string/pref_title_hide_icon_labels"
 			android:summary="@string/pref_summary_hide_icon_labels"
 			android:defaultValue="false" />
+	    <Preference android:key="highlights_color"
+			android:title="@string/pref_title_icon_highlights"
+			android:summary="@string/pref_summary_icon_highlights"
+	        android:defaultValue="-16777216" />
+
 	</PreferenceScreen>
 	<PreferenceCategory android:title="@string/pref_title_build_info">
 		<Preference
