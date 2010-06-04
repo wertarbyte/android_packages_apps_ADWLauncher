@@ -65,12 +65,13 @@
 
     <!-- ADW Settings -->
     <string name="pref_label_settings">AlmostNexus設定</string>
+
     <!-- Screen preferences -->
     <string name="pref_title_screen_preferences">スクリーン設定</string>
     <string name="pref_summary_screen_preferences">スクリーンの数やデフォルト等</string>
 
     <string name="pref_title_wallpaper_hack">壁紙ハック</string>
-    <string name="pref_summary_wallpaper_hack">大きい壁紙を使っていて強制終了してしまう場合は無効にする.スクロール速度を快適に保つには有効にする.</string>
+    <string name="pref_summary_wallpaper_hack">大きい壁紙で強制終了する場合は無効に,改良を維持するには有効にする.</string>
 
     <string name="pref_title_orientation_sensor">回転センサ</string>
     <string name="pref_summary_orientation_sensor">回転センサによりデスクトップを回転する</string>
@@ -92,7 +93,7 @@
 
     <string name="pref_title_desktop_overshoot">デスクトップオーバーシュート</string>
     <string name="pref_summary_desktop_overshoot">最初と最後のデスクトップで行き過ぎた場合にスクリーンを弾ませる</string>
-    <string name="pref_dialog_desktop_overshoot">0を設定するとオーバーシュートを無効にします</string>
+    <string name="pref_dialog_desktop_overshoot">0に設定するとオーバーシュートを無効にできます</string>
 
     <!-- Drawer Settings -->
     <string name="pref_title_drawer_settings">ドロワー設定</string>
@@ -102,11 +103,11 @@
     <string name="pref_summary_zoom_effect_speed">ミリ秒でズームエフェクトの時間を設定</string>
     <string name="pref_dialog_zoom_effect_speed">ミリ秒でズームエフェクトの時間を設定</string>
 
-    <string name="pref_title_new_drawer">新しいドロワー</string>
+    <string name="pref_title_new_drawer">水平ドロワー</string>
     <string name="pref_summary_new_drawer">Samsung Galaxy Sで実装されているようなドロワー</string>
 
     <string name="pref_title_animated_drawer">アニメーションドロワー</string>
-    <string name="pref_summary_animated_drawer">アプリケーションドロワーをアニメーション表示するかどうか</string>
+    <string name="pref_summary_animated_drawer">アプリケーションドロワーをアニメーション表示する</string>
 
     <string name="pref_title_drawer_columns_portrait">縦画面のドロワー列数</string>
     <string name="pref_summary_drawer_columns_portrait">縦画面時のドロワー列数を選択する</string>
