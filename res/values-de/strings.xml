@@ -179,4 +179,7 @@
     <string name="pref_title_drawer_background_alpha">Hintergrund-Transparenz</string>
     <string name="pref_summary_drawer_background_alpha">Einstellen der Transparenz für den Hintergrund des Drawers</string>
     <string name="pref_dialog_drawer_background_alpha">Transparenz für den Hintergrund des Drawers</string>
+
+    <string name="pref_title_icon_highlights">Farbe Markierung</string>
+    <string name="pref_summary_icon_highlights">Farbe für markierte Icons auswählen</string>
 </resources>
