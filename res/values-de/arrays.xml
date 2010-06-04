@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
        <string-array name="menu_binding_entries">
-                <item>Zum Standard-Bildschirm</item>
-                <item>Zum Standard-Bildschirm / Zeige Vorschauen</item>
-                <item>Zeige Vorschauen</item>
-                <item>Öffnen/Schliessen AppLauncher</item>
-                <item>Zeigen/Verbergen Statuszeile</item>
+                <item>Standard-Bildschirm</item>
+                <item>Standard-Bildschirm und Vorschauen zeigen</item>
+                <item>Vorschauen zeigen</item>
+                <item>Öffne/Schliesse den Drawer</item>
+                <item>Zeige/Verberge die Statuszeile</item>
         </string-array>
 </resources>
