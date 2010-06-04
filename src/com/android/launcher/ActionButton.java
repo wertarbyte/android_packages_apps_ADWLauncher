@@ -8,14 +8,12 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 public class ActionButton extends ImageView implements DropTarget, DragListener {
 	private Launcher mLauncher;
-    private DragLayer mDragLayer;
 	private int mIdent=LauncherSettings.Favorites.CONTAINER_LAB;
 	private ItemInfo mCurrentInfo;
 	private Drawable bgResource;
@@ -145,10 +143,6 @@ public class ActionButton extends ImageView implements DropTarget, DragListener 
 	}
     void setLauncher(Launcher launcher) {
         mLauncher = launcher;
-    }
-
-    void setDragController(DragLayer dragLayer) {
-        mDragLayer = dragLayer;
     }
 
 	@Override

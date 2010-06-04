@@ -110,7 +110,6 @@ public class PreviewsHolder extends ViewGroup {
                 if(childPos>getChildCount()-1) break;
         		final View child = getChildAt(childPos);
                 if (child.getVisibility() != GONE) {
-                    final LayoutParams lp = (LayoutParams) child.getLayoutParams();
                     child.layout(leftMargin+xpos, topMargin+ypos, leftMargin+xpos + childWidth, topMargin+ypos + childHeight);
                     xpos += childWidth;
                 }

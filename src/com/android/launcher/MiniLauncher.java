@@ -16,23 +16,16 @@
 
 package com.android.launcher;
 
-import java.util.ArrayList;
-
-import com.android.launcher.CellLayout.LayoutParams;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.MeasureSpec;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 
@@ -40,7 +33,6 @@ public class MiniLauncher extends ViewGroup implements View.OnLongClickListener,
     private static final int HORIZONTAL=1;
     private static final int VERTICAL=0;
 	private Launcher mLauncher;
-    private DragLayer mDragLayer;
     private View mDeleteView;
     private int mOrientation=HORIZONTAL;
     private int mNumCells=4;
@@ -247,11 +239,6 @@ public class MiniLauncher extends ViewGroup implements View.OnLongClickListener,
         mLauncher = launcher;
     }
 
-    void setDragController(DragLayer dragLayer) {
-        mDragLayer = dragLayer;
-    }
-
-
 	@Override
 	protected void onFinishInflate() {
 		super.onFinishInflate();
@@ -265,7 +252,6 @@ public class MiniLauncher extends ViewGroup implements View.OnLongClickListener,
 
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            LayoutParams lp = (LayoutParams) child.getLayoutParams();
         	child.measure(mCellWidth, mCellHeight);
         }		
 		
@@ -289,7 +275,6 @@ public class MiniLauncher extends ViewGroup implements View.OnLongClickListener,
             View child = getChildAt(i);
             ItemInfo item=(ItemInfo) child.getTag();
             if (child.getVisibility() != GONE) {
-                LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 //int childLeft=(mOrientation==HORIZONTAL)?marginLeft+(i*mCellWidth):0;
                 //int childTop = (mOrientation==VERTICAL)?marginTop+(i*mCellHeight):0;
                 int childLeft=(mOrientation==HORIZONTAL)?marginLeft+(item.cellX*mCellWidth):0;

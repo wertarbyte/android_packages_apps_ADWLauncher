@@ -16,24 +16,18 @@
 
 package com.android.launcher;
 
-import android.widget.GridView;
-import android.widget.AdapterView;
-import android.widget.TextView;
-import android.R.bool;
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.os.SystemClock;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
-import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
+import android.os.SystemClock;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.TextView;
 
 public class AllAppsGridView extends GridView implements AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener, DragSource {
@@ -172,11 +166,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 		}
 
 	}
-	private void clearChildrenCache(){
-		/*for(int i=0;i<getChildCount();i++){
-			getChildAt(i).destroyDrawingCache();
-		}*/
-	}
+
 	@Override
 	protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
 		int saveCount = canvas.save();

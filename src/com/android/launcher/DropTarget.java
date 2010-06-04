@@ -16,8 +16,6 @@
 
 package com.android.launcher;
 
-import android.graphics.Rect;
-
 /**
  * Interface defining an object that can receive a drag.
  *

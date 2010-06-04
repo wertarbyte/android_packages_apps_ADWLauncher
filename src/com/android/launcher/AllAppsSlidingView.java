@@ -1,23 +1,15 @@
 package com.android.launcher;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.android.launcher.HolderLayout.OnFadingListener;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.os.Debug;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -30,18 +22,14 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.widget.AbsListView;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
-import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+
+import java.util.ArrayList;
+import java.util.List;
 public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> implements OnItemClickListener, OnItemLongClickListener, DragSource{// implements DragScroller{
     private static final int DEFAULT_SCREEN = 0;
     private static final int INVALID_SCREEN = -1;
@@ -154,7 +142,6 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     //private Bitmap mTexture;
     private Paint mPaint;
 	private int mCacheColorHint=0;
-	private boolean scrollCacheCreated;
 	private boolean mBlockLayouts;
     private PreviewPager mPager;
 	private int mScrollToScreen;
@@ -840,7 +827,6 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 	        	playSoundEffect(SoundEffectConstants.getContantForFocusDirection(direction));
 	            setSelection(Math.max(0, pos));
 	            positionSelector(h.getChildAt(pos));
-	            TextView t=(TextView) h.getChildAt(pos);
 	            invalidate();
             }
         }
@@ -1062,7 +1048,6 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     
     void positionSelector(View sel) {
         final Rect selectorRect = mSelectorRect;
-        final HolderLayout h=(HolderLayout)getChildAt(mCurrentHolder);
         selectorRect.set(sel.getLeft(), sel.getTop()+paginatorSpace, sel.getRight(), sel.getBottom()+paginatorSpace);
         positionSelector(selectorRect.left, selectorRect.top, selectorRect.right,
                 selectorRect.bottom);
@@ -1246,6 +1231,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 
         private ArrayList<View> mCurrentScrap;
 
+        @SuppressWarnings("unchecked")
         public void setViewTypeCount(int viewTypeCount) {
             if (viewTypeCount < 1) {
                 throw new IllegalArgumentException("Can't have a viewTypeCount < 1");

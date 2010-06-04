@@ -6,22 +6,19 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.util.Log;
 
-public class dlgSeekBarPreference extends DialogPreference implements SeekBar.OnSeekBarChangeListener
+public class DialogSeekBarPreference extends DialogPreference implements SeekBar.OnSeekBarChangeListener
 {
   private static final String androidns="http://schemas.android.com/apk/res/android";
 
   private SeekBar mSeekBar;
   private TextView mValueText;
-  private Context mContext;
   private String mDialogMessage, mSuffix;
   private int mDefault, mMax, mMin, mValue = 0;
 
-  public dlgSeekBarPreference (Context context, AttributeSet attrs) { 
+  public DialogSeekBarPreference (Context context, AttributeSet attrs) { 
     super(context,attrs); 
     setPersistent(true);
-    mContext = context;
 
     mDialogMessage = context.getString(attrs.getAttributeResourceValue(androidns,"dialogMessage", 0));
     mSuffix = attrs.getAttributeValue(androidns,"text");
