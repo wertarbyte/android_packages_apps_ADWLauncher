@@ -117,7 +117,7 @@
     <string name="pref_dialog_drawer_rows_portrait">Número de filas con el tlf en vertical</string>
 
     <string name="pref_title_drawer_columns_landscape">Columnas horizontal</string>
-    <string name="pref_summary_drawer_columns_landscape">Número de columnas con el tlf en hotizontal</string>
+    <string name="pref_summary_drawer_columns_landscape">Número de columnas con el tlf en horizontal</string>
     <string name="pref_dialog_drawer_columns_landscape">Número de columnas con el tlf en horizontal</string>
 
     <string name="pref_title_drawer_rows_landscape">Filas horizontal</string>
@@ -125,7 +125,7 @@
     <string name="pref_dialog_drawer_rows_landscape">Número de filas con el tlf en horizontal</string>
 
     <!-- Previews preferences -->
-    <string name="pref_title_previews_preferences">Previsialización</string>
+    <string name="pref_title_previews_preferences">Previsualización</string>
     <string name="pref_summary_previews_preferences">Configuración de la previsualización de escritorios</string>
 
     <string name="pref_title_sense_previews">Estilo Sense</string>

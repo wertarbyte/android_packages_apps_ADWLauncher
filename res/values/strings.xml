@@ -140,7 +140,7 @@
     <string name="pref_summary_screen_preferences">Screen count, default screen...</string>
 
     <string name="pref_title_wallpaper_hack">Wallpaper Hack</string>
-    <string name="pref_summary_wallpaper_hack">Disable thisif you get FCs using LARGE wallpapers.Leaving it enabled inproves the scrolling speed.</string>
+    <string name="pref_summary_wallpaper_hack">Disable this if you get FCs using LARGE wallpapers.Leaving it enabled inproves the scrolling speed.</string>
 
     <string name="pref_title_orientation_sensor">Orientation sensor</string>
     <string name="pref_summary_orientation_sensor">Rotate desktop on sensor rotation</string>
