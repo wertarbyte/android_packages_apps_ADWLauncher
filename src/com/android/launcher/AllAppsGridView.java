@@ -213,6 +213,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 			}
 		}else{
 			if(cache!=null){
+				mPaint.setAlpha(255);
 				canvas.drawBitmap(cache, child.getLeft(), child.getTop(), mPaint);
 			}else{
 				child.draw(canvas);
