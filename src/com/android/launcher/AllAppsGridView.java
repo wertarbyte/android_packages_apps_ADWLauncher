@@ -33,6 +33,7 @@ import android.graphics.Paint;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 
 public class AllAppsGridView extends GridView implements AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener, DragSource {
@@ -111,6 +112,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 
     void setLauncher(Launcher launcher) {
         mLauncher = launcher;
+        setSelector(new IconHighlights(mLauncher));
     }
     /**
      * ADW: easing functions for animation

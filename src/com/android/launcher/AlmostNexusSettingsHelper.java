@@ -152,4 +152,9 @@ public final class AlmostNexusSettingsHelper {
 		int newD = sp.getInt("drawerAlpha", 255);
 		return newD;
 	}
+	public static int getHighlightsColor(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, context.MODE_PRIVATE);
+		int newD = sp.getInt("highlights_color", -16777216);
+		return newD;
+	}
 }

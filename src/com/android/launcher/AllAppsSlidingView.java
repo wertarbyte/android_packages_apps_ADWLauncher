@@ -242,7 +242,8 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     }
     
     void setLauncher(Launcher launcher) {
-        mLauncher = launcher;        
+        mLauncher = launcher;
+        setSelector(new IconHighlights(mLauncher));
     }
 	@Override
 	protected void onScrollChanged(int l, int t, int oldl, int oldt) {
@@ -1085,8 +1086,10 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 
     private void drawSelector(Canvas canvas) {
         if (shouldShowSelector() && mSelectorRect != null && !mSelectorRect.isEmpty()) {
-            final Drawable selector = mSelector;
+            Log.d("APPPSSS","DRAWME!!");
+        	final Drawable selector = mSelector;
             selector.setBounds(mSelectorRect);
+            selector.setState(PRESSED_ENABLED_STATE_SET);
             selector.draw(canvas);
         }
     }
