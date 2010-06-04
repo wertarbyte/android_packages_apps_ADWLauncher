@@ -169,6 +169,7 @@
 			android:key="donatePref"
 			android:layout="@layout/donate_link"/>
 		<Preference
+			android:key="adw_version"
 			android:title="@string/pref_title_adw_version"
 			android:summary="@string/adw_version"/>
 	</PreferenceCategory>
