@@ -66,7 +66,7 @@
     <!-- ADW Settings -->
     <!-- Screen preferences -->
     <string name="pref_label_settings">ADW.Launcher Einstellungen</string>
-    <string name="pref_title_screen_preferences">Anzeigen</string>
+    <string name="pref_title_screen_preferences">Anzeige-Einstellungen</string>
     <string name="pref_summary_screen_preferences">Einstellungen für Bildschirmanzahl, Standardbildschirm, Effekte, ...</string>
 
     <string name="pref_title_wallpaper_hack">Wallpaper Hack</string>
@@ -95,33 +95,33 @@
     <string name="pref_dialog_desktop_overshoot">Zum Ausschalten auf Null setzen</string>
 
     <!-- Drawer Settings -->
-    <string name="pref_title_drawer_settings">AppDrawer</string>
-    <string name="pref_summary_drawer_settings">AppDrawer (Launcher) konfigurieren</string>
+    <string name="pref_title_drawer_settings">Drawer</string>
+    <string name="pref_summary_drawer_settings">Drawer (Launcher) konfigurieren</string>
 
     <string name="pref_title_zoom_effect_speed">Zoom-Effekt Geschwindigkeit</string>
     <string name="pref_summary_zoom_effect_speed">Zeit in Millisekunden für den Zoom-Effekt setzen</string>
     <string name="pref_dialog_zoom_effect_speed">Millisekunden für den Zoom-Effekt</string>
 
-    <string name="pref_title_new_drawer">Neuer AppDrawer</string>
+    <string name="pref_title_new_drawer">Neuer Drawer</string>
     <string name="pref_summary_new_drawer">Die Samsung Galaxy S Implementierung (horizontal) verwenden</string>
 
-    <string name="pref_title_animated_drawer">Animierter AppDrawer</string>
-    <string name="pref_summary_animated_drawer">Auswählen, ob Animationen im AppDrawer angezeigt werden sollen</string>
+    <string name="pref_title_animated_drawer">Animierter Drawer</string>
+    <string name="pref_summary_animated_drawer">Auswählen, ob Animationen im Drawer angezeigt werden sollen</string>
 
     <string name="pref_title_drawer_columns_portrait">Aufrecht: Spalten</string>
-    <string name="pref_summary_drawer_columns_portrait">Anzahl der Spalten im Appdrawer im Portrait-Modus wählen</string>
+    <string name="pref_summary_drawer_columns_portrait">Anzahl der Spalten im Drawer im Portrait-Modus wählen</string>
     <string name="pref_dialog_drawer_columns_portrait">Anzahl der Spalten im Portrait-Modus</string>
 
     <string name="pref_title_drawer_rows_portrait">Aufrecht: Reihen</string>
-    <string name="pref_summary_drawer_rows_portrait">Anzahl der Reihen im Appdrawer im Portrait-Modus wählen</string>
+    <string name="pref_summary_drawer_rows_portrait">Anzahl der Reihen im Drawer im Portrait-Modus wählen</string>
     <string name="pref_dialog_drawer_rows_portrait">Anzahl der Reihen im Portrait-Modus</string>
 
     <string name="pref_title_drawer_columns_landscape">Quer: Spalten</string>
-    <string name="pref_summary_drawer_columns_landscape">Anzahl der Spalten im Appdrawer im Landschafts-Modus wählen</string>
+    <string name="pref_summary_drawer_columns_landscape">Anzahl der Spalten im Drawer im Landschafts-Modus wählen</string>
     <string name="pref_dialog_drawer_columns_landscape">Anzahl der Spalten im Landschafts-Modus</string>
 
     <string name="pref_title_drawer_rows_landscape">Quer: Reihen</string>
-    <string name="pref_summary_drawer_rows_landscape">Anzahl der Reihen im Appdrawer im Landschafts-Modus wählen</string>
+    <string name="pref_summary_drawer_rows_landscape">Anzahl der Reihen im Drawer im Landschafts-Modus wählen</string>
     <string name="pref_dialog_drawer_rows_landscape">Anzahl der Reihen im Landschafts-Modus</string>
 
     <!-- Previews preferences -->
@@ -163,8 +163,8 @@
     <string name="pref_summary_ab_scale_factor">Skaliere die Größe der Aktionstasten-Icons</string>
     <string name="pref_dialog_ab_scale_factor">Größenfaktor der Aktionstasten-Icons</string>
 
-    <string name="pref_title_hide_allapps_ab">AppDrawer-Taste BG ausblenden</string>
-    <string name="pref_summary_hide_allapps_ab">Hintergrund der AppDrawer-Taste ausblenden</string>
+    <string name="pref_title_hide_allapps_ab">Drawer-Taste BG ausblenden</string>
+    <string name="pref_summary_hide_allapps_ab">Hintergrund der Drawer-Taste ausblenden</string>
 
     <string name="pref_title_hide_ab_bg">Aktionstasten BG ausblenden</string>
     <string name="pref_summary_hide_ab_bg">Hintergrund der Aktionstasten ausblenden</string>
@@ -177,6 +177,6 @@
     <string name="adw_donate">Bitte spende, wenn dir meine Arbeit gefällt :-)</string>
 
     <string name="pref_title_drawer_background_alpha">Hintergrund-Transparenz</string>
-    <string name="pref_summary_drawer_background_alpha">Einstellen der Transparenz für den Hintergrund des AppDrawers</string>
-    <string name="pref_dialog_drawer_background_alpha">Transparenz für den Hintergrund des AppDrawers</string>
+    <string name="pref_summary_drawer_background_alpha">Einstellen der Transparenz für den Hintergrund des Drawers</string>
+    <string name="pref_dialog_drawer_background_alpha">Transparenz für den Hintergrund des Drawers</string>
 </resources>
