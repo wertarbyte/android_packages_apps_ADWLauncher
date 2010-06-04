@@ -1,4 +1,4 @@
-package org.adw.launcher;
+package com.android.launcher;
 
 import android.content.Context;
 import android.graphics.Color;
