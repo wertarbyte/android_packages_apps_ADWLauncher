@@ -180,5 +180,8 @@
     <string name="pref_summary_drawer_background_alpha">ドロワー背景の透明度レベルを設定</string>
     <string name="pref_dialog_drawer_background_alpha">ドロワー背景の透明度レベルを設定</string>
 
+    <string name="pref_title_icon_highlights">ハイライトカラー</string>
+    <string name="pref_summary_icon_highlights">アイコンを選択したときの色を選択</string>
+
 </resources>
 
