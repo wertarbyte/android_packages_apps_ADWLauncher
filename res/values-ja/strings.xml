@@ -176,12 +176,16 @@
     <string name="pref_title_build_info">ビルド情報</string>
     <string name="pref_title_adw_version">ADW バージョン</string>
 
-    <string name="pref_title_drawer_background_alpha">背景の透明度</string>
-    <string name="pref_summary_drawer_background_alpha">ドロワー背景の透明度レベルを設定</string>
-    <string name="pref_dialog_drawer_background_alpha">ドロワー背景の透明度レベルを設定</string>
+    <string name="pref_title_drawer_background_alpha">背景の不透明度</string>
+    <string name="pref_summary_drawer_background_alpha">ドロワー背景の不透明度レベルを設定</string>
+    <string name="pref_dialog_drawer_background_alpha">ドロワー背景の不透明度レベルを設定</string>
 
     <string name="pref_title_icon_highlights">ハイライトカラー</string>
     <string name="pref_summary_icon_highlights">アイコンを選択したときの色を選択</string>
+
+    <string name="pref_dialog_title_color_picker">色を選択</string>
+    <string name="pref_dialog_message_color_picker">中央をタップして確定\n戻るボタンでキャンセル</string>
+    <string name="pref_dialog_color_picker_alpha">不透明度</string>
 
 </resources>
 

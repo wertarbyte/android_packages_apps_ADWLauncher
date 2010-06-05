@@ -251,4 +251,8 @@
     
     <string name="pref_title_icon_highlights">Highlights color</string>
     <string name="pref_summary_icon_highlights">Set the color for icon selections</string>
+
+    <string name="pref_dialog_title_color_picker">Pick a color.</string>
+    <string name="pref_dialog_message_color_picker">Tap on center color to confirm.\nPress back to cancel.</string>
+    <string name="pref_dialog_color_picker_alpha">alpha</string>
 </resources>
