@@ -177,13 +177,13 @@
     <string name="adw_donate">Bitte spende, wenn dir meine Arbeit gefällt :-)</string>
 
     <string name="pref_title_drawer_background_alpha">Hintergrund-Transparenz</string>
-    <string name="pref_summary_drawer_background_alpha">Einstellen der Transparenz für den Hintergrund des Drawers</string>
-    <string name="pref_dialog_drawer_background_alpha">Transparenz für den Hintergrund des Drawers</string>
+    <string name="pref_summary_drawer_background_alpha">Einstellen der Transparenz für den schwarzen Hintergrund des Drawers</string>
+    <string name="pref_dialog_drawer_background_alpha">Transparenz für Drawer-Hintergrund</string>
 
     <string name="pref_title_icon_highlights">Farbe Markierung</string>
-    <string name="pref_summary_icon_highlights">Farbe für markierte Icons auswählen</string>
+    <string name="pref_summary_icon_highlights">Hintergrund für markierte Icons auswählen</string>
 
-    <string name="pref_dialog_title_color_picker">Farbe aufnehmen.</string>
-    <string name="pref_dialog_message_color_picker">Zum Bestätigen auf den farbigen Mittelpunkt tippen.\nDrücke Zurück zum Abbrechen.</string>
+    <string name="pref_dialog_title_color_picker">Farbe aufnehmen</string>
+    <string name="pref_dialog_message_color_picker">Zum Bestätigen auf den farbigen Mittelpunkt tippen.\nDrücke ZURÜCK zum Abbrechen.</string>
     <string name="pref_dialog_color_picker_alpha">Tranzparenz</string>
 </resources>
