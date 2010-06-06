@@ -151,4 +151,14 @@ public final class AlmostNexusSettingsHelper {
 		int newD = sp.getInt("highlights_color", context.getResources().getInteger(R.integer.config_highlights_color));
 		return newD;
 	}
+	public static int getHighlightsColorFocus(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, Context.MODE_PRIVATE);
+		int newD = sp.getInt("highlights_color_focus", context.getResources().getInteger(R.integer.config_highlights_color_focus));
+		return newD;
+	}
+	public static boolean getUINewSelectors(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, Context.MODE_PRIVATE);
+		boolean newD = sp.getBoolean("uiNewSelectors", context.getResources().getBoolean(R.bool.config_new_selectors));
+		return newD;
+	}
 }

@@ -147,9 +147,18 @@
 			android:title="@string/pref_title_hide_icon_labels"
 			android:summary="@string/pref_summary_hide_icon_labels"
 			android:defaultValue="false" />
+		<CheckBoxPreference android:key="uiNewSelectors"
+			android:title="@string/pref_title_new_selectors"
+			android:summary="@string/pref_summary_new_selectors"
+			android:defaultValue="true" />
 	    <Preference android:key="highlights_color"
 			android:title="@string/pref_title_icon_highlights"
 			android:summary="@string/pref_summary_icon_highlights"
+	        android:defaultValue="-16777216" />
+	    <Preference android:key="highlights_color_focus"
+	    	android:dependency="uiNewSelectors"
+			android:title="@string/pref_title_icon_highlights_focus"
+			android:summary="@string/pref_summary_icon_highlights_focus"
 	        android:defaultValue="-16777216" />
 
 	</PreferenceScreen>
