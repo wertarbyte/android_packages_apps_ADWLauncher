@@ -209,7 +209,6 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 					setVisibility(View.GONE);
 					mLauncher.getWorkspace().clearChildrenCache();
 				}else{
-					Log.d("AllApps","Who tracks this?");
 					isAnimating=false;
 					mBgAlpha=mTargetAlpha;
 				}
@@ -1071,7 +1070,6 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 
     private void drawSelector(Canvas canvas) {
         if (shouldShowSelector() && mSelectorRect != null && !mSelectorRect.isEmpty()) {
-            Log.d("APPPSSS","DRAWME!!");
         	final Drawable selector = mSelector;
             selector.setBounds(mSelectorRect);
             selector.setState(getDrawableState());
