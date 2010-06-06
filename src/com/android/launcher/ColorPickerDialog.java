@@ -16,7 +16,6 @@
 
 package com.android.launcher;
 
-import android.R;
 import android.os.Bundle;
 import android.app.Dialog;
 import android.content.Context;
@@ -28,13 +27,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.drawable.Drawable;
 import android.content.res.Resources;
-import android.content.res.Resources.NotFoundException;
 import android.graphics.Paint.Style;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -313,7 +310,7 @@ public class ColorPickerDialog extends Dialog {
         layoutParams.setMargins(10, 0, 10, 5);
         
         TextView tv = new TextView(mContext);
-        tv.setText("Tap on center color to confirm.\nPress back to cancel.");
+        tv.setText(mContext.getString(R.string.pref_dialog_message_color_picker));
         layout.addView(tv, layoutParams);
         
         mColorPickerView = new ColorPickerView(getContext(), onColorChangedListener, mInitialColor);        
@@ -321,7 +318,7 @@ public class ColorPickerDialog extends Dialog {
         
         mTransparencyBar = new SeekBar(mContext);
         mTransparencyBar.setMax(255);
-		mTransparencyBar.setProgressDrawable(new TextSeekBarDrawable(mContext.getResources(), "alpha", true));
+		mTransparencyBar.setProgressDrawable(new TextSeekBarDrawable(mContext.getResources(), mContext.getString(R.string.pref_dialog_color_picker_alpha), true));
 		mTransparencyBar.setProgress(Color.alpha(mInitialColor));
 		mTransparencyBar.setOnSeekBarChangeListener(onTransparencyChangedListener);
 		layout.addView(mTransparencyBar, layoutParams);
@@ -332,7 +329,7 @@ public class ColorPickerDialog extends Dialog {
         layout.addView(mEditText, layoutParams);
 
         setContentView(layout);
-        setTitle("Pick a color.");
+        setTitle(mContext.getString(R.string.pref_dialog_title_color_picker));
     }
     
     private OnColorChangedListener onColorChangedListener = new OnColorChangedListener() {
