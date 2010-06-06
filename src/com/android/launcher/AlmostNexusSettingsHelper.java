@@ -17,22 +17,22 @@ public final class AlmostNexusSettingsHelper {
 	}
 	public static int getColumnsPortrait(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, Context.MODE_PRIVATE);
-		int screens = sp.getInt("drawerColumnsPortrait", 3)+1;
+		int screens = sp.getInt("drawerColumnsPortrait", context.getResources().getInteger(R.integer.config_drawerColumnsPortrait))+1;
 		return screens;
 	}
 	public static int getRowsPortrait(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, Context.MODE_PRIVATE);
-		int screens = sp.getInt("drawerRowsPortrait", 3)+1;
+		int screens = sp.getInt("drawerRowsPortrait", context.getResources().getInteger(R.integer.config_drawerRowsPortrait))+1;
 		return screens;
 	}
 	public static int getColumnsLandscape(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, Context.MODE_PRIVATE);
-		int screens = sp.getInt("drawerColumnsLandscape", 4)+1;
+		int screens = sp.getInt("drawerColumnsLandscape", context.getResources().getInteger(R.integer.config_drawerColumnsLandscape))+1;
 		return screens;
 	}
 	public static int getRowsLandscape(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, Context.MODE_PRIVATE);
-		int screens = sp.getInt("drawerRowsLandscape", 2)+1;
+		int screens = sp.getInt("drawerRowsLandscape", context.getResources().getInteger(R.integer.config_drawerRowsLandscape))+1;
 		return screens;
 	}
 	public static boolean getDrawerAnimated(Context context) {
@@ -47,12 +47,12 @@ public final class AlmostNexusSettingsHelper {
 	}
 	public static boolean getDrawerNew(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, Context.MODE_PRIVATE);
-		boolean newD = sp.getBoolean("drawerNew", true);
+		boolean newD = sp.getBoolean("drawerNew", context.getResources().getBoolean(R.bool.config_drawerNew));
 		return newD;
 	}
 	public static boolean getDesktopRotation(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, Context.MODE_PRIVATE);
-		boolean newD = sp.getBoolean("desktopRotation", true);
+		boolean newD = sp.getBoolean("desktopRotation",context.getResources().getBoolean(R.bool.config_desktopRotation));
 		return newD;
 	}
 	public static boolean getHideStatusbar(Context context) {
@@ -72,7 +72,7 @@ public final class AlmostNexusSettingsHelper {
 	}
 	public static int getHomeBinding(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, Context.MODE_PRIVATE);
-		int newD = Integer.valueOf(sp.getString("homeBinding", "3"));
+		int newD = Integer.valueOf(sp.getString("homeBinding", context.getResources().getString(R.string.config_homeBinding)));
 		return newD;
 	}
 	public static boolean getUIDots(Context context) {
@@ -107,12 +107,12 @@ public final class AlmostNexusSettingsHelper {
 	}
 	public static int getDesktopSpeed(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, Context.MODE_PRIVATE);
-		int newD = sp.getInt("desktopSpeed", 750);
+		int newD = sp.getInt("desktopSpeed", context.getResources().getInteger(R.integer.config_desktopSpeed));
 		return newD;
 	}
 	public static int getDesktopBounce(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, Context.MODE_PRIVATE);
-		int newD = sp.getInt("desktopBounce", 40);
+		int newD = sp.getInt("desktopBounce", context.getResources().getInteger(R.integer.config_desktopBounce));
 		return newD;
 	}
 	public static boolean getUIAppsBg(Context context) {
@@ -148,7 +148,7 @@ public final class AlmostNexusSettingsHelper {
 	}
 	public static int getDrawerAlpha(Context context) {
 		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, Context.MODE_PRIVATE);
-		int newD = sp.getInt("drawerAlpha", 255);
+		int newD = sp.getInt("drawerAlpha", context.getResources().getInteger(R.integer.config_drawerAlpha));
 		return newD;
 	}
 	public static int getHighlightsColor(Context context) {
