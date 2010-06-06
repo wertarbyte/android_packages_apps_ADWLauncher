@@ -3,18 +3,13 @@ package com.android.launcher;
 import android.content.Context;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Gravity;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 public class PreviewPager extends ViewGroup {
 	private int mTotalItems;
 	private int mCurrentItem;
 	private int mDotDrawableId;
-	private int mToolbarWidth;
-	private int mToolbarHeight;
 	
 	public PreviewPager(Context context, AttributeSet attrs) {
 		super(context, attrs);

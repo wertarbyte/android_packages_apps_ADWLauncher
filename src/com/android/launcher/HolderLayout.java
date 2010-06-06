@@ -1,7 +1,5 @@
 package com.android.launcher;
 
-import com.android.launcher.SliderView.OnTriggerListener;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -10,12 +8,9 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
 public class HolderLayout extends ViewGroup {
@@ -28,7 +23,6 @@ public class HolderLayout extends ViewGroup {
 	private boolean isAnimating;
 	private long startTime;
 	private float mScaleFactor;
-	private Rect mIconRect=null;
 	private int mIconSize=0;
 	private Paint mPaint;
 	private Paint mLabelPaint;
@@ -196,11 +190,7 @@ public class HolderLayout extends ViewGroup {
 		}
 
 	}
-	private void clearChildrenCache(){
-		for(int i=0;i<getChildCount();i++){
-			getChildAt(i).destroyDrawingCache();
-		}
-	}
+
 	@Override
 	protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
 		int saveCount = canvas.save();

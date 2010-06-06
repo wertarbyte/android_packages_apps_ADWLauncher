@@ -1,7 +1,5 @@
 package com.android.launcher;
 
-import java.util.Calendar;
-
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -14,11 +12,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.util.Log;
+
+import java.util.Calendar;
 
 public class MyLauncherSettings extends PreferenceActivity implements OnPreferenceChangeListener {
     private static final String ALMOSTNEXUS_PREFERENCES = "launcher.preferences.almostnexus";
@@ -34,26 +32,26 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
         super.onCreate(savedInstanceState);
         getPreferenceManager().setSharedPreferencesName(ALMOSTNEXUS_PREFERENCES);
         addPreferencesFromResource(R.xml.launcher_settings);
-        dlgSeekBarPreference desktopScreens= (dlgSeekBarPreference) findPreference("desktopScreens");
+        DialogSeekBarPreference desktopScreens= (DialogSeekBarPreference) findPreference("desktopScreens");
         desktopScreens.setMin(2);
         desktopScreens.setOnPreferenceChangeListener(this);
-        dlgSeekBarPreference defaultScreen= (dlgSeekBarPreference) findPreference("defaultScreen");
+        DialogSeekBarPreference defaultScreen= (DialogSeekBarPreference) findPreference("defaultScreen");
         defaultScreen.setMin(1);
         defaultScreen.setMax(AlmostNexusSettingsHelper.getDesktopScreens(this)-1);
         defaultScreen.setOnPreferenceChangeListener(this);
         Preference drawerNew = (Preference) findPreference("drawerNew");
         drawerNew.setOnPreferenceChangeListener(this);
-        dlgSeekBarPreference columnsPortrait= (dlgSeekBarPreference) findPreference("drawerColumnsPortrait");
+        DialogSeekBarPreference columnsPortrait= (DialogSeekBarPreference) findPreference("drawerColumnsPortrait");
         columnsPortrait.setMin(1);
-        dlgSeekBarPreference rowsPortrait= (dlgSeekBarPreference) findPreference("drawerRowsPortrait");
+        DialogSeekBarPreference rowsPortrait= (DialogSeekBarPreference) findPreference("drawerRowsPortrait");
         rowsPortrait.setMin(1);
-        dlgSeekBarPreference columnsLandscape= (dlgSeekBarPreference) findPreference("drawerColumnsLandscape");
+        DialogSeekBarPreference columnsLandscape= (DialogSeekBarPreference) findPreference("drawerColumnsLandscape");
         columnsLandscape.setMin(1);
-        dlgSeekBarPreference rowsLandscape= (dlgSeekBarPreference) findPreference("drawerRowsLandscape");
+        DialogSeekBarPreference rowsLandscape= (DialogSeekBarPreference) findPreference("drawerRowsLandscape");
         rowsLandscape.setMin(1);
-        dlgSeekBarPreference zoomSpeed= (dlgSeekBarPreference) findPreference("zoomSpeed");
+        DialogSeekBarPreference zoomSpeed= (DialogSeekBarPreference) findPreference("zoomSpeed");
         zoomSpeed.setMin(300);
-        dlgSeekBarPreference uiScaleAB= (dlgSeekBarPreference) findPreference("uiScaleAB");
+        DialogSeekBarPreference uiScaleAB= (DialogSeekBarPreference) findPreference("uiScaleAB");
         uiScaleAB.setMin(1);
         Preference donateLink = (Preference) findPreference("donatePref");
         donateLink.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -69,7 +67,6 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 		});
         Preference uiHideLabels = (Preference) findPreference("uiHideLabels");
         uiHideLabels.setOnPreferenceChangeListener(this);
-        Preference mDateColorPref = findPreference("highlights_color");
         mContext=this;
     }
 	@Override
@@ -97,7 +94,7 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
 	}
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
 		if (preference.getKey().equals("desktopScreens")) {
-			dlgSeekBarPreference pref = (dlgSeekBarPreference) findPreference("defaultScreen");
+			DialogSeekBarPreference pref = (DialogSeekBarPreference) findPreference("defaultScreen");
 			pref.setMax((Integer) newValue+1);
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage(mMsg)

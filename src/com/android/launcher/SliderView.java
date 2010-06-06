@@ -1,32 +1,26 @@
 package com.android.launcher;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.SystemClock;
-import android.os.Vibrator;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.os.Vibrator;
+
+import java.util.ArrayList;
+
 public class SliderView extends ImageView {
 
     private static final int HORIZONTAL = 0; // as defined in attrs.xml
@@ -36,9 +30,6 @@ public class SliderView extends ImageView {
     private static final int STATE_NORMAL = 0;
     private static final int STATE_PRESSED = 1;
     private static final int STATE_ACTIVE = 2;
-
-    private static final long VIBRATE_SHORT = 30;
-    private static final long VIBRATE_LONG = 40;
 
     private static final int ANIM_DURATION = 250; // Time for most animations (in ms)
     private static final int ANIM_TARGET_TIME = 500; // Time to show targets (in ms)
@@ -50,7 +41,6 @@ public class SliderView extends ImageView {
     private boolean mAnimating=false;
 	private Rect mTmpRect;
 	private boolean mTracking;
-	private int mCurrentState;
 	private ArrayList<ImageView> mTargets;
 	private int mTargetDistance=50;
 	private Rect mTargetRect;
@@ -60,7 +50,6 @@ public class SliderView extends ImageView {
 	private int mPreviousX;
 	private int mPreviousY;
 	private int securityMargin=15;	
-	private Launcher mLauncher;
 	private long mTouchTime;
 	private boolean mSlidingEnabled=true;
 	public SliderView(Context context) {
@@ -227,7 +216,6 @@ public class SliderView extends ImageView {
   
     void setState(int state) {
         setPressed(state == STATE_PRESSED);
-        mCurrentState = state;
     }
     public void hideTarget() {
         if(mTargets!=null){
@@ -338,10 +326,7 @@ public class SliderView extends ImageView {
     private void createTargets(){
     	mTargets=new ArrayList<ImageView>();
     	FrameLayout p=(FrameLayout)getParent();
-    	final int l=getLeft();
-    	final int r=getRight();
-    	final int t=getTop();
-    	final int b=getBottom();
+
     	FrameLayout.LayoutParams lp=(FrameLayout.LayoutParams)getLayoutParams();
         final int horizontalGravity = lp.gravity & Gravity.HORIZONTAL_GRAVITY_MASK;
         final int verticalGravity = lp.gravity & Gravity.VERTICAL_GRAVITY_MASK;
@@ -446,9 +431,6 @@ public class SliderView extends ImageView {
 			}
 			animations.add(anim);
 		}
-    }
-    void setLauncher(Launcher launcher) {
-        mLauncher = launcher;
     }
     
 }

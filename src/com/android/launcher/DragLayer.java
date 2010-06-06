@@ -532,10 +532,10 @@ public class DragLayer extends FrameLayout implements DragController {
     	mListener.add(l);
     }
 
-    @SuppressWarnings({"UnusedDeclaration"})
     public void removeDragListener(DragListener l) {
     	mListener.remove(l);
     } 
+    
     /**
      * Specifies the view that must be ignored when looking for a drop target.
      *

@@ -16,29 +16,38 @@
 
 package com.android.launcher;
 
-import android.os.Bundle;
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.*;
+import android.content.res.Resources;
+import android.graphics.BlurMaskFilter;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Shader;
+import android.graphics.SweepGradient;
+import android.graphics.Typeface;
+import android.graphics.BlurMaskFilter.Blur;
+import android.graphics.Paint.Style;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.StateSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
-import android.widget.TextView;
-
-import android.graphics.BlurMaskFilter.Blur;
-import android.graphics.drawable.Drawable;
-import android.content.res.Resources;
-import android.graphics.Paint.Style;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
-import android.os.SystemClock;
-import android.util.StateSet;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 
 public class ColorPickerDialog extends Dialog {
@@ -114,19 +123,6 @@ public class ColorPickerDialog extends Dialog {
         private static final int CENTER_Y = 100;
         private static final int CENTER_RADIUS = 32;
 
-        private int floatToByte(float x) {
-            int n = java.lang.Math.round(x);
-            return n;
-        }
-        private int pinToByte(int n) {
-            if (n < 0) {
-                n = 0;
-            } else if (n > 255) {
-                n = 255;
-            }
-            return n;
-        }
-        
         public void setCenterColor(int color) {
             mCenterPaint.setColor(color);
             invalidate();
@@ -166,32 +162,7 @@ public class ColorPickerDialog extends Dialog {
             
             return Color.argb(a, r, g, b);
         }
-        
-        private int rotateColor(int color, float rad) {
-            float deg = rad * 180 / 3.1415927f;
-            int r = Color.red(color);
-            int g = Color.green(color);
-            int b = Color.blue(color);
-            
-            ColorMatrix cm = new ColorMatrix();
-            ColorMatrix tmp = new ColorMatrix();
-
-            cm.setRGB2YUV();
-            tmp.setRotate(0, deg);
-            cm.postConcat(tmp);
-            tmp.setYUV2RGB();
-            cm.postConcat(tmp);
-            
-            final float[] a = cm.getArray();
-
-            int ir = floatToByte(a[0] * r +  a[1] * g +  a[2] * b);
-            int ig = floatToByte(a[5] * r +  a[6] * g +  a[7] * b);
-            int ib = floatToByte(a[10] * r + a[11] * g + a[12] * b);
-            
-            return Color.argb(Color.alpha(color), pinToByte(ir),
-                              pinToByte(ig), pinToByte(ib));
-        }
-        
+               
         private static final float PI = 3.1415926f;
 
         @Override
@@ -380,7 +351,6 @@ public class ColorPickerDialog extends Dialog {
     
     static class TextSeekBarDrawable extends Drawable implements Runnable {
 		
-		private static final String TAG = "TextSeekBarDrawable";
 		private static final long DELAY = 50;
 		private String mText;
 		private Drawable mProgress;
@@ -490,7 +460,6 @@ public class ColorPickerDialog extends Dialog {
 	}
 	
 	static class ScrollAnimation extends Animation {
-		private static final String TAG = "ScrollAnimation";
 		private static final long DURATION = 750;
 		private float mFrom;
 		private float mTo;

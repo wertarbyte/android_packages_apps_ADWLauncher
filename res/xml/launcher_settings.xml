@@ -12,7 +12,7 @@
 			android:summary="@string/pref_summary_wallpaper_hack"
 			android:key="wallpaperHack" />
 		<CheckBoxPreference android:title="@string/pref_title_orientation_sensor"
-			android:defaultValue="true"
+			android:defaultValue="@bool/config_desktopRotation"
 			android:summary="@string/pref_summary_orientation_sensor"
 			android:key="desktopRotation" />
 		<CheckBoxPreference android:title="@string/pref_title_hide_statusbar"
@@ -20,74 +20,64 @@
 			android:summary="@string/pref_summary_hide_statusbar"
 			android:key="hideStatusbar" />
 
-		<com.android.launcher.dlgSeekBarPreference
+		<com.android.launcher.DialogSeekBarPreference
 			android:title="@string/pref_title_desktop_screens" android:summary="@string/pref_summary_desktop_screens"
-			android:dialogMessage="@string/pref_dialog_desktop_screen"
 			android:key="desktopScreens" android:defaultValue="3" android:max="5" />
-		<com.android.launcher.dlgSeekBarPreference
+		<com.android.launcher.DialogSeekBarPreference
 			android:title="@string/pref_title_default_screen" android:summary="@string/pref_summary_default_screen"
-			android:dialogMessage="@string/pref_dialog_default_screen"
 			android:key="defaultScreen" android:defaultValue="2" android:max="4" />
-		<com.android.launcher.dlgSeekBarPreference
+		<com.android.launcher.DialogSeekBarPreference
 			android:title="@string/pref_title_desktop_scrolling_speed"
 			android:summary="@string/pref_summary_desktop_scrolling_speed"
-			android:dialogMessage="@string/pref_dialog_desktop_scrolling_speed"
-			android:key="desktopSpeed" android:defaultValue="750"
+			android:key="desktopSpeed" android:defaultValue="@integer/config_desktopSpeed"
 			android:max="2000" />
-		<com.android.launcher.dlgSeekBarPreference
+		<com.android.launcher.DialogSeekBarPreference
 			android:title="@string/pref_title_desktop_overshoot"
 			android:summary="@string/pref_summary_desktop_overshoot"
-			android:dialogMessage="@string/pref_dialog_desktop_overshoot"
-			android:key="desktopBounce" android:defaultValue="40"
+			android:key="desktopBounce" android:defaultValue="@integer/config_desktopBounce"
 			android:max="100" />
 	</PreferenceScreen>
 	<PreferenceScreen
 		android:key="drawerPrerefences"
 		android:title="@string/pref_title_drawer_settings"
 		android:summary="@string/pref_summary_drawer_settings">
-		<com.android.launcher.dlgSeekBarPreference
+		<com.android.launcher.DialogSeekBarPreference
 			android:title="@string/pref_title_zoom_effect_speed"
 			android:summary="@string/pref_summary_zoom_effect_speed"
-			android:dialogMessage="@string/pref_dialog_zoom_effect_speed"
 			android:key="zoomSpeed" android:defaultValue="400"
 			android:max="1700" />
 		<CheckBoxPreference android:title="@string/pref_title_new_drawer"
-			android:defaultValue="true"
+			android:defaultValue="@bool/config_drawerNew"
 			android:summary="@string/pref_summary_new_drawer"
 			android:key="drawerNew" />
 		<CheckBoxPreference android:title="@string/pref_title_animated_drawer"
 			android:defaultValue="true"
 			android:summary="@string/pref_summary_animated_drawer"
 			android:key="drawerAnimated" />
-		<com.android.launcher.dlgSeekBarPreference
+		<com.android.launcher.DialogSeekBarPreference
 			android:title="@string/pref_title_drawer_background_alpha"
 			android:summary="@string/pref_summary_drawer_background_alpha"
-			android:dialogMessage="@string/pref_dialog_drawer_background_alpha"
-			android:key="drawerAlpha" android:defaultValue="255"
+			android:key="drawerAlpha" android:defaultValue="@integer/config_drawerAlpha"
 			android:max="255" />
-		<com.android.launcher.dlgSeekBarPreference
+		<com.android.launcher.DialogSeekBarPreference
 			android:title="@string/pref_title_drawer_columns_portrait"
 			android:summary="@string/pref_summary_drawer_columns_portrait"
-			android:dialogMessage="@string/pref_dialog_drawer_columns_portrait"
-			android:key="drawerColumnsPortrait" android:defaultValue="3"
+			android:key="drawerColumnsPortrait" android:defaultValue="@integer/config_drawerColumnsPortrait"
 			android:max="5" />
-		<com.android.launcher.dlgSeekBarPreference
+		<com.android.launcher.DialogSeekBarPreference
 			android:title="@string/pref_title_drawer_rows_portrait"
 			android:summary="@string/pref_summary_drawer_rows_portrait"
-			android:dialogMessage="@string/pref_dialog_drawer_rows_portrait"
-			android:key="drawerRowsPortrait" android:defaultValue="3"
+			android:key="drawerRowsPortrait" android:defaultValue="@integer/config_drawerRowsPortrait"
 			android:max="5" />
-		<com.android.launcher.dlgSeekBarPreference
+		<com.android.launcher.DialogSeekBarPreference
 			android:title="@string/pref_title_drawer_columns_landscape"
 			android:summary="@string/pref_summary_drawer_columns_landscape"
-			android:dialogMessage="@string/pref_dialog_drawer_columns_landscape"
-			android:key="drawerColumnsLandscape" android:defaultValue="4"
+			android:key="drawerColumnsLandscape" android:defaultValue="@integer/config_drawerColumnsLandscape"
 			android:max="7" />
-		<com.android.launcher.dlgSeekBarPreference
+		<com.android.launcher.DialogSeekBarPreference
 			android:title="@string/pref_title_drawer_rows_landscape"
 			android:summary="@string/pref_summary_drawer_rows_landscape"
-			android:dialogMessage="@string/pref_dialog_drawer_rows_landscape"
-			android:key="drawerRowsLandscape" android:defaultValue="3"
+			android:key="drawerRowsLandscape" android:defaultValue="@integer/config_drawerRowsLandscape"
 			android:max="4" />
 	</PreferenceScreen>
 	<PreferenceScreen
@@ -111,7 +101,7 @@
 		  android:key="homeBinding"
 		  android:title="@string/pref_title_home_button_binding"
 		  android:summary="@string/pref_summary_home_button_binding"
-		  android:defaultValue="3"
+		  android:defaultValue="@string/config_homeBinding"
 		  android:entryValues="@array/menu_binding_values"
 		  android:entries="@array/menu_binding_entries"
 		  />
@@ -140,10 +130,9 @@
 			android:defaultValue="false"
 			android:summary="@string/pref_summary_tint_ab"
 			android:key="uiTint" />
-		<com.android.launcher.dlgSeekBarPreference
+		<com.android.launcher.DialogSeekBarPreference
 			android:title="@string/pref_title_ab_scale_factor"
 			android:summary="@string/pref_summary_ab_scale_factor"
-			android:dialogMessage="@string/pref_dialog_ab_scale_factor"
 			android:key="uiScaleAB" android:defaultValue="6"
 			android:max="7" />
 		<CheckBoxPreference android:title="@string/pref_title_hide_allapps_ab"
