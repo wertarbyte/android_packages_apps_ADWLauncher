@@ -65,6 +65,7 @@
 			android:key="drawerColumnsPortrait" android:defaultValue="@integer/config_drawerColumnsPortrait"
 			android:max="5" />
 		<com.android.launcher.DialogSeekBarPreference
+			android:dependency="drawerNew"
 			android:title="@string/pref_title_drawer_rows_portrait"
 			android:summary="@string/pref_summary_drawer_rows_portrait"
 			android:key="drawerRowsPortrait" android:defaultValue="@integer/config_drawerRowsPortrait"
@@ -75,6 +76,7 @@
 			android:key="drawerColumnsLandscape" android:defaultValue="@integer/config_drawerColumnsLandscape"
 			android:max="7" />
 		<com.android.launcher.DialogSeekBarPreference
+			android:dependency="drawerNew"
 			android:title="@string/pref_title_drawer_rows_landscape"
 			android:summary="@string/pref_summary_drawer_rows_landscape"
 			android:key="drawerRowsLandscape" android:defaultValue="@integer/config_drawerRowsLandscape"
@@ -147,9 +149,18 @@
 			android:title="@string/pref_title_hide_icon_labels"
 			android:summary="@string/pref_summary_hide_icon_labels"
 			android:defaultValue="false" />
+		<CheckBoxPreference android:key="uiNewSelectors"
+			android:title="@string/pref_title_new_selectors"
+			android:summary="@string/pref_summary_new_selectors"
+			android:defaultValue="true" />
 	    <Preference android:key="highlights_color"
 			android:title="@string/pref_title_icon_highlights"
 			android:summary="@string/pref_summary_icon_highlights"
+	        android:defaultValue="-16777216" />
+	    <Preference android:key="highlights_color_focus"
+	    	android:dependency="uiNewSelectors"
+			android:title="@string/pref_title_icon_highlights_focus"
+			android:summary="@string/pref_summary_icon_highlights_focus"
 	        android:defaultValue="-16777216" />
 
 	</PreferenceScreen>

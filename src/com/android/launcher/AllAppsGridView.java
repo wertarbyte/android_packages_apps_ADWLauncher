@@ -106,7 +106,7 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
 
     void setLauncher(Launcher launcher) {
         mLauncher = launcher;
-        setSelector(new IconHighlights(mLauncher));
+        setSelector(IconHighlights.getDrawable(mLauncher));
     }
     /**
      * ADW: easing functions for animation

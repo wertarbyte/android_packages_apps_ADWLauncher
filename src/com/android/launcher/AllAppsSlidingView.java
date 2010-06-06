@@ -209,7 +209,6 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 					setVisibility(View.GONE);
 					mLauncher.getWorkspace().clearChildrenCache();
 				}else{
-					Log.d("AllApps","Who tracks this?");
 					isAnimating=false;
 					mBgAlpha=mTargetAlpha;
 				}
@@ -230,7 +229,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     
     void setLauncher(Launcher launcher) {
         mLauncher = launcher;
-        setSelector(new IconHighlights(mLauncher));
+        setSelector(IconHighlights.getDrawable(mLauncher));
     }
 	@Override
 	protected void onScrollChanged(int l, int t, int oldl, int oldt) {
@@ -1071,10 +1070,9 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 
     private void drawSelector(Canvas canvas) {
         if (shouldShowSelector() && mSelectorRect != null && !mSelectorRect.isEmpty()) {
-            Log.d("APPPSSS","DRAWME!!");
         	final Drawable selector = mSelector;
             selector.setBounds(mSelectorRect);
-            selector.setState(PRESSED_ENABLED_STATE_SET);
+            selector.setState(getDrawableState());
             selector.draw(canvas);
         }
     }
@@ -1461,6 +1459,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 
                     if (!mDataChanged) {
                         child.setPressed(true);
+                        setPressed(true);
                         setSelection(mCheckTapPosition);
                         positionSelector(child);
                         final int longPressTimeout = ViewConfiguration.getLongPressTimeout();
@@ -1812,6 +1811,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 		}
 	}
 	public void close(boolean animate){
+		setPressed(false);
     	if(animate){
     		findCurrentHolder();
     		HolderLayout holder=(HolderLayout) getChildAt(mCurrentHolder);
