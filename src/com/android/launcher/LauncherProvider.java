@@ -525,9 +525,14 @@ public class LauncherProvider extends ContentProvider {
 
                     TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.Favorite);
 
-                    values.clear();                    
-                    values.put(LauncherSettings.Favorites.CONTAINER,
-                            LauncherSettings.Favorites.CONTAINER_DESKTOP);
+                    values.clear();          
+                    String container = a.getString(R.styleable.Favorite_container);
+                    if (container == null) {
+                        values.put(LauncherSettings.Favorites.CONTAINER, LauncherSettings.Favorites.CONTAINER_DESKTOP);
+                    } else {
+                        values.put(LauncherSettings.Favorites.CONTAINER, container);
+                    }
+
                     values.put(LauncherSettings.Favorites.SCREEN,
                             a.getString(R.styleable.Favorite_screen));
                     values.put(LauncherSettings.Favorites.CELLX,

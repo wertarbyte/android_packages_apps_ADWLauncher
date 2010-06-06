@@ -88,11 +88,12 @@
         <attr name="icon" format="reference" />  
         <attr name="title" format="reference" />
         <attr name="uri" format="string" />
+        <attr name="container" format="string" />
     </declare-styleable>
     <declare-styleable name="AllAppsSlidingView">
         <attr name="texture" />
         <attr name="pager_height" format="dimension" />
-	<attr name="listSelector" format="reference"  />
+        <attr name="listSelector" format="reference"  />
     </declare-styleable>
     <declare-styleable name="DockBar">
         <attr name="handle" format="reference"  />
@@ -115,8 +116,8 @@
     </declare-styleable>
     <declare-styleable name="MiniLauncher">
         <attr name="orientation">
-        	<enum name="vertical" value="0" />
-        	<enum name="horizontal" value="1" />
+            <enum name="vertical" value="0" />
+            <enum name="horizontal" value="1" />
         </attr>
         <attr name="cellWidth"  />
         <attr name="cellHeight"  />
