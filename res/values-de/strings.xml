@@ -183,7 +183,7 @@
     <string name="pref_title_icon_highlights">Farbe Markierung</string>
     <string name="pref_summary_icon_highlights">Farbe für markierte Icons auswählen</string>
 
-    <string name="pref_dialog_title_color_picker">Farne aufnehmen.</string>
+    <string name="pref_dialog_title_color_picker">Farbe aufnehmen.</string>
     <string name="pref_dialog_message_color_picker">Zum Bestätigen auf den farbigen Mittelpunkt tippen.\nDrücke Zurück zum Abbrechen.</string>
     <string name="pref_dialog_color_picker_alpha">Tranzparenz</string>
 </resources>
