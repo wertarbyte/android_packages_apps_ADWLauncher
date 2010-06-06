@@ -180,8 +180,12 @@
     <string name="pref_summary_drawer_background_alpha">Einstellen der Transparenz für den schwarzen Hintergrund des Drawers</string>
     <string name="pref_dialog_drawer_background_alpha">Transparenz für Drawer-Hintergrund</string>
 
-    <string name="pref_title_icon_highlights">Farbe Markierung</string>
-    <string name="pref_summary_icon_highlights">Hintergrund für markierte Icons auswählen</string>
+    <string name="pref_title_icon_highlights">Farbe: Auswahl gedrückt</string>
+    <string name="pref_summary_icon_highlights">Stelle Farbe für den Icon-Hintergrund bei Auswahl ein</string>
+    <string name="pref_title_icon_highlights_focus">Farbe: Fokusiert</string>
+    <string name="pref_summary_icon_highlights_focus">Stelle Farbe für den Icon-Hintergrund bei Fokusierung ein</string>
+    <string name="pref_title_new_selectors">Neue Icon-Auswahl</string>
+    <string name="pref_summary_new_selectors">Ausschalten für alte Methode</string>
 
     <string name="pref_dialog_title_color_picker">Farbe aufnehmen</string>
     <string name="pref_dialog_message_color_picker">Zum Bestätigen auf den farbigen Mittelpunkt tippen.\nDrücke ZURÜCK zum Abbrechen.</string>
