@@ -1813,6 +1813,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 		}
 	}
 	public void close(boolean animate){
+		setPressed(false);
     	if(animate){
     		findCurrentHolder();
     		HolderLayout holder=(HolderLayout) getChildAt(mCurrentHolder);
