@@ -25,6 +25,27 @@
     <integer name="config_drawerRowsPortrait">3</integer>
     <integer name="config_drawerColumnsLandscape">4</integer>
     <integer name="config_drawerRowsLandscape">3</integer>
-
     <string name="config_homeBinding">3</string>
+    <bool name="config_drawerAnimated">true</bool>
+    <!-- config_desktopScreens min value is 2, so it will add 2 to whatever value you set here -->
+    <integer name="config_desktopScreens">3</integer>
+    <integer name="config_defaultScreen">2</integer>
+    <bool name="config_hideStatusbar">false</bool>
+    <bool name="config_previewsNew">true</bool>
+    <bool name="config_previewsFullScreen">true</bool>
+    <bool name="config_uiDots">true</bool>
+    <bool name="config_uiDockbar">true</bool>
+    <bool name="config_uiCloseDockbar">false</bool>
+    <bool name="config_uiLAB">true</bool>
+    <bool name="config_uiRAB">true</bool>
+    <bool name="config_uiTint">false</bool>
+    <bool name="config_uiAppsBg">false</bool>
+    <bool name="config_uiABBg">false</bool>
+    <!-- config_zoomSpeed min is 300, so it will add 300 to whatever value you set here -->
+    <integer name="config_zoomSpeed">400</integer>
+    <!-- config_uiScaleAB is a float value between 0.1 and 0.8. Set here the default .X-->
+    <integer name="config_uiScaleAB">6</integer>
+    <bool name="config_uiHideLabels">false</bool>
+    <bool name="config_wallpaperHack">true</bool>
+    <integer name="config_highlights_color">0xffff6600</integer>
 </resources>
