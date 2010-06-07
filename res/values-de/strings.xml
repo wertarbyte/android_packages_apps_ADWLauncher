@@ -79,8 +79,8 @@
     <string name="pref_summary_hide_statusbar">Obere Statuszeile ausblenden</string>
 
     <string name="pref_title_desktop_screens">Anzahl Bildschirme</string>
-    <string name="pref_summary_desktop_screens">Anzahl zu verwendener Bildschirme auswählen</string>
-    <string name="pref_dialog_desktop_screen">Anzahl zu verwendener Bildschirme</string>
+    <string name="pref_summary_desktop_screens">Anzahl zu verwendender Bildschirme auswählen</string>
+    <string name="pref_dialog_desktop_screen">Anzahl zu verwendender Bildschirme</string>
 
     <string name="pref_title_default_screen">Standardbildschirm</string>
     <string name="pref_summary_default_screen">Den Standardbildschirm auswählen</string>
@@ -91,8 +91,8 @@
     <string name="pref_dialog_desktop_scrolling_speed">Kleine Werte für schnellere Wechsel</string>
 
     <string name="pref_title_desktop_overshoot">Überschwingen</string>
-    <string name="pref_summary_desktop_overshoot"> Überschwingen beim Wechsel des Bildschirms einstellen</string>
-    <string name="pref_dialog_desktop_overshoot">Zum Ausschalten auf Null setzen</string>
+    <string name="pref_summary_desktop_overshoot">Überschwingen beim Wechsel des Bildschirms einstellen</string>
+    <string name="pref_dialog_desktop_overshoot">Überschwingen. Zum Ausschalten auf Null setzen</string>
 
     <!-- Drawer Settings -->
     <string name="pref_title_drawer_settings">Drawer</string>
@@ -109,29 +109,29 @@
     <string name="pref_summary_animated_drawer">Auswählen, ob Animationen im Drawer angezeigt werden sollen</string>
 
     <string name="pref_title_drawer_columns_portrait">Aufrecht: Spalten</string>
-    <string name="pref_summary_drawer_columns_portrait">Anzahl der Spalten im Drawer im Portrait-Modus wählen</string>
+    <string name="pref_summary_drawer_columns_portrait">Anzahl der Spalten des Drawers im Portrait-Modus wählen</string>
     <string name="pref_dialog_drawer_columns_portrait">Anzahl der Spalten im Portrait-Modus</string>
 
     <string name="pref_title_drawer_rows_portrait">Aufrecht: Reihen</string>
-    <string name="pref_summary_drawer_rows_portrait">Anzahl der Reihen im Drawer im Portrait-Modus wählen</string>
+    <string name="pref_summary_drawer_rows_portrait">Anzahl der Reihen des Drawers im Portrait-Modus wählen</string>
     <string name="pref_dialog_drawer_rows_portrait">Anzahl der Reihen im Portrait-Modus</string>
 
     <string name="pref_title_drawer_columns_landscape">Quer: Spalten</string>
-    <string name="pref_summary_drawer_columns_landscape">Anzahl der Spalten im Drawer im Landschafts-Modus wählen</string>
+    <string name="pref_summary_drawer_columns_landscape">Anzahl der Spalten des Drawers im Landschafts-Modus wählen</string>
     <string name="pref_dialog_drawer_columns_landscape">Anzahl der Spalten im Landschafts-Modus</string>
 
     <string name="pref_title_drawer_rows_landscape">Quer: Reihen</string>
-    <string name="pref_summary_drawer_rows_landscape">Anzahl der Reihen im Drawer im Landschafts-Modus wählen</string>
+    <string name="pref_summary_drawer_rows_landscape">Anzahl der Reihen des Drawers im Landschafts-Modus wählen</string>
     <string name="pref_dialog_drawer_rows_landscape">Anzahl der Reihen im Landschafts-Modus</string>
 
     <!-- Previews preferences -->
-    <string name="pref_title_previews_preferences">Vorschauen</string>
-    <string name="pref_summary_previews_preferences">Einstellungen für die Vorschauen der Bildschirme</string>
+    <string name="pref_title_previews_preferences">Bildschirm-Vorschauen</string>
+    <string name="pref_summary_previews_preferences">Einstellungen für die Vorschauen mit Schnellzugriff auf die Bildschirme</string>
 
     <string name="pref_title_sense_previews">Sense Vorschauen</string>
     <string name="pref_summary_sense_previews">Vorschauen im Aussehen von HTC Sense-Oberflächen verwenden</string>
 
-    <string name="pref_title_clean_screen_mode">Nur Vorschauen</string>
+    <string name="pref_title_clean_screen_mode">Vorschauen allein</string>
     <string name="pref_summary_clean_screen_mode">Home-Icons und Widgets ausblenden, wenn Vorschauen geöffnet werden</string>
 
     <!-- Button preferences -->
@@ -159,7 +159,7 @@
     <string name="pref_title_tint_ab">Graue Aktionstasten</string>
     <string name="pref_summary_tint_ab">Aktionstasten-Icons mit grauen Shilouetten verschleiern</string>
 
-    <string name="pref_title_ab_scale_factor">Größe der Aktionstasten</string>
+    <string name="pref_title_ab_scale_factor">Größe Aktionstasten</string>
     <string name="pref_summary_ab_scale_factor">Skaliere die Größe der Aktionstasten-Icons</string>
     <string name="pref_dialog_ab_scale_factor">Größenfaktor der Aktionstasten-Icons</string>
 
