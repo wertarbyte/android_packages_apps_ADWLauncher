@@ -52,8 +52,8 @@
         launcher:y="3" />
 
      <favorite
-        launcher:packageName="com.android.gallery"
-        launcher:className="com.android.camera.GalleryPicker"
+        launcher:packageName="com.cooliris.media"
+        launcher:className="com.cooliris.media.Gallery"
         launcher:screen="1"
         launcher:x="2"
         launcher:y="3" />
@@ -99,7 +99,9 @@
         launcher:className="com.android.settings.widget.SettingsAppWidgetProvider"
         launcher:screen="3"
         launcher:x="0"
-        launcher:y="0" />
+        launcher:y="0"
+        launcher:spanX="4"
+        launcher:spanY="1" />
  
     <favorite
         launcher:packageName="com.google.android.gm"
