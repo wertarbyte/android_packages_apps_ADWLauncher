@@ -43,12 +43,16 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import demo.multitouch.controller.MultiTouchController;
+import demo.multitouch.controller.MultiTouchController.MultiTouchObjectCanvas;
+import demo.multitouch.controller.MultiTouchController.PointInfo;
+import demo.multitouch.controller.MultiTouchController.PositionAndScale;
 /**
  * The workspace is a wide area with a wallpaper and a finite number of screens. Each
  * screen contains a number of icons, folders or widgets the user can interact with.
  * A workspace is meant to be used with a fixed width only.
  */
-public class Workspace extends ViewGroup implements DropTarget, DragSource, DragScroller {
+public class Workspace extends ViewGroup implements DropTarget, DragSource, DragScroller, MultiTouchObjectCanvas<Object> {
     private static final int INVALID_SCREEN = -1;
     
     /**
@@ -138,12 +142,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 	private boolean isAnimating=false;
 	private long startTime;
 	private int mStatus=SENSE_CLOSED;
-	private float mScaleFactor;
 	private int mAnimationDuration=400;
 	private int[][] distro={{1},{2},{1,2},{2,2},{2,1,2},{2,2,2},{2,3,2}};
 	private int maxPreviewWidth;
 	private int maxPreviewHeight;
-
+	//Wysie: Multitouch controller
+	private MultiTouchController<Object> multiTouchController;
+	// Wysie: Values taken from CyanogenMod (Donut era) Browser
+	private static final double ZOOM_SENSITIVITY = 1.6;
+	private static final double ZOOM_LOG_BASE_INV = 1.0 / Math.log(2.0 / ZOOM_SENSITIVITY);
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -186,6 +193,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
+        //Wysie: Use MultiTouchController only for multitouch events
+        multiTouchController = new MultiTouchController<Object>(this, getResources(), false); 
     }
 
     @Override
@@ -672,11 +681,14 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     public boolean onInterceptTouchEvent(MotionEvent ev) {
     	if(mSensemode){
     		if(ev.getAction()==MotionEvent.ACTION_DOWN){
-    			Log.d("SENSE","TRY TO CLICK");
-    			findClickedPReview(ev.getX(),ev.getY());
+    			findClickedPreview(ev.getX(),ev.getY());
     		}
     		return true;
     	}
+        //Wysie: If multitouch event is detected
+        if (multiTouchController.onTouchEvent(ev)) {
+            return false;
+        }
         if (mLocked || mLauncher.isAllAppsVisible()) {
             return true;
         }
@@ -803,6 +815,10 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        //Wysie: If multitouch event is detected
+        /*if (multiTouchController.onTouchEvent(ev)) {
+            return false;
+        }*/
         if (mLocked || mLauncher.isAllAppsVisible()) {
             return true;
         }
@@ -1596,14 +1612,50 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
         return new RectF();
 	}
-	private void findClickedPReview(float x, float y){
+	private void findClickedPreview(float x, float y){
 		for(int i=0;i<getChildCount();i++){
 			RectF tmp=getScaledChild(getChildAt(i));
 			if (tmp.contains(x+getScrollX(), y+getScrollY())){
 		        mLauncher.dismissPreviews();
 		        snapToScreen(i);
-		        invalidate();
+		        postInvalidate();
 			}
 		}
+	}
+	/**
+	 * Wysie: Multitouch methods/events
+	 */
+	@Override
+	public Object getDraggableObjectAtPoint(PointInfo pt) {
+		return this;
+	}
+
+	@Override
+	public void getPositionAndScale(Object obj,
+			PositionAndScale objPosAndScaleOut) {
+		objPosAndScaleOut.set(0.0f, 0.0f, 1.0f);
+	}
+
+	@Override
+	public void selectObject(Object obj, PointInfo pt) {
+		if(mStatus!=SENSE_OPEN){
+			mAllowLongPress=false;
+		}else{
+			mAllowLongPress=true;
+		}
+	}
+
+	@Override
+	public boolean setPositionAndScale(Object obj,
+			PositionAndScale update, PointInfo touchPoint) {
+        float newRelativeScale = update.getScale();
+        int targetZoom = (int) Math.round(Math.log(newRelativeScale) * ZOOM_LOG_BASE_INV);
+        // Only works for pinch in
+        if (targetZoom < 0 && mStatus==SENSE_CLOSED) { // Change to > 0 for pinch out, != 0 for both pinch in and out.
+        	mLauncher.showPreviews(mLauncher.getDrawerHandle(), 0, getChildCount());
+        	invalidate();
+            return true;
+        }
+        return false;
 	}
 }
