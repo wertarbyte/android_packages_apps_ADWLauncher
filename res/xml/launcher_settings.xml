@@ -59,6 +59,10 @@
 			android:summary="@string/pref_summary_drawer_background_alpha"
 			android:key="drawerAlpha" android:defaultValue="@integer/config_drawerAlpha"
 			android:max="255" />
+		<Preference android:key="drawer_color"
+			android:title="@string/pref_title_drawer_color"
+			android:summary="@string/pref_summary_drawer_color"
+	        android:defaultValue="-16777216" />
 		<com.android.launcher.DialogSeekBarPreference
 			android:title="@string/pref_title_drawer_columns_portrait"
 			android:summary="@string/pref_summary_drawer_columns_portrait"
