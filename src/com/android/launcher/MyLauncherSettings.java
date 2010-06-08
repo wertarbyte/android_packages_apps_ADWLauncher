@@ -21,14 +21,17 @@ import java.util.Calendar;
 public class MyLauncherSettings extends PreferenceActivity implements OnPreferenceChangeListener {
     private static final String ALMOSTNEXUS_PREFERENCES = "launcher.preferences.almostnexus";
     private boolean shouldRestart=false;
-    private static final String FROYOMSG="Changing this setting will make the Launcher restart itself";
-    private static final String NORMALMSG="Changing this setting will make the Launcher restart itself";
+//    private static final String FROYOMSG="Changing this setting will make the Launcher restart itself";
+//    private static final String NORMALMSG="Changing this setting will make the Launcher restart itself";
     private String mMsg;
     private Context mContext;
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
 		//TODO: ADW should i read stored values after addPreferencesFromResource?
-		mMsg=(Build.VERSION.SDK_INT>=8)?FROYOMSG:NORMALMSG;
+        if (Build.VERSION.SDK_INT >= 8)
+            mMsg = getString(R.string.pref_message_restart_froyo);
+        else
+            mMsg = getString(R.string.pref_message_restart_normal);
         super.onCreate(savedInstanceState);
         getPreferenceManager().setSharedPreferencesName(ALMOSTNEXUS_PREFERENCES);
         addPreferencesFromResource(R.xml.launcher_settings);

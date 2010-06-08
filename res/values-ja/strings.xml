@@ -191,6 +191,9 @@
     <string name="pref_dialog_title_color_picker">色を選択</string>
     <string name="pref_dialog_message_color_picker">中央をタップして確定\n戻るボタンでキャンセル</string>
     <string name="pref_dialog_color_picker_alpha">不透明度</string>
+    <string name="pref_message_restart_normal">この設定を変更するとランチャーは再起動されます。</string>
+    <string name="pref_message_restart_froyo">この設定を変更するとランチャーは再起動されます。</string>
+
 
 </resources>
 
