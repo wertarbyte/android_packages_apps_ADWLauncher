@@ -2741,21 +2741,23 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     	}
     }
     public void dismissPreviews(){
-    	if(newPreviews){
-	    	hideDesktop(false);
-	        showingPreviews=false;
-	        mWorkspace.unlock();
-	        mWorkspace.invalidate();
-	        //mDesktopLocked=false;
-	        mWorkspace.openSense(false);
-    	}else{
-	    	dismissPreview(mNextView);
-	    	dismissPreview(mPreviousView);
-	    	dismissPreview(mHandleView);
-	        for (int i = 0; i < mWorkspace.getChildCount(); i++) {
-	            View cell = mWorkspace.getChildAt(i);
-	            cell.setDrawingCacheEnabled(false);
-	        }
+    	if(showingPreviews){
+	    	if(newPreviews){
+		    	hideDesktop(false);
+		        showingPreviews=false;
+		        mWorkspace.unlock();
+		        mWorkspace.invalidate();
+		        //mDesktopLocked=false;
+		        mWorkspace.openSense(false);
+	    	}else{
+		    	dismissPreview(mNextView);
+		    	dismissPreview(mPreviousView);
+		    	dismissPreview(mHandleView);
+		        for (int i = 0; i < mWorkspace.getChildCount(); i++) {
+		            View cell = mWorkspace.getChildAt(i);
+		            cell.setDrawingCacheEnabled(false);
+		        }
+	    	}
     	}
     }
     private void dismissPreview(final View v) {

@@ -680,7 +680,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-    	if(mSensemode){
+    	if(mStatus==SENSE_OPEN){
     		if(ev.getAction()==MotionEvent.ACTION_DOWN){
     			findClickedPreview(ev.getX(),ev.getY());
     		}
