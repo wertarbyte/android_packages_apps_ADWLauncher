@@ -20,14 +20,17 @@ import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -125,6 +128,22 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private int mScrollingSpeed=600;
     //ADW: bounce scroll
     private int mScrollingBounce=50;
+    //ADW: sense zoom constants
+	private static final int SENSE_OPENING = 1;
+	private static final int SENSE_CLOSING = 2;
+	private static final int SENSE_OPEN = 3;
+	private static final int SENSE_CLOSED = 4;
+    //ADW: sense zoom variables
+	private boolean mSensemode=false;
+	private boolean isAnimating=false;
+	private long startTime;
+	private int mStatus=SENSE_CLOSED;
+	private float mScaleFactor;
+	private int mAnimationDuration=400;
+	private int[][] distro={{1},{2},{1,2},{2,2},{2,1,2},{2,2,2},{2,3,2}};
+	private int maxPreviewWidth;
+	private int maxPreviewHeight;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -162,7 +181,8 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         mScroller = new CustomScroller(getContext(), new ElasticInterpolator(5f));
         mCurrentScreen = mDefaultScreen;
         Launcher.setScreen(mCurrentScreen);
-
+        mPaint=new Paint();
+        mPaint.setDither(false);
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
@@ -416,7 +436,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     
     @Override
     public void computeScroll() {
-        if (mScroller.computeScrollOffset()) {
+        if (mScroller.computeScrollOffset() ||mStatus==SENSE_CLOSING) {
             scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             if(lwpSupport)updateWallpaperOffset();
             postInvalidate();
@@ -457,37 +477,62 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         	}
     		canvas.drawBitmap(mWallpaperDrawable.getBitmap(), x, (getBottom() - mWallpaperHeight) / 2, mPaint);
         }
-        // If the all apps drawer is open and the drawing region for the workspace
-        // is contained within the drawer's bounds, we skip the drawing. This requires
-        // the drawer to be fully opaque.
-        if((mLauncher.isAllAppsVisible()) || mLauncher.isFullScreenPreviewing()){
-        	return;
-        }
-        // ViewGroup.dispatchDraw() supports many features we don't need:
-        // clip to padding, layout animation, animation listener, disappearing
-        // children, etc. The following implementation attempts to fast-track
-        // the drawing dispatch by drawing only what we know needs to be drawn.
-
-        boolean fastDraw = mTouchState != TOUCH_STATE_SCROLLING && mNextScreen == INVALID_SCREEN;
-        // If we are not scrolling or flinging, draw only the current screen
-        if (fastDraw) {
-            drawChild(canvas, getChildAt(mCurrentScreen), getDrawingTime());
-        } else {
-            final long drawingTime = getDrawingTime();
-            // If we are flinging, draw only the current screen and the target screen
-            if (mNextScreen >= 0 && mNextScreen < getChildCount() &&
-                    Math.abs(mCurrentScreen - mNextScreen) == 1) {
-                drawChild(canvas, getChildAt(mCurrentScreen), drawingTime);
-                drawChild(canvas, getChildAt(mNextScreen), drawingTime);
-            } else {
-                // If we are scrolling, draw all of our children
-                final int count = getChildCount();
-                for (int i = 0; i < count; i++) {
-                    drawChild(canvas, getChildAt(i), drawingTime);
-                }
+        if(!mSensemode){
+	        // If the all apps drawer is open and the drawing region for the workspace
+	        // is contained within the drawer's bounds, we skip the drawing. This requires
+	        // the drawer to be fully opaque.
+	        if((mLauncher.isAllAppsVisible()) || mLauncher.isFullScreenPreviewing()){
+	        	return;
+	        }
+	        // ViewGroup.dispatchDraw() supports many features we don't need:
+	        // clip to padding, layout animation, animation listener, disappearing
+	        // children, etc. The following implementation attempts to fast-track
+	        // the drawing dispatch by drawing only what we know needs to be drawn.
+	
+	        boolean fastDraw = mTouchState != TOUCH_STATE_SCROLLING && mNextScreen == INVALID_SCREEN;
+	        // If we are not scrolling or flinging, draw only the current screen
+	        if (fastDraw) {
+	            drawChild(canvas, getChildAt(mCurrentScreen), getDrawingTime());
+	        } else {
+	            final long drawingTime = getDrawingTime();
+	            // If we are flinging, draw only the current screen and the target screen
+	            if (mNextScreen >= 0 && mNextScreen < getChildCount() &&
+	                    Math.abs(mCurrentScreen - mNextScreen) == 1) {
+	                drawChild(canvas, getChildAt(mCurrentScreen), drawingTime);
+	                drawChild(canvas, getChildAt(mNextScreen), drawingTime);
+	            } else {
+	                // If we are scrolling, draw all of our children
+	                final int count = getChildCount();
+	                for (int i = 0; i < count; i++) {
+	                    drawChild(canvas, getChildAt(i), drawingTime);
+	                }
+	            }
+	        }
+        }else{
+    		long currentTime;
+    		if(startTime==0){
+    			startTime=SystemClock.uptimeMillis();
+    			currentTime=0;
+    		}else{
+    			currentTime=SystemClock.uptimeMillis()-startTime;
+    		}
+    		if(currentTime>=mAnimationDuration){
+    			isAnimating=false;
+    			if(mStatus==SENSE_OPENING){
+    				mStatus=SENSE_OPEN;
+    			}else if(mStatus==SENSE_CLOSING){
+    				mStatus=SENSE_CLOSED;
+    				mSensemode=false;
+    				postInvalidate();
+    			}
+    		}else{
+    			postInvalidate();
+    		}
+            final int count = getChildCount();
+            for (int i = 0; i < count; i++) {
+                drawChild(canvas, getChildAt(i), getDrawingTime());
             }
         }
-
         if (restore) {
             canvas.restore();
         }
@@ -531,6 +576,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             if(lwpSupport)updateWallpaperOffset(width * (getChildCount() - 1));
             mFirstLayout = false;
         }
+    	int max = 3;
+        int aW = getMeasuredWidth();
+        float w = aW / max;
+        maxPreviewWidth=(int) w;
+        maxPreviewHeight=(int) (getMeasuredHeight()*(w/getMeasuredWidth()));
     }
 
     @Override
@@ -620,6 +670,13 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+    	if(mSensemode){
+    		if(ev.getAction()==MotionEvent.ACTION_DOWN){
+    			Log.d("SENSE","TRY TO CLICK");
+    			findClickedPReview(ev.getX(),ev.getY());
+    		}
+    		return true;
+    	}
         if (mLocked || mLauncher.isAllAppsVisible()) {
             return true;
         }
@@ -1416,5 +1473,137 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 	public void setBounceAmount(int amount){
 		mScrollingBounce=amount;
 		mScroller.setInterpolator(new ElasticInterpolator(mScrollingBounce/10));
+	}
+	public void openSense(boolean open){
+		enableChildrenCache();
+		if(open){
+			mSensemode=true;
+			isAnimating=true;
+			mStatus=SENSE_OPENING;
+			startTime=0;
+		}else{
+			mSensemode=true;
+			isAnimating=true;
+			mStatus=SENSE_CLOSING;
+			startTime=0;
+		}
+	}
+
+	@Override
+	protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+		int saveCount = canvas.save();
+		if(mSensemode){
+			if(isAnimating||mStatus==SENSE_OPEN){
+				long currentTime=SystemClock.uptimeMillis()-startTime;
+				Rect r1=new Rect(0, 0, child.getWidth(), child.getHeight());
+				RectF r2=getScaledChild(child);
+				float x=0; float y=0; float width=0;float height=0; float alpha=255;
+				if(mStatus==SENSE_OPENING){
+					alpha=easeOut(currentTime,0,100,mAnimationDuration);
+					x=easeOut(currentTime, child.getLeft(), r2.left, mAnimationDuration);
+					y=easeOut(currentTime, child.getTop(), r2.top, mAnimationDuration);
+					width=easeOut(currentTime, child.getRight(), r2.right, mAnimationDuration);
+					height=easeOut(currentTime, child.getBottom(), r2.bottom, mAnimationDuration);
+				}else if (mStatus==SENSE_CLOSING){
+					alpha=easeOut(currentTime,100,0,mAnimationDuration);
+					x=easeOut(currentTime, r2.left,child.getLeft(), mAnimationDuration);
+					y=easeOut(currentTime, r2.top, child.getTop(), mAnimationDuration);
+					width=easeOut(currentTime, r2.right, child.getRight(), mAnimationDuration);
+					height=easeOut(currentTime, r2.bottom, child.getBottom(), mAnimationDuration);
+				}else if(mStatus==SENSE_OPEN){
+					x=r2.left;
+					y=r2.top;
+					width=r2.right;
+					height=r2.bottom;
+					alpha=100;
+				}
+				float scale=((width-x)/r1.width());
+				canvas.save();
+				canvas.translate(x, y);
+				canvas.scale(scale,scale);
+				mPaint.setAlpha((int) alpha);
+				canvas.drawRoundRect(new RectF(r1.left+5,r1.top+5,r1.right-5, r1.bottom-5), 15f, 15f, mPaint);
+				mPaint.setAlpha(255);
+				child.draw(canvas);
+				canvas.restore();
+			}else{
+				child.draw(canvas);
+			}
+		}else{
+			super.drawChild(canvas, child, drawingTime);
+		}
+		canvas.restoreToCount(saveCount);
+		return true;
+	}
+
+    /**
+     * ADW: easing functions for animation
+     */
+	static float easeOut (float time, float begin, float end, float duration) {
+		float change=end- begin;
+		float value= change*((time=time/duration-1)*time*time + 1) + begin;
+		if(change>0 && value>end) value=end;
+		if(change<0 && value<end) value=end;
+		return value;
+	}
+	static float easeIn (float time, float begin, float end, float duration) {
+		float change=end- begin;
+		float value=change*(time/=duration)*time*time + begin;
+		if(change>0 && value>end) value=end;
+		if(change<0 && value<end) value=end;
+		return value;
+	}
+	static float easeInOut (float time, float begin, float end, float duration) {
+		float change=end- begin;
+		if ((time/=duration/2.0f) < 1) return change/2.0f*time*time*time + begin;
+		return change/2.0f*((time-=2.0f)*time*time + 2.0f) + begin;
+	}
+	private RectF getScaledChild(View child){
+        final int count = getChildCount();
+        final int width = getWidth();//r - l;
+        final int height = getHeight();//b-t;
+        int xpos = getScrollX();
+        int ypos = 0;
+        
+        int distro_set=count-1;
+        int childPos=0;
+        //TODO:ADW We nedd to find the "longer row" and get the best children width
+        int maxItemsPerRow=0;
+        for(int rows=0;rows<distro[distro_set].length;rows++){
+        		if(distro[distro_set][rows]>maxItemsPerRow){
+        			maxItemsPerRow=distro[distro_set][rows];
+        		}
+        }
+        int childWidth=(width/maxItemsPerRow);//-getPaddingLeft()-getPaddingRight();//-(horizontal_spacing*(maxItemsPerRow-1));
+        if(childWidth>maxPreviewWidth)childWidth=maxPreviewWidth;
+        final float scale = ((float)childWidth/(float)maxPreviewWidth);
+        int childHeight = Math.round(maxPreviewHeight*scale);
+        final int topMargin=(height/2)-((childHeight*distro[distro_set].length)/2);
+        for(int rows=0;rows<distro[distro_set].length;rows++){
+        	final int leftMargin=(width/2)-((childWidth*distro[distro_set][rows])/2);
+        	for(int columns=0;columns<distro[distro_set][rows];columns++){
+                if(childPos>getChildCount()-1) break;
+        		final View c = getChildAt(childPos);
+                if (child== c) {
+                    return new RectF(leftMargin+xpos, topMargin+ypos, leftMargin+xpos + childWidth, topMargin+ypos + childHeight);
+                }else{
+                	xpos += childWidth;
+                }
+                childPos++;
+        	}
+            xpos = getScrollX();
+            ypos += childHeight;
+        }
+        return new RectF();
+	}
+	private void findClickedPReview(float x, float y){
+		for(int i=0;i<getChildCount();i++){
+			RectF tmp=getScaledChild(getChildAt(i));
+			if (tmp.contains(x+getScrollX(), y+getScrollY())){
+		        mLauncher.dismissPreviews();
+		        snapToScreen(i);
+		        invalidate();
+			}
+		}
 	}
 }

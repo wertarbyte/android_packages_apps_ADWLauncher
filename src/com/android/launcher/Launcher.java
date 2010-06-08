@@ -2737,14 +2737,23 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	        }
     	}
     }
-    private void dismissPreviews(){
-    	dismissPreview(mNextView);
-    	dismissPreview(mPreviousView);
-    	dismissPreview(mHandleView);
-        for (int i = 0; i < mWorkspace.getChildCount(); i++) {
-            View cell = mWorkspace.getChildAt(i);
-            cell.setDrawingCacheEnabled(false);
-        }
+    public void dismissPreviews(){
+    	if(newPreviews){
+	    	hideDesktop(false);
+	        showingPreviews=false;
+	        mWorkspace.unlock();
+	        mWorkspace.invalidate();
+	        mDesktopLocked=false;
+	        mWorkspace.openSense(false);
+    	}else{
+	    	dismissPreview(mNextView);
+	    	dismissPreview(mPreviousView);
+	    	dismissPreview(mHandleView);
+	        for (int i = 0; i < mWorkspace.getChildCount(); i++) {
+	            View cell = mWorkspace.getChildAt(i);
+	            cell.setDrawingCacheEnabled(false);
+	        }
+    	}
     }
     private void dismissPreview(final View v) {
     	final PopupWindow window = (PopupWindow) v.getTag();
@@ -2757,8 +2766,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     for (int i = 0; i < count; i++) {
                         ((ImageView) group.getChildAt(i)).setImageDrawable(null);
                     }
-                    //ArrayList<Bitmap> bitmaps = (ArrayList<Bitmap>) v.getTag(R.id.icon);
-                    //for (Bitmap bitmap : bitmaps) bitmap.recycle();
+                    ArrayList<Bitmap> bitmaps = (ArrayList<Bitmap>) v.getTag(R.id.icon);
+                    for (Bitmap bitmap : bitmaps) bitmap.recycle();
 
                     v.setTag(R.id.workspace, null);
                     v.setTag(R.id.icon, null);
@@ -2795,112 +2804,104 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     private void showPreviews(final View anchor, int start, int end) {
-        //check first if it's already open
-        final PopupWindow window = (PopupWindow) anchor.getTag();
-        if (window != null) return;
-    	Resources resources = getResources();
-
-        Workspace workspace = mWorkspace;
-        CellLayout cell = ((CellLayout) workspace.getChildAt(start));
-        float max;
-        ViewGroup preview;
-        if(newPreviews){
-        	max = 3;
-            preview= new PreviewsHolder(this);
-        }else{
+    	if(newPreviews){
+	    	showingPreviews=true;
+	    	hideDesktop(true);
+	        mWorkspace.lock();
+	        mDesktopLocked=true;
+	        mWorkspace.invalidate();
+	    	mWorkspace.openSense(true);
+    	}else{
+	        //check first if it's already open
+	        final PopupWindow window = (PopupWindow) anchor.getTag();
+	        if (window != null) return;
+	    	Resources resources = getResources();
+	
+	        Workspace workspace = mWorkspace;
+	        CellLayout cell = ((CellLayout) workspace.getChildAt(start));
+	        float max;
+	        ViewGroup preview;
         	max = workspace.getChildCount();
             preview = new LinearLayout(this);
-        }
-        
-        Rect r = new Rect();
-        //ADW: seems sometimes this throws an out of memory error.... so...
-        try{
-        	resources.getDrawable(R.drawable.preview_background).getPadding(r);
-        }catch(OutOfMemoryError e){}
-        int extraW = (int) ((r.left + r.right) * max);
-        int extraH = r.top + r.bottom;
-
-        int aW = cell.getWidth() - extraW;
-        float w = aW / max;
-
-        int width = cell.getWidth();
-        int height = cell.getHeight();
-        //width -= (x + cell.getRightPadding());
-        //height -= (y + cell.getBottomPadding());
-        if(width!=0 && height!=0){
-            showingPreviews=true;
-	        float scale = w / width;
+	        
+	        Rect r = new Rect();
+	        //ADW: seems sometimes this throws an out of memory error.... so...
+	        try{
+	        	resources.getDrawable(R.drawable.preview_background).getPadding(r);
+	        }catch(OutOfMemoryError e){}
+	        int extraW = (int) ((r.left + r.right) * max);
+	        int extraH = r.top + r.bottom;
 	
-	        int count = end - start;
+	        int aW = cell.getWidth() - extraW;
+	        float w = aW / max;
 	
-	        final float sWidth = width * scale;
-	        float sHeight = height * scale;
-	
-	
-	        PreviewTouchHandler handler = new PreviewTouchHandler(anchor);
-	        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>(count);
-	
-	        for (int i = start; i < end; i++) {
-	            ImageView image = new ImageView(this);
-	            cell = (CellLayout) workspace.getChildAt(i);
-	            cell.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
-	            cell.setDrawingCacheEnabled(true);
-	            Bitmap bitmap = Bitmap.createScaledBitmap(cell.getDrawingCache(), (int)sWidth, (int)sHeight, false);// Bitmap.createBitmap((int) sWidth, (int) sHeight,
-	                    //Bitmap.Config.ARGB_8888);
-	            cell.setDrawingCacheEnabled(false);
-	            Canvas c = new Canvas(bitmap);
-	            c.scale(scale, scale);
-	            c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
-	            //cell.dispatchDraw(c);
-	
-	            image.setBackgroundDrawable(resources.getDrawable(R.drawable.preview_background));
-	            image.setImageBitmap(bitmap);
-	            image.setTag(i);
-	            image.setOnClickListener(handler);
-	            image.setOnFocusChangeListener(handler);
-	            image.setFocusable(true);
-	            if (i == mWorkspace.getCurrentScreen()) image.requestFocus();
-	
-	            preview.addView(image,
-	                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-	
-	            bitmaps.add(bitmap);            
-	        }
-	       
-	        PopupWindow p = new PopupWindow(this);
-	        p.setContentView(preview);
-	        if(newPreviews){
-		        p.setWidth(width);
-		        p.setHeight(height);
-		        p.setAnimationStyle(R.style.AnimationPreview);
-	        }else{
+	        int width = cell.getWidth();
+	        int height = cell.getHeight();
+	        //width -= (x + cell.getRightPadding());
+	        //height -= (y + cell.getBottomPadding());
+	        if(width!=0 && height!=0){
+	            showingPreviews=true;
+		        float scale = w / width;
+		
+		        int count = end - start;
+		
+		        final float sWidth = width * scale;
+		        float sHeight = height * scale;
+		
+		
+		        PreviewTouchHandler handler = new PreviewTouchHandler(anchor);
+		        ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>(count);
+		
+		        for (int i = start; i < end; i++) {
+		            ImageView image = new ImageView(this);
+		            cell = (CellLayout) workspace.getChildAt(i);
+		            Bitmap bitmap = Bitmap.createBitmap((int) sWidth, (int) sHeight,
+		                    Bitmap.Config.ARGB_8888);
+		            cell.setDrawingCacheEnabled(false);
+		            Canvas c = new Canvas(bitmap);
+		            c.scale(scale, scale);
+		            c.translate(-cell.getLeftPadding(), -cell.getTopPadding());
+		            cell.dispatchDraw(c);
+		
+		            image.setBackgroundDrawable(resources.getDrawable(R.drawable.preview_background));
+		            image.setImageBitmap(bitmap);
+		            image.setTag(i);
+		            image.setOnClickListener(handler);
+		            image.setOnFocusChangeListener(handler);
+		            image.setFocusable(true);
+		            if (i == mWorkspace.getCurrentScreen()) image.requestFocus();
+		
+		            preview.addView(image,
+		                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		
+		            bitmaps.add(bitmap);            
+		        }
+		       
+		        PopupWindow p = new PopupWindow(this);
+		        p.setContentView(preview);
 	        	p.setWidth((int) (sWidth * count + extraW));
 	        	p.setHeight((int) (sHeight + extraH));
 	            p.setAnimationStyle(R.style.AnimationPreview);
-	        }
-	        p.setOutsideTouchable(true);
-	        p.setFocusable(true);
-	        p.setBackgroundDrawable(new ColorDrawable(0));
-	        if(newPreviews){
-	        	p.showAtLocation(anchor, Gravity.BOTTOM, 0, 0);
-	        }else{
+		        p.setOutsideTouchable(true);
+		        p.setFocusable(true);
+		        p.setBackgroundDrawable(new ColorDrawable(0));
 	        	p.showAsDropDown(anchor, 0, 0);
+		        p.setOnDismissListener(new PopupWindow.OnDismissListener() {
+		            public void onDismiss() {
+		                dismissPreview(anchor);
+		            }
+		        });
+		        anchor.setTag(p);
+		        anchor.setTag(R.id.workspace, preview);
+		        anchor.setTag(R.id.icon, bitmaps);
+		        if(fullScreenPreviews){
+			        hideDesktop(true);
+			        mWorkspace.lock();
+			        mDesktopLocked=true;
+			        mWorkspace.invalidate();
+		        }
 	        }
-	        p.setOnDismissListener(new PopupWindow.OnDismissListener() {
-	            public void onDismiss() {
-	                dismissPreview(anchor);
-	            }
-	        });
-	        anchor.setTag(p);
-	        anchor.setTag(R.id.workspace, preview);
-	        anchor.setTag(R.id.icon, bitmaps);
-	        if(fullScreenPreviews){
-		        hideDesktop(true);
-		        mWorkspace.lock();
-		        mDesktopLocked=true;
-		        mWorkspace.invalidate();
-	        }
-        }
+    	}
     }
     class PreviewTouchHandler implements View.OnClickListener, Runnable, View.OnFocusChangeListener {
         private final View mAnchor;
