@@ -185,7 +185,7 @@
     <string name="pref_title_icon_highlights">Colore di evidenziazione</string>
     <string name="pref_summary_icon_highlights">Imposta il colore di sfondo durante la selezione delle icone</string>
     <string name="pref_title_icon_highlights_focus">Colore della selezione</string>
-    <string name="pref_summary_icon_highlights_focus">Imposta il colore per l'icona selezionata</string>
+    <string name="pref_summary_icon_highlights_focus">Imposta il colore per l\'icona selezionata</string>
     <string name="pref_title_new_selectors">Usa i nuovi selettori per le icone</string>
     <string name="pref_summary_new_selectors">Disabilitare per usare i vecchi selettori.</string>
 
