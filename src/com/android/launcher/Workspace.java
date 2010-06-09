@@ -1626,18 +1626,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 	/**
 	 * Wysie: Multitouch methods/events
 	 */
-	@Override
 	public Object getDraggableObjectAtPoint(PointInfo pt) {
 		return this;
 	}
 
-	@Override
 	public void getPositionAndScale(Object obj,
 			PositionAndScale objPosAndScaleOut) {
 		objPosAndScaleOut.set(0.0f, 0.0f, 1.0f);
 	}
 
-	@Override
 	public void selectObject(Object obj, PointInfo pt) {
 		if(mStatus!=SENSE_OPEN){
 			mAllowLongPress=false;
@@ -1646,7 +1643,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 		}
 	}
 
-	@Override
 	public boolean setPositionAndScale(Object obj,
 			PositionAndScale update, PointInfo touchPoint) {
         float newRelativeScale = update.getScale();
