@@ -44,10 +44,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import demo.multitouch.controller.MultiTouchController;
-import demo.multitouch.controller.MultiTouchController.MultiTouchObjectCanvas;
-import demo.multitouch.controller.MultiTouchController.PointInfo;
-import demo.multitouch.controller.MultiTouchController.PositionAndScale;
+import org.metalev.multitouch.controller.MultiTouchController;
+import org.metalev.multitouch.controller.MultiTouchController.MultiTouchObjectCanvas;
+import org.metalev.multitouch.controller.MultiTouchController.PointInfo;
+import org.metalev.multitouch.controller.MultiTouchController.PositionAndScale;
+
 /**
  * The workspace is a wide area with a wallpaper and a finite number of screens. Each
  * screen contains a number of icons, folders or widgets the user can interact with.
