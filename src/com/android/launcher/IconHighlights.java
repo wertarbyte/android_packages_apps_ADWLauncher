@@ -52,7 +52,7 @@ public class IconHighlights {
 		StateListDrawable drawable=new StateListDrawable();
 		
 		Resources res = context.getResources();
-		mDrawPressed=(NinePatchDrawable) res.getDrawable(R.drawable.pressed_application_background);
+		mDrawPressed=res.getDrawable(R.drawable.pressed_application_background);
 		mDrawSelected=res.getDrawable(R.drawable.focused_application_background);
 		//TODO:ADW This doesn't work and i don't know why
 		//So for now i'll use only one colour for tinting both drawables
