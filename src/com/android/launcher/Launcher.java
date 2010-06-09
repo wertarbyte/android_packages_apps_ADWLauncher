@@ -2745,8 +2745,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	    	if(newPreviews){
 		    	hideDesktop(false);
 		        showingPreviews=false;
-		        mWorkspace.unlock();
-		        mWorkspace.invalidate();
 		        //mDesktopLocked=false;
 		        mWorkspace.openSense(false);
 	    	}else{
@@ -2813,8 +2811,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 	    	showingPreviews=true;
 	    	hideDesktop(true);
 	        mWorkspace.lock();
-	        //mDesktopLocked=true;
-	        mWorkspace.invalidate();
 	    	mWorkspace.openSense(true);
     	}else{
 	        //check first if it's already open
