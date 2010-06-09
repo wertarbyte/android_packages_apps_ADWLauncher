@@ -156,7 +156,8 @@ public class MultiTouchController<T> {
 			m_getHistoricalPressure = MotionEvent.class.getMethod("getHistoricalPressure", Integer.TYPE, Integer.TYPE);
 			m_getX = MotionEvent.class.getMethod("getX", Integer.TYPE);
 			m_getY = MotionEvent.class.getMethod("getY", Integer.TYPE);
-
+			
+			/*
 			// Android 2.2 stuff (optional here, the original Android 2.2 consts are declared above,
 			// and these actions aren't used previous to Android 2.2):
 			Field up = MotionEvent.class.getField("ACTION_POINTER_UP");
@@ -165,6 +166,7 @@ public class MultiTouchController<T> {
 			Field shift = MotionEvent.class.getField("ACTION_POINTER_INDEX_SHIFT");
 			if (shift != null)
 				ACTION_POINTER_INDEX_SHIFT = shift.getInt(null);
+			*/
 
 			succeeded = true;
 		} catch (Exception e) {
