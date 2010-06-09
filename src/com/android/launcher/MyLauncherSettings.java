@@ -36,7 +36,7 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
     
     private static final String PREF_BACKUP_FILENAME = "adw_settings.xml";
     private static final String CONFIG_BACKUP_FILENAME = "adw_launcher.db";
-    private static final String NAMESPACE = "org.adw.launcher";
+    private static final String NAMESPACE = "com.android.launcher";
     
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -298,7 +298,7 @@ public class MyLauncherSettings extends PreferenceActivity implements OnPreferen
     	}
     };
     private int readHighlightsColorFocus() {
-    	return AlmostNexusSettingsHelper.getHighlightsColor(this);
+    	return AlmostNexusSettingsHelper.getHighlightsColorFocus(this);
     }
 
     ColorPickerDialog.OnColorChangedListener mHighlightsColorFocusListener =
