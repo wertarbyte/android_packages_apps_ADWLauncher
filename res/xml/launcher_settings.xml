@@ -166,8 +166,31 @@
 			android:title="@string/pref_title_icon_highlights_focus"
 			android:summary="@string/pref_summary_icon_highlights_focus"
 	        android:defaultValue="-16777216" />
-
 	</PreferenceScreen>
+	<PreferenceScreen
+	    android:key="xmlPreferences"
+		android:title="@string/pref_title_import_export">
+		<PreferenceCategory android:title="@string/pref_title_xml">
+	    	<Preference
+	    	    android:title="@string/pref_title_xml_export"
+	    	    android:summary="@string/pref_summary_xml_export"
+	    		android:key="xml_export" />
+    		<Preference
+	    	    android:title="@string/pref_title_xml_import"
+	    	    android:summary="@string/pref_summary_xml_import"
+	    		android:key="xml_import" />
+        </PreferenceCategory>
+		<PreferenceCategory android:title="@string/pref_title_db">
+	    	<Preference
+	    	    android:title="@string/pref_title_db_export"
+	    	    android:summary="@string/pref_summary_db_export"
+	    		android:key="db_export" />
+    		<Preference
+	    	    android:title="@string/pref_title_db_import"
+	    	    android:summary="@string/pref_summary_db_import"
+	    		android:key="db_import" />
+        </PreferenceCategory>
+	</PreferenceScreen>	
 	<PreferenceCategory android:title="@string/pref_title_build_info">
 		<Preference
 			android:key="donatePref"

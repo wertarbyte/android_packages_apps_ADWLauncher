@@ -264,4 +264,47 @@
     <string name="drop_to_uninstall">Drop to Uninstall</string>
     <string name="pref_message_restart_normal">Changing this setting will make the Launcher restart itself</string>
     <string name="pref_message_restart_froyo">Changing this setting will make the Launcher restart itself</string>
+    <string name="drop_to_uninstall">Drop to Uninstall</string>
+    
+    <string name="pref_title_import_export">Backup and restore</string>
+    <string name="pref_title_xml">ADW settings</string>
+    <string name="pref_title_xml_import">Restore ADW settings</string>
+    <string name="pref_summary_xml_import">Restore from /sdcard/adw_settings.xml</string>
+    <string name="pref_title_xml_export">Backup ADW settings</string>
+    <string name="pref_summary_xml_export">Backup to /sdcard/adw_settings.xml</string>
+    
+    <string name="pref_title_db">Desktop configuration</string>
+    <string name="pref_title_db_import">Restore desktop configuration</string>
+    <string name="pref_summary_db_import">Restore from /sdcard/adw_launcher.db</string>
+    <string name="pref_title_db_export">Backup desktop configuration</string>
+    <string name="pref_summary_db_export">Backup to /sdcard/adw_launcher.db</string>
+    
+    <string name="title_dialog_xml">ADW Launcher Settings</string>
+    <string name="import_export_sdcard_unmounted">SD card not mounted!</string>
+    
+    <!-- XML Import/Export strings -->
+    <string name="message_dialog_export">Backup ADW settings? Any existing file will be overwritten.</string>
+    <string name="xml_export_dialog">Backing up ADW settings...</string>
+    <string name="xml_export_success">ADW settings backed up successfully!</string>
+    <string name="xml_export_error">Error backing up ADW settings!</string>    
+    
+    <string name="message_dialog_import">Restore ADW settings? ADW.Launcher will be restarted.</string>
+    <string name="xml_import_dialog">Restoring ADW settings...</string>  
+    <string name="xml_file_not_found">Settings backup file not found!</string>
+    <string name="xml_not_readable">Settings backup file exists, but is not readable!</string>
+    <string name="xml_import_success">ADW settings restored successfully!</string>
+    <string name="xml_import_error">Error restoring ADW settings!</string>
+    
+    <!-- Config Import/Export strings -->
+    <string name="message_dialog_export_config">Backup desktop configuration? Any existing file will be overwritten.</string>
+    <string name="dbfile_export_dialog">Backing up desktop configuration...</string>
+    <string name="dbfile_export_success">Configuration backed up successfully!</string>
+    <string name="dbfile_export_error">Error backing up configuration!</string>
+    
+    <string name="message_dialog_import_config">Restore desktop configuration? ADW.Launcher will be restarted.</string>
+    <string name="dbfile_import_dialog">Restoring desktop configuration...</string>
+    <string name="dbfile_not_found">Configuration file not found!</string>
+    <string name="dbfile_not_readable">Configuration file exists, but is not readable!</string>
+    <string name="dbfile_import_success">Configuration restored successfully!</string>
+    <string name="dbfile_import_error">Error restoring configuration!</string>
 </resources>
