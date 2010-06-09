@@ -93,7 +93,7 @@
     <string name="pref_dialog_desktop_scrolling_speed">Più basso è il valore, più sarà veloce</string>
 
     <string name="pref_title_desktop_overshoot">Overshoot del Desktop</string>
-    <string name="pref_summary_desktop_overshoot">Consente di balzare dalla prima all\'ultima schermata</string>
+    <string name="pref_summary_desktop_overshoot">Effetto di rimbalzo tra la schermata precedente e successiva</string>
     <string name="pref_dialog_desktop_overshoot">Impostato a 0 disabilita l\'overshooting</string>
 
     <!-- Drawer Settings -->
@@ -177,8 +177,19 @@
     <string name="pref_title_build_info">Informazioni Build</string>
     <string name="pref_title_adw_version">Versione ADW</string>
 
-    <string name="pref_title_drawer_background_alpha">Sfondo alpha</string>
+    <string name="pref_title_drawer_background_alpha">Sfondo alfa</string>
     <string name="pref_summary_drawer_background_alpha">Imposta il livello di trasparenza dello sfondo del Drawer</string>
     <string name="pref_dialog_drawer_background_alpha">Imposta il livello di trasparenza dello sfondo del Drawer</string>
+    <string name="drop_to_uninstall">Lascia per Disinstallare</string>
 
+    <string name="pref_title_icon_highlights">Colore di evidenziazione</string>
+    <string name="pref_summary_icon_highlights">Imposta il colore di sfondo durante la selezione delle icone</string>
+    <string name="pref_title_icon_highlights_focus">Colore della selezione</string>
+    <string name="pref_summary_icon_highlights_focus">Imposta il colore per l\'icona selezionata</string>
+    <string name="pref_title_new_selectors">Usa i nuovi selettori per le icone</string>
+    <string name="pref_summary_new_selectors">Disabilitare per usare i vecchi selettori.</string>
+
+    <string name="pref_dialog_title_color_picker">Scegli un colore</string>
+    <string name="pref_dialog_message_color_picker">Premi sul colore al centro per confermare.\nPremi indietro per annullare.</string>
+    <string name="pref_dialog_color_picker_alpha">alfa</string>
 </resources>

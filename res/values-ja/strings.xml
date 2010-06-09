@@ -71,7 +71,7 @@
     <string name="pref_summary_screen_preferences">スクリーンの数やデフォルト等</string>
 
     <string name="pref_title_wallpaper_hack">壁紙ハック</string>
-    <string name="pref_summary_wallpaper_hack">大きい壁紙で強制終了する場合は無効に,改良を維持するには有効にする.</string>
+    <string name="pref_summary_wallpaper_hack">大きい壁紙で強制終了する場合はオフに,改良を維持するにはオンにする.</string>
 
     <string name="pref_title_orientation_sensor">回転センサ</string>
     <string name="pref_summary_orientation_sensor">回転センサによりデスクトップを回転する</string>
@@ -183,9 +183,17 @@
     <string name="pref_title_icon_highlights">ハイライトカラー</string>
     <string name="pref_summary_icon_highlights">アイコンを選択したときの色を選択</string>
 
+    <string name="pref_title_icon_highlights_focus">フォーカスカラー</string>
+    <string name="pref_summary_icon_highlights_focus">フォーカスしたアイコンのカラー</string>
+    <string name="pref_title_new_selectors">新しいアイコンセレクタ</string>
+    <string name="pref_summary_new_selectors">以前のものにするにはオフにする</string>
+
     <string name="pref_dialog_title_color_picker">色を選択</string>
     <string name="pref_dialog_message_color_picker">中央をタップして確定\n戻るボタンでキャンセル</string>
     <string name="pref_dialog_color_picker_alpha">不透明度</string>
+    <string name="pref_message_restart_normal">この設定を変更するとランチャーは再起動されます。</string>
+    <string name="pref_message_restart_froyo">この設定を変更するとランチャーは再起動されます。</string>
+
 
 </resources>
 

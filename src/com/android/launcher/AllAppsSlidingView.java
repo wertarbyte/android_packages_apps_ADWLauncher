@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -155,6 +156,8 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     private int mScrollingSpeed=600;
     //ADW: bounce scroll
     private int mScrollingBounce=50;
+    //ADW:Bg color
+    private int mBgColor=0xFF000000;
 	public AllAppsSlidingView(Context context) {
 		super(context);
 		initWorkspace();
@@ -263,9 +266,8 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
     @Override
     protected void dispatchDraw(Canvas canvas) {
         int saveCount = 0;
-		canvas.drawARGB(mBgAlpha, 0, 0, 0);
-
         final boolean clipToPadding = (mGroupFlags & CLIP_TO_PADDING_MASK) == CLIP_TO_PADDING_MASK;
+	canvas.drawARGB(mBgAlpha, Color.red(mBgColor), Color.green(mBgColor), Color.blue(mBgColor));
         if (clipToPadding) {
             saveCount = canvas.save();
             final int scrollX = mScrollX;
@@ -1790,6 +1792,7 @@ public class AllAppsSlidingView extends AdapterView<ApplicationsAdapter> impleme
 		}
 	}
 	public void open(boolean animate) {
+		mBgColor=AlmostNexusSettingsHelper.getDrawerColor(mLauncher);
 		mTargetAlpha=AlmostNexusSettingsHelper.getDrawerAlpha(mLauncher);
 		mScroller.forceFinished(true);
 		setVisibility(View.VISIBLE);

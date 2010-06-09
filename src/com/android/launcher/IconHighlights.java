@@ -17,8 +17,8 @@ public class IconHighlights {
 		GradientDrawable mDrawPressed;
 		GradientDrawable mDrawSelected;
 		StateListDrawable drawable=new StateListDrawable();
-		int selectedColor=AlmostNexusSettingsHelper.getHighlightsColor(context);
-		int pressedColor=AlmostNexusSettingsHelper.getHighlightsColorFocus(context);
+		int selectedColor=AlmostNexusSettingsHelper.getHighlightsColorFocus(context);
+		int pressedColor=AlmostNexusSettingsHelper.getHighlightsColor(context);
 		int stateFocused = android.R.attr.state_focused;
 		int statePressed = android.R.attr.state_pressed;
 		int stateWindowFocused = android.R.attr.state_window_focused;

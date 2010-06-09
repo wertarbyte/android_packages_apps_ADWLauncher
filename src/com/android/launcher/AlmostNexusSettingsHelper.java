@@ -161,4 +161,9 @@ public final class AlmostNexusSettingsHelper {
 		boolean newD = sp.getBoolean("uiNewSelectors", context.getResources().getBoolean(R.bool.config_new_selectors));
 		return newD;
 	}
+	public static int getDrawerColor(Context context) {
+		SharedPreferences sp = context.getSharedPreferences(ALMOSTNEXUS_PREFERENCES, Context.MODE_PRIVATE);
+		int newD = sp.getInt("drawer_color", context.getResources().getInteger(R.integer.config_drawer_color));
+		return newD;
+	}
 }
