@@ -261,7 +261,6 @@
     <string name="pref_dialog_title_color_picker">Pick a color.</string>
     <string name="pref_dialog_message_color_picker">Tap on center color to confirm.\nPress back to cancel.</string>
     <string name="pref_dialog_color_picker_alpha">alpha</string>
-    <string name="drop_to_uninstall">Drop to Uninstall</string>
     <string name="pref_message_restart_normal">Changing this setting will make the Launcher restart itself</string>
     <string name="pref_message_restart_froyo">Changing this setting will make the Launcher restart itself</string>
     <string name="drop_to_uninstall">Drop to Uninstall</string>
