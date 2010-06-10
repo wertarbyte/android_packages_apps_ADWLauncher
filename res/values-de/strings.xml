@@ -65,11 +65,11 @@
 
     <!-- ADW Settings -->
     <!-- Screen preferences -->
-    <string name="pref_label_settings">ADW.Launcher Einstellungen</string>
+    <string name="pref_label_settings">ADW.Launcher-Einstellungen</string>
     <string name="pref_title_screen_preferences">Anzeige-Einstellungen</string>
     <string name="pref_summary_screen_preferences">Einstellungen für Bildschirmanzahl, Standardbildschirm, Effekte, ...</string>
 
-    <string name="pref_title_wallpaper_hack">Wallpaper Hack</string>
+    <string name="pref_title_wallpaper_hack">Wallpaper-Hack</string>
     <string name="pref_summary_wallpaper_hack">Für schnelleres Scrollen. Bei Fehlermeldungen und Nutzung großer Hintergrundbilder ausschalten.</string>
 
     <string name="pref_title_orientation_sensor">Orientierungssensor</string>
@@ -141,11 +141,11 @@
     <string name="pref_title_home_button_binding">HOME-Taste</string>
     <string name="pref_summary_home_button_binding">Aktion für HOME-Taste auswählen</string>
 
-    <string name="pref_title_desktop_dots">Desktop Punkte</string>
+    <string name="pref_title_desktop_dots">Desktop-Punkte</string>
     <string name="pref_summary_desktop_dots">Zeige/Verstecke Punkte für Anzeigenwechsel (wie Nexus One)</string>
 
     <string name="pref_title_dockbar">Dockzeile</string>
-    <string name="pref_summary_dockbar">Ein/Ausschalten der neuen Dockzeile für Schnellzugriffe</string>
+    <string name="pref_summary_dockbar">Ein-/Ausschalten der neuen Dockzeile für Schnellzugriffe</string>
 
     <string name="pref_title_closing_dockbar">Automatisch schliessen</string>
     <string name="pref_summary_closing_dockbar">Dockzeile nach Anwendungsstart automatisch schliessen</string>
@@ -163,17 +163,17 @@
     <string name="pref_summary_ab_scale_factor">Skaliere die Größe der Aktionstasten-Icons</string>
     <string name="pref_dialog_ab_scale_factor">Größenfaktor der Aktionstasten-Icons</string>
 
-    <string name="pref_title_hide_allapps_ab">Drawer-Taste BG ausblenden</string>
+    <string name="pref_title_hide_allapps_ab">Drawer-Tasten-BG ausblenden</string>
     <string name="pref_summary_hide_allapps_ab">Hintergrund der Drawer-Taste ausblenden</string>
 
-    <string name="pref_title_hide_ab_bg">Aktionstasten BG ausblenden</string>
+    <string name="pref_title_hide_ab_bg">Aktionstasten-BG ausblenden</string>
     <string name="pref_summary_hide_ab_bg">Hintergrund der Aktionstasten ausblenden</string>
 
     <string name="pref_title_hide_icon_labels">Keine Icon-Beschriftung</string>
     <string name="pref_summary_hide_icon_labels">Beschriftung der Desktopsymbole ausblenden</string>
 
     <string name="pref_title_build_info">Informationen</string>
-    <string name="pref_title_adw_version">ADW.Launcher Version</string>
+    <string name="pref_title_adw_version">ADW.Launcher-Version</string>
     <string name="adw_donate">Bitte spende, wenn dir meine Arbeit gefällt :-)</string>
 
     <string name="pref_title_drawer_background_alpha">Hintergrund-Transparenz</string>
