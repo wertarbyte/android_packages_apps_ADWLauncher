@@ -73,7 +73,7 @@
     <string name="pref_summary_wallpaper_hack">Für schnelleres Scrollen. Bei Fehlermeldungen und Nutzung großer Hintergrundbilder ausschalten.</string>
 
     <string name="pref_title_orientation_sensor">Orientierungssensor</string>
-    <string name="pref_summary_orientation_sensor">Rotiere Bildschirm bei Drehung des Gerätes</string>
+    <string name="pref_summary_orientation_sensor">Anzeige der Geräteorientierung anpassen</string>
 
     <string name="pref_title_hide_statusbar">Statuszeile ausblenden</string>
     <string name="pref_summary_hide_statusbar">Obere Statuszeile ausblenden</string>
@@ -103,7 +103,7 @@
     <string name="pref_dialog_zoom_effect_speed">Millisekunden für den Zoom-Effekt</string>
 
     <string name="pref_title_new_drawer">Neuer Drawer</string>
-    <string name="pref_summary_new_drawer">Die Samsung Galaxy S Implementierung (horizontal) verwenden</string>
+    <string name="pref_summary_new_drawer">Horizontale Variante verwenden</string>
 
     <string name="pref_title_animated_drawer">Animierter Drawer</string>
     <string name="pref_summary_animated_drawer">Auswählen, ob Animationen im Drawer angezeigt werden sollen</string>
@@ -163,10 +163,10 @@
     <string name="pref_summary_ab_scale_factor">Skaliere die Größe der Aktionstasten-Icons</string>
     <string name="pref_dialog_ab_scale_factor">Größenfaktor der Aktionstasten-Icons</string>
 
-    <string name="pref_title_hide_allapps_ab">Drawer-Tasten-BG ausblenden</string>
+    <string name="pref_title_hide_allapps_ab">Drawer-Tasten-HG ausblenden</string>
     <string name="pref_summary_hide_allapps_ab">Hintergrund der Drawer-Taste ausblenden</string>
 
-    <string name="pref_title_hide_ab_bg">Aktionstasten-BG ausblenden</string>
+    <string name="pref_title_hide_ab_bg">Aktionstasten-HG ausblenden</string>
     <string name="pref_summary_hide_ab_bg">Hintergrund der Aktionstasten ausblenden</string>
 
     <string name="pref_title_hide_icon_labels">Keine Icon-Beschriftung</string>
